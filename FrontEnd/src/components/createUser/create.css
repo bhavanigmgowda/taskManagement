@@ -1,27 +1,29 @@
 #create {
     background: #ebebeb;
-     width: 350px;
+    width: 350px;
     border-radius: 20px;
 }
 
-#cardHead{
+#cardHead {
     border-radius: 20px 20px 0px 0px;
 }
+
 #alert {
-    margin-bottom:10px;
-    text-align: center; 
-    padding-bottom:5px; 
-    display: block; 
-    
-    
+    margin-bottom: 10px;
+    text-align: center;
+    padding-bottom: 5px;
+    display: block;
 }
+
 #message {
     font-size: 12px;
 }
+
 #container {
     width: 350px;
     padding: 0;
 }
+
 #alertHead {
     width: 25%;
     display: block;
@@ -32,6 +34,7 @@
     margin-right: auto;
     text-align: center;
 }
+
 #taskalertHead {
     width: 25%;
     display: block;
@@ -42,7 +45,8 @@
     margin-right: auto;
     text-align: center;
 }
-#success{
+
+#success {
     width: 25%;
     display: block;
     border-radius: 30px;
@@ -52,28 +56,30 @@
     margin-right: auto;
     text-align: center;
 }
+
 #Page {
     background: #ebebeb;
-     width: 350px;
+    width: 350px;
     border-radius: 20px;
     margin-top: 100px;
 }
-#btn{
+
+#btn {
     width: 25%;
     float: right;
     clear: both;
     margin-top: -19px;
-      
 }
-#fPass{
+
+#fPass {
     margin-top: -5% !important;
 }
 
-.error{
-    display:none;
+.error {
+    display: none;
     color: red;
     text-align: initial;
-    margin-top:-10px;
-    margin-bottom: 10px; 
+    margin-top: -10px;
+    margin-bottom: 10px;
     font-size: 11px;
 }

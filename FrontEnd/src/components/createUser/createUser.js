@@ -4,7 +4,6 @@ import Axios from 'axios'
 import './create.css'
 import Footer from '../navBar/footer'
 import SimpleNavBar from '../navBar/simpleNavBar';
-import { NONAME } from 'dns';
 
 export class CreateUser extends Component {
     constructor(props) {
@@ -36,9 +35,10 @@ export class CreateUser extends Component {
                     document.getElementById("success").hidden = false;
                     $('#successMessage').html("User Created successfully Go to LoginPage to login");
                      setTimeout((function hide() { document.getElementById("success").hidden = true; }), 3000);
-                    if(document.getElementById("success").hidden === true){
-                     this.props.history.push('/Login');               
-                    }
+                        setTimeout(()=>{
+                                 this.props.history.push('/Login');               
+                        },5000 )
+
                 } else if (response.data.statusCode === 401) {
                     this.setState({ show2: true })
                     setTimeout(() => {
@@ -56,11 +56,9 @@ export class CreateUser extends Component {
     }
     hideName = () => {
         $('#errormsg1').css('display','none');
-
     }
     hideEmail = () => {
         $('#errormsg2').css('display','none');
-
     }
     hideDesignation = () => {
         $('#errormsg3').css('display','none');
@@ -72,8 +70,6 @@ export class CreateUser extends Component {
         $('#errormsg5').css('display','none');
     }
 
-
-
     componentDidMount() {
         $(document).ready(function () {
             $('#submit').click(function (e) {
@@ -83,49 +79,48 @@ export class CreateUser extends Component {
                 var designation = (document.getElementById("Designation").value).trim();
                 var email = (document.getElementById("email").value).trim();
                 
-                if (pass != rpass) {
+                if (pass !== rpass) {
                     document.getElementById("alert").hidden = false;
                     $('#message').html("Passwords do not match ").css('font-size', '12px').css('text-align', 'center');
                     setTimeout((function hide() { document.getElementById("alert").hidden = true; }), 2000); 
                 }
-                if (rpass == "") {
+                if (rpass === "") {
                     document.getElementById("alert").hidden = true;
                     $("#errormsg5").css('display','block');
                     setTimeout((function hide() { document.getElementById("alert").hidden = true; }), 2000); 
                 }
-                if (pass == "") {
+                if (pass === "") {
                     document.getElementById("alert").hidden = true;   
                     $("#errormsg4").css('display','block');
                     setTimeout((function hide() { document.getElementById("alert").hidden = true; }), 2000); 
                 }
-
-                if (designation == "") {
+                if (designation === "") {
                     $("#errormsg3").css('display','block');
                     document.getElementById("alert").hidden = true;
                     setTimeout((function hide() { document.getElementById("alert").hidden = true; }), 2000); 
                 }
-                if (email == "") {
+                if (email === "") {
                     document.getElementById("alert").hidden = true;
                     $("#errormsg2").css('display','block');
                     setTimeout((function hide() { document.getElementById("alert").hidden = true; }), 2000); 
                 }
-                if (name == "") {
+                if (name === "") {
                     $("#errormsg1").css('display','block');
                     document.getElementById("alert").hidden = true;  
                     setTimeout((function hide() { document.getElementById("alert").hidden = true; }), 2000); 
                 }
-                if (name == "" && designation == "" && email == "" && pass == "" && rpass == "") {
+                if (name === "" && designation === "" && email === "" && pass === "" && rpass === "") {
                     $(".error").css('display','block');
                     document.getElementById("alert").hidden = false;
                     $('#message').html("All fields are Mandatory").css('font-size', '12px');
                     setTimeout((function hide() { document.getElementById("alert").hidden = true; }), 2000);
                 }
-                if(name != "" && designation != "" && email != "" && (pass == rpass)) {
+                if(name !== "" && designation !== "" && email !== "" && (pass === rpass)) {
                     $('#message').html("");
                     document.getElementById("alert").hidden = true;
                     return true;
                 }
-                else{
+                else {
                     return false;
                 }
             });
@@ -138,12 +133,11 @@ export class CreateUser extends Component {
             <div >
                 <SimpleNavBar />
                 <div id="content-wrap" className="container-fluid mt-5">
-
                     {this.state.show ? <div id="alertHead" className="alert alert-danger" role="alert" >User Creation Failed server not responding </div> : null}
                     {this.state.show2 ? <div id="alertHead" className="alert alert-danger" role="alert">User Creation Failed email already exist </div> : null}
                     <div style={{ textAlign: '"center"' }}>
-                        <div id="success" className="alert alert-success" role="success" hidden="true">
-                            <h6 id="successMessage" />
+                        <div id="success" className="alert alert-success" hidden="true">
+                            <small id="successMessage" />
                         </div>
                     </div>
                     <div className="row">
@@ -153,7 +147,7 @@ export class CreateUser extends Component {
                                     <legend className="text-center">Create User</legend>
                                 </div>
                                 <div className="card-body">
-                                    <form role="form" id="apply-form" onSubmit={this.create.bind(this)}>
+                                    <form  id="apply-form" onSubmit={this.create.bind(this)}>
                                         <div className="input-group mb-3">
                                             <div className="input-group-prepend">
                                                 <label className="input-group-text"><i className="fas fa-user" /></label>
@@ -163,7 +157,6 @@ export class CreateUser extends Component {
                                                     employeeName: event.target.value
                                                 })
                                             }} />
-
                                         </div>
                                         <div id="errormsg1" className="error" >Please fill out Name field**</div>
                                         <div className="input-group mb-3">
@@ -208,7 +201,7 @@ export class CreateUser extends Component {
                                         <div id="errormsg5" className="error" >Please set Confirm Password**</div>
                                         <div style={{ textAlign: '"center"' }}>
                                             <div id="alert" className="alert alert-danger" role="alert" hidden="true">
-                                                <h6 id="message" />
+                                                <small id="message" />
                                             </div>
                                         </div>
                                         <div className="input-group mb-3 container-fluid">
@@ -222,12 +215,10 @@ export class CreateUser extends Component {
                             </div>
                         </div>
                     </div>
-
                 </div>
                 <Footer />
             </div>
         )
     }
 }
-
 export default CreateUser

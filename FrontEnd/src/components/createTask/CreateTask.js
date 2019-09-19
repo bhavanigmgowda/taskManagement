@@ -51,8 +51,6 @@ export class CreateUser extends Component {
         })
         console.log(" details" + this.state.taskId)
         console.log(this.state.userBean);
-        if (JSON.parse(window.localStorage.getItem('isValid'))) {
-           
         Axios.post('http://localhost:8080/create-task', this.state,
             {
                 params: {
@@ -79,10 +77,7 @@ export class CreateUser extends Component {
         }).catch((error) => {
 
             console.log(error)
-        })}
-        else{
-            this.props.history.push('/')
-        }
+        })
     }
     hideSubject = () => {
         $('#errormsg1').css('display','none');
@@ -117,23 +112,23 @@ export class CreateUser extends Component {
 
                 console.log("some date",selectedDate)
                 console.log("proioe",priority)
-                if(selectedDate =="Invalid Date"){
+                if(selectedDate === "Invalid Date"){
                     $("#errormsg5").css('display','block');
                 }
-                if(priority=="Choose Priority"){
+                if(priority === "Choose Priority"){
                     $("#errormsg4").css('display','block');
                 }
-                if(AssignTo==""){
+                if(AssignTo===""){
                     $("#errormsg3").css('display','block'); 
                 }
-                if (description == "") {
+                if (description === "") {
                     $("#errormsg2").css('display','block');  
                 }
-                if (subject == "") {
+                if (subject === "") {
                     $("#errormsg1").css('display','block');
                 }
 
-                if (subject == "" && description == "" && AssignTo == "" && endDate=="") {
+                if (subject === "" && description === "" && AssignTo === "" && endDate==="") {
                     $(".error").css('display','block');
                     document.getElementById("alert").hidden = false;
                     $('#message').html("All fields are Mandatory");
@@ -147,7 +142,7 @@ export class CreateUser extends Component {
                     return false;
                 }
 
-                if (subject != "" && description != "" && AssignTo != "" && endDate!="") {
+                if (subject !== "" && description !== "" && AssignTo !== "" && endDate!=="") {
                     $('#message').html("");
                     document.getElementById("alert").hidden = true;
                     return true;
@@ -170,7 +165,7 @@ export class CreateUser extends Component {
                                     <legend className="text-center">Create Task</legend>
                                 </div>
                                 <div className="card-body">
-                                    <form role="form" onSubmit={this.create.bind(this)}>
+                                    <form  onSubmit={this.create.bind(this)}>
                                         <div className="input-group mb-3">
                                             <div className="input-group-prepend">
                                                 <label className="input-group-text"><i className="fas fa-hashtag" /></label>
@@ -228,7 +223,7 @@ export class CreateUser extends Component {
                                         <div id="errormsg5" className="error" >Please select Date**</div>
                                         <div style={{ textAlign: '"center"' }}>
                                             <div id="alert" className="alert alert-danger" role="alert" hidden="true">
-                                                <h6 id="message" />
+                                                <small id="message" />
                                             </div>
                                         </div>
                                         
