@@ -19,17 +19,21 @@ html,body{
      .cards{
       height: 720 !important;
       border: 1px solid gray; 
-      background-color: #ebebeb;
+      background-color: #e0ffff;
+      box-shadow: 5px 10px 18px #888888;
+
      }
 
      .header{
       background-color: cadetblue !important;
       color: white;
-
-
+      height: 35px !important;
      }
      
-    
+    .letter{
+          margin-top: 6px;
+
+    }
     
     .textarea {
       border: none;
@@ -41,16 +45,9 @@ html,body{
       grid-row-end: 20px;
       resize: none;
       border: none white;
-
-
     }
-    
   
-  
-   
-   
     .prHigh{
-
       background-color: white !important	 ;
       border-top: 25px solid rgb(216, 133, 112) !important;
       border-radius: 15px 10px 0px 0px;
@@ -59,6 +56,8 @@ html,body{
       width: 91%;
       box-shadow: 10px;
       margin-left: -6px;
+      margin-bottom: 25%;
+
     }
     .prLow{
       background-color: white !important	 ;
@@ -70,8 +69,12 @@ html,body{
         width: 91%;
         box-shadow: 10px;
         margin-left: -6px;
-
+        margin-bottom: 25%;
       }
+      .letter{
+        margin-top: -6px !important;
+
+  }
     .prInit{
       background-color: white !important	 ;
       border-top: 25px solid rgb(188, 241, 144) !important;
@@ -81,7 +84,20 @@ html,body{
       width: 91%;
       box-shadow: 10px;
       margin-left: -6px;
+      margin-bottom: 25%;
+
    
+    }
+    .prCri{
+      background-color: white !important	 ;
+      border-top: 25px solid red !important;
+      border-radius: 15px 10px 0px 0px;
+      box-shadow: 5px 10px 18px #888888;
+      height: 120px !important;
+      width: 91%;
+      box-shadow: 10px;
+      margin-left: -6px;
+      margin-bottom: 25%;
     }
     .icon{
       width: 31%;
@@ -92,18 +108,24 @@ html,body{
     
 
     }
-    .right{
-      width: 11%;
-      margin-bottom: -40%;
-      margin-left: -78%;
-
-
-    }
+   
     textarea{
       height: 83px !important;
 
     }
-    
+    .a{
+      margin-left: 65%;
+      margin-bottom: -11%;
+    }
+    .cor{
+      margin-bottom: -8%;
+      margin-right: 76%;
+      position: relative;
+    }
+    .comp{
+       margin-top: 1%;
+        margin-left: 87%
+    }
    
  
 

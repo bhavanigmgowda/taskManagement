@@ -1,247 +1,238 @@
 import React, { Component } from 'react'
-import { Card, Accordion } from 'react-bootstrap'
-import 'bootstrap/dist/css/bootstrap.css';
-import './CompletedTask.css'
-import moment from 'moment';
-import Axios from 'axios';
-import DayPickerInput from 'react-day-picker/DayPickerInput'
-import 'react-day-picker/lib/style.css'
-import { formatDate, parseDate } from 'react-day-picker/moment';
-import SearchNavabar from '../navBar/SearchNavabar'
+import { Button, Popover, PopoverHeader, PopoverBody } from 'reactstrap';
+import Axios from 'axios'
+import { BrowserRouter as Router, Route, Link } from 'react-router-dom'
+import { withRouter } from "react-router";
+class Sticky1 extends Component {
 
-export default class CompletedTask extends Component {
     constructor(props) {
-        super(props)
+        super(props);
+
+        this.toggle = this.toggle.bind(this);
         this.state = {
-            doneTask: [],
-            endate: [],
-            from: '',
-            to: '',
-            showButton: true,
-        }
+            popoverOpen: false,
+            userBean: [],
+            task: [],
+            Cardcolor: ''
 
-        this.handleFromChange = this.handleFromChange.bind(this);
-        this.handleToChange = this.handleToChange.bind(this);
-    }
-    showFromMonth() {
-        const { from, to } = this.state;
-        if (!from) {
-            return;
-        }
-        if (moment(to).diff(moment(from), 'months') < 2) {
-            this.to.getDayPicker().showMonth(from);
-        }
+        };
+
+
     }
 
-    handleFromChange(from) {
-        // Change the from date and focus the "to" input field
-        this.setState({ from });
-    }
-    handleApply(e) {
-        e.preventDefault()
+
+
+    allowDrop = (ev) => {
+        ev.preventDefault();
+
+        console.log("allowDrop");
+
     }
 
-    handleToChange(to) {
-        this.setState({ to }, this.showFromMonth);
-    }
-    componentDidMount() {
-        console.log('componentDidMount');
-        if(JSON.parse(window.localStorage.getItem('isValid'))){
-        Axios.get('http://localhost:8080/getAllTask').then((response) => {
-            console.log('Response Object', response);
-            if (response.data.message === "Success") {
-                this.setState({
-                    doneTask: response.data.taskBean.filter(item => item.status === 'Done'),
-                })
-                console.log("date", this.state.doneTask);
+    drag = (ev) => {
+        ev.dataTransfer.setData("text", ev.target.id);
 
-            }
-        }).catch((error) => {
-            console.log('Error', error);
-        })}else{
-            this.props.history.push('/')
 
-        }
+        var res = document.getElementById("Block");
+        console.log("Blocked =", res.id);
+
+        console.log("drag");
     }
-    show() {
+
+    drop = (ev) => {
+        ev.preventDefault();
+        var data = ev.dataTransfer.getData("text");
+
+        ev.target.appendChild(document.getElementById(data));
+        console.log("drop");
+    }
+
+    setProperty = () => {
+        alert("click block");
+    }
+
+    toggle() {
         this.setState({
-            showButton: this.state.showButton ? false : true
-        })
+            popoverOpen: !this.state.popoverOpen
+        });
     }
 
+    componentDidMount() {
+
+
+        var res = JSON.parse(localStorage.getItem('beans'))
+        console.log("localStroage",res);
+       
+            var userdData = JSON.parse(localStorage.getItem('beans'))
+           
+
+
+            let fetchedTask = []; //array 
+             if(JSON.parse(localStorage.getItem('isValid'))){
+            Axios.get('http://localhost:8080/getAssignedTask' + "?email" + "=" + userdData.email,{
+                credentials: 'same-origin' } )
+                .then((response) => {
+                    console.log(response)
+
+                    if (response.data.statusCode == 201) {
+                        console.log("Data Found ...");
+                        for (let key in response.data.taskBean) {
+
+                            //console.log(response.data[key])
+
+                            fetchedTask.push({
+                                ...response.data.taskBean[key],
+
+                            })
+                            //concate two Object using 
+
+                        }
+                        this.setState({
+                            task: fetchedTask
+
+                        })
+
+                    }
+                    else {
+                        console.log("Data Not Found ...");
+
+
+                    }
+                    console.log('response', this.state.task);
+                    console.log('response', this.state.response.data.taskBean);
+
+                }).catch((error) => {
+
+
+
+                })
+            }
+            else{
+                this.props.history.push('/')
+            }
+
+        
+       
+
+
+
+    }
+
+
+
+
+    changeColor = (priority) => {
+        if (priority === "High") {
+            document.getElementById("drag1").className = "card text-white bg-primary mb-3"
+        }
+        else if (priority == "low") {
+            document.getElementById("drag1").className = "card text-white bg-info mb-3"
+
+        }
+    }
 
     render() {
-        const { from, to } = this.state;
-        const modifiers = { start: from, end: to };
-        console.log("Start", modifiers.start)
-        console.log("End date", modifiers.end)
         return (
+
             <div>
-                <SearchNavabar/>
-                <div>
-                    <Card id="cardDisplay" className="col-lg-6 offset-2" >
-                        <Card.Body>
-                            <div id="calender" className="col-lg-8 offset-2">
-                                Select Date
-                        <div className="InputFromTo">
-                                    <DayPickerInput
-                                        value={from}
-                                        placeholder="From"
-                                        format="LL"
-                                        formatDate={formatDate}
-                                        parseDate={parseDate}
-                                        dayPickerProps={{
-                                            selectedDays: [from, { from, to }],
-                                            disabledDays: { after: to },
-                                            toMonth: to,
-                                            modifiers,
-                                            numberOfMonths: 1,
-                                            onDayClick: () => this.to.getInput().focus(),
+                <div className="container-fluid">
+                    <div className="row">
+                        <div className="col-md-4">
+                            <div className="row">
+                                <div className="col-md-12">
+                                    <div id="mainCard" className="card">
+                                        <h5 className="card-header">
+                                            <center>TO DO</center>
+                                        </h5>
+                                        {
+                                            this.state.task.map((taskdetail) => {
+                                                return (
+                                                    <div className="card-body">
+                                                        <p className="card-text">
+                                                        </p><div className="row">
+                                                            <div className="col-md-12">
+                                                                {/*  <script>
+ 
+                                                   
 
-                                        }}
-                                        onDayChange={this.handleFromChange}
-                                    />{' '}
-                                    —{' '}
-                                    <span className="InputFromTo-to">
-                                        <DayPickerInput
-                                            ref={el => (this.to = el)}
-                                            value={to}
-                                            placeholder="To"
-                                            format="LL"
-                                            formatDate={formatDate}
-                                            parseDate={parseDate}
-                                            dayPickerProps={{
-                                                selectedDays: [from, { from, to }],
-                                                disabledDays: { before: from },
-                                                modifiers,
-                                                month: from,
-                                                fromMonth: from,
-                                                numberOfMonths: 1,
-                                                onDayClick: () => this.show()
-                                            }}
-                                            onDayChange={this.handleToChange}
-                                        />
-                                    </span>
+                                                    </script> */}
+                                                                <div id="drag1" draggable="true" onDragStart={this.drag} onLoad={this.changeColor.bind(this, taskdetail.priority)} className="card text-white bg-primary mb-3">
 
-                                </div>
-                            </div>
+                                                                    <h5 className=" card-header">
+                                                                        <span>                                                      <div>
+                                                                            <span>Subject :-{taskdetail.subject}</span>
 
-                            <div className="cardBody col-lg-6 offset-2" id="cardBody">
-                                <div style={{ visibility: this.state.showButton ? 'visible' : 'hidden' }}>
-                                    {this.state.doneTask.filter(item => (item.priority === 'high')
-                                        && (moment(item.endDate).format("MM") === moment(this.state.date).format("MM"))).map(item => {
-                                            return (
-                                                <div id="div2" class="col-lg-8 col-md-4 col-sm-12 offset-2 st"  >
-                                                    <div id="i7" className="col-lg-4 col-md-4 col-sm-4" >
-                                                        <p id="drag1" draggable="true" className="prHigh"  >
-                                                            <div id="div" className="textarea">{item.description} </div></p>
-                                                    </div></div>
-                                            )
-                                        })
+                                                                            <Button style={{ float: "right" }} id="Popover1" type="button" color="info">
+                                                                                i
+        </Button>
+                                                                            {/* <Popover placement="bottom" isOpen={this.state.popoverOpen} target="Popover1" toggle={this.toggle}>
+                                                                                <PopoverHeader>Task Details</PopoverHeader>
+                                                                                <PopoverBody>
+                                                                                    taskId : {taskdetail.taskId}   <br></br>
+                                                                                    priority :{taskdetail.priority}  <br></br>
+                                                                                    endDate :{taskdetail.endDate} <br></br>
+                                                                                    email :{taskdetail.userBean.email}  <br></br>
+                                                                                </PopoverBody>
+                                                                            </Popover> */}
+                                                                        </div></span>
 
-                                    }
-                                    {this.state.doneTask.filter(item => (item.priority === 'low')
-                                        && (moment(item.endDate).format("MM") === moment(this.state.date).format("MM"))).map(item => {
-                                            return (
-                                                <div id="div2" class="col-lg-8 col-md-4 col-sm-12 offset-2 st"  >
-                                                    <div id="i7" className="col-lg-4 col-md-4 col-sm-4" >
-                                                        <p id="drag3" draggable="true" className="prLow"   >
-                                                            <div id="d3" className="textarea">{item.description}
-                                                            </div></p>
-                                                    </div>
-                                                </div>
-                                            )
-                                        })
-
-                                    }
-                                    {this.state.doneTask.filter(item => (item.priority === 'intermediate')
-                                        && (moment(item.endDate).format("MM") === moment(this.state.date).format("MM"))).map(item => {
-                                            return (
-                                                <div id="div2" class="col-lg-8 col-md-4 col-sm-12 offset-2 st"  >
-                                                    <div id="i7" className="col-lg-4 col-md-4 col-sm-4" >
-
-                                                        <p div id="drag2" draggable="true" className="prInit"   >
-                                                            <div id="d2" className="textarea">{item.description}</div></p>
-                                                    </div>
-                                                </div>
-                                            )
-                                        })
-
-
-                                    }
-
-
-                                </div>
-                                <Accordion >
-                                    <Card>
-                                        <Card.Header>
-                                        <Accordion.Toggle as={Card.Header} eventKey="0">
-                                                {(moment(modifiers.start).format("MM-DD-YYYY"))} To {(moment(modifiers.end).format("MM-DD-YYYY"))}
-                                            </Accordion.Toggle>
-                                        </Card.Header>
-                                        <Accordion.Collapse eventKey="0">
-                                            <Card.Body>
-                                                <div >
-
-
-                                                    {this.state.doneTask.filter(item => (item.priority === 'high')
-                                                        && (moment(item.endDate).format("MM") >= moment(modifiers.start).format("MM"))
-                                                        && (moment(item.endDate).format("MM") <= moment(modifiers.end).format("MM"))).map((item) => (
-                                                            <div >
-
-                                                                <div id="div2" class="col-lg-8 col-md-4 col-sm-12 offset-2 st"  >
-                                                                    <div id="i7" className="col-lg-4 col-md-4 col-sm-4" >
-                                                                        <p id="drag1" draggable="true" className="prHigh"  >
-                                                                            <div id="div" className="textarea">{item.description} </div></p>
-                                                                    </div></div></div>
-
-                                                        ))}
-
-                                                    {this.state.doneTask.filter(item => (item.priority === 'low')
-                                                        && (moment(item.endDate).format("MM") >= moment(modifiers.start).format("MM"))
-                                                        && (moment(item.endDate).format("MM") <= moment(modifiers.end).format("MM"))).map((item) => (
-                                                            <div >
-
-                                                                <div id="div2" class="col-lg-8 col-md-4 col-sm-12 offset-2 st"  >
-                                                                    <div id="i7" className="col-lg-4 col-md-4 col-sm-4" >
-                                                                        <p id="drag3" draggable="true" className="prLow"   >
-                                                                            <div id="d3" className="textarea">{item.description}
-                                                                            </div></p>
+                                                                    </h5>
+                                                                    <div className="card-body">
+                                                                        <p className="card-text">
+                                                                            Description :{taskdetail.description}
+                                                                        </p>
+                                                                    </div>
+                                                                    <div className="card-footer">
+                                                                        Assigned By :{taskdetail.userBean.empName}
                                                                     </div>
                                                                 </div>
                                                             </div>
-
-
-                                                        ))}
-                                                    {this.state.doneTask.filter(item => (item.priority === 'intermediate')
-                                                        && (moment(item.endDate).format("MM") >= moment(modifiers.start).format("MM"))
-                                                        && (moment(item.endDate).format("MM") <= moment(modifiers.end).format("MM"))).map((item) => (
-                                                            <div >
-
-                                                                <div id="div2" class="col-lg-8 col-md-4 col-sm-12 offset-2 st"  >
-                                                                    <div id="i7" className="col-lg-4 col-md-4 col-sm-4" >
-
-                                                                        <p div id="drag2" draggable="true" className="prInit"   >
-                                                                            <div id="d2" className="textarea">{item.description}</div></p>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        ))}
-                                                </div>
-                                            </Card.Body>
-                                        </Accordion.Collapse>
-                                    </Card>
-
-                                </Accordion>
-
+                                                        </div>
+                                                        <p />
+                                                    </div>
+                                                )
+                                            })
+                                        }
+                                    </div>
+                                </div>
                             </div>
-                        </Card.Body>
-                    </Card>
-
-
+                        </div>
+                        <div className="col-md-4">
+                            <div className="row">
+                                <div className="col-md-12">
+                                    <div id="mainCard" className="card">
+                                        <h5 className="card-header">
+                                            <center> Progress </center>
+                                        </h5>
+                                        <div id="div1" onDrop={this.drop} onDragOver={this.allowDrop} className="card-body">
+                                            <p className="card-text">
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="Block" className="col-md-4">
+                            <div className="row">
+                                <div className="col-md-12">
+                                    <div id="mainCard" className="card">
+                                        <h5 className="card-header">
+                                            <center> Blocked </center>
+                                        </h5>
+                                        <div id="div1" onDrop={this.drop} onDragOver={this.allowDrop} className="card-body">
+                                            <p className="card-text">
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
+               
             </div>
 
         )
     }
 }
+export default withRouter(Sticky1)

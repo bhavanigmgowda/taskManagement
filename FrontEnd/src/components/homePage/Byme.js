@@ -116,7 +116,7 @@ export default class Byme extends Component {
 
 
                     </Modal.Footer>
-                </Modal> 
+                </Modal>
 
 
 
@@ -133,15 +133,14 @@ export default class Byme extends Component {
 
                                 </div>
                                 <div className=" card-body cards">
-
-                                    {this.state.Byme.filter(item => (item.priority === 'high')&&(item.status==='todo')).map(item => {
+                                    {this.state.Byme.filter(item => (item.priority === 'critical') && (item.status === 'todo')).map(item => {
                                         return (
 
                                             <div className="col-auto" >
                                                 <div id="i7" className="col-lg-4 col-md-4 col-sm-4 a" >
                                                     <i onClick={() => this.showvis(item, item.userBean)} class="fas fa-info-circle"></i>
                                                 </div>
-                                                <p id="drag1"  className="prHigh"  >
+                                                <p id="drag1" className="prCri"  >
 
 
                                                     < textarea id="d2" className="textarea" rows="5" readOnly>{(item.description)}</textarea> </p>
@@ -149,13 +148,28 @@ export default class Byme extends Component {
                                         )
                                     }
                                     )}
-                                    {this.state.Byme.filter(item => (item.priority === 'intermediate')&&(item.status==='todo')).map(item => {
+                                    {this.state.Byme.filter(item => (item.priority === 'high') && (item.status === 'todo')).map(item => {
+                                        return (
+
+                                            <div className="col-auto" >
+                                                <div id="i7" className="col-lg-4 col-md-4 col-sm-4 a" >
+                                                    <i onClick={() => this.showvis(item, item.userBean)} class="fas fa-info-circle"></i>
+                                                </div>
+                                                <p id="drag1" className="prHigh"  >
+
+
+                                                    < textarea id="d2" className="textarea" rows="5" readOnly>{(item.description)}</textarea> </p>
+                                            </div>
+                                        )
+                                    }
+                                    )}
+                                    {this.state.Byme.filter(item => (item.priority === 'intermediate') && (item.status === 'todo')).map(item => {
                                         return (
                                             <div className="col-auto"  >
                                                 <div id="i7" className="col-lg-4 col-md-4 col-sm-4 a" >
                                                     <i onClick={() => this.showvis(item, item.userBean)} class="fas fa-info-circle"></i>
                                                 </div>
-                                                <p div id="drag2"  className="prInit"   >
+                                                <p div id="drag2" className="prInit"   >
 
                                                     < textarea id="d2" className="textarea" rows="5" readOnly>{(item.description)}</textarea>
                                                 </p>
@@ -163,13 +177,13 @@ export default class Byme extends Component {
                                         )
                                     }
                                     )}
-                                    {this.state.Byme.filter(item => (item.priority === 'low') &&(item.status==='todo')).map(item => {
+                                    {this.state.Byme.filter(item => (item.priority === 'low') && (item.status === 'todo')).map(item => {
                                         return (
                                             <div className="col-auto" >
 
                                                 <div id="i7" className="col-lg-4 col-md-4 col-sm-4 a" >
                                                     <i onClick={() => this.showvis(item, item.userBean)} class="fas fa-info-circle"></i>
-                                                </div> <p id="drag3"  className="prLow"   >
+                                                </div> <p id="drag3" className="prLow"   >
                                                     < textarea id="d2" className="textarea" rows="5" readOnly>{(item.description)}</textarea>
 
                                                 </p>
@@ -195,17 +209,16 @@ export default class Byme extends Component {
                                         </h5>
                                     </div>
                                     <div className=" card-body cards">
-
-                                        {this.state.Byme.filter(item => (item.priority === 'high')&&(item.status==='onProgress')).map(item => {
+                                        {this.state.Byme.filter(item => (item.priority === 'critical') && (item.status === 'onProgress')).map(item => {
                                             return (
 
                                                 <div className="col-auto" >
-                                                 
+
 
                                                     <div id="i7" className="col-lg-4 col-md-4 col-sm-4 a" >
                                                         <i onClick={() => this.showvis(item, item.userBean)} class="fas fa-info-circle"></i>
                                                     </div>
-                                                    <p id="drag6"  class="prHigh ">
+                                                    <p id="drag6" class="prCri">
                                                         < textarea id="d2" className="textarea" rows="5" cols="5" readOnly>{(item.description)}</textarea> </p>
                                                     <div class="container-fluid">
 
@@ -216,17 +229,16 @@ export default class Byme extends Component {
                                             )
                                         }
                                         )}
-                                        {this.state.Byme.filter(item => (item.priority === 'intermediate') &&(item.status==='onProgress')).map(item => {
-
+                                        {this.state.Byme.filter(item => (item.priority === 'high') && (item.status === 'onProgress')).map(item => {
                                             return (
 
                                                 <div className="col-auto" >
-                                                 
+
 
                                                     <div id="i7" className="col-lg-4 col-md-4 col-sm-4 a" >
                                                         <i onClick={() => this.showvis(item, item.userBean)} class="fas fa-info-circle"></i>
                                                     </div>
-                                                    <p id="drag6"  class="prInit ">
+                                                    <p id="drag6" class="prHigh ">
                                                         < textarea id="d2" className="textarea" rows="5" cols="5" readOnly>{(item.description)}</textarea> </p>
                                                     <div class="container-fluid">
 
@@ -237,16 +249,37 @@ export default class Byme extends Component {
                                             )
                                         }
                                         )}
-                                        {this.state.Byme.filter(item => (item.priority === 'low')&&(item.status==='onProgress')).map(item => {
+                                        {this.state.Byme.filter(item => (item.priority === 'intermediate') && (item.status === 'onProgress')).map(item => {
+
+                                            return (
+
+                                                <div className="col-auto" >
+
+
+                                                    <div id="i7" className="col-lg-4 col-md-4 col-sm-4 a" >
+                                                        <i onClick={() => this.showvis(item, item.userBean)} class="fas fa-info-circle"></i>
+                                                    </div>
+                                                    <p id="drag6" class="prInit ">
+                                                        < textarea id="d2" className="textarea" rows="5" cols="5" readOnly>{(item.description)}</textarea> </p>
+                                                    <div class="container-fluid">
+
+
+                                                    </div>
+
+                                                </div>
+                                            )
+                                        }
+                                        )}
+                                        {this.state.Byme.filter(item => (item.priority === 'low') && (item.status === 'onProgress')).map(item => {
 
                                             return (
                                                 <div className="col-auto"  >
 
-                                                
+
                                                     <div id="i7" className="col-lg-4 col-md-4 col-sm-4 a" >
                                                         <i onClick={() => this.showvis(item, item.userBean)} class="fas fa-info-circle"></i>
                                                     </div>
-                                                    <p id="drag6"  class="prLow ">
+                                                    <p id="drag6" class="prLow ">
                                                         < textarea id="d2" className="textarea" rows="5" cols="5" readOnly>{(item.description)}</textarea> </p>
                                                 </div>
                                             )
@@ -266,33 +299,46 @@ export default class Byme extends Component {
                                         </h5>
                                     </div>
                                     <div className=" card-body cards">
-                                        {this.state.Byme.filter(item => (item.priority === 'high')&&(item.status==='blocked')).map(item => {
+                                        {this.state.Byme.filter(item => (item.priority === 'critical') && (item.status === 'blocked')).map(item => {
 
                                             return (
                                                 <div className="col-auto"  >
                                                     <div id="i7" className="col-lg-4 col-md-4 col-sm-4 a" >
                                                         <i onClick={() => this.showvis(item, item.userBean)} class="fas fa-info-circle"></i>
                                                     </div>
-                                                    <p id="drag6"  class="prHigh ">
+                                                    <p id="drag6" class="prCri ">
                                                         < textarea id="d2" className="textarea" rows="5" cols="5" readOnly>{(item.description)}</textarea> </p>
                                                 </div>
                                             )
                                         }
                                         )}
-                                        {this.state.Byme.filter(item => (item.priority === 'intermediate')&&(item.status==='blocked')).map(item => {
+                                        {this.state.Byme.filter(item => (item.priority === 'high') && (item.status === 'blocked')).map(item => {
+
+                                            return (
+                                                <div className="col-auto"  >
+                                                    <div id="i7" className="col-lg-4 col-md-4 col-sm-4 a" >
+                                                        <i onClick={() => this.showvis(item, item.userBean)} class="fas fa-info-circle"></i>
+                                                    </div>
+                                                    <p id="drag6" class="prHigh ">
+                                                        < textarea id="d2" className="textarea" rows="5" cols="5" readOnly>{(item.description)}</textarea> </p>
+                                                </div>
+                                            )
+                                        }
+                                        )}
+                                        {this.state.Byme.filter(item => (item.priority === 'intermediate') && (item.status === 'blocked')).map(item => {
                                             return (
                                                 <div className="col-auto"  >
 
                                                     <div id="i7" className="col-lg-4 col-md-4 col-sm-4 a" >
                                                         <i onClick={() => this.showvis(item, item.userBean)} class="fas fa-info-circle"></i>
                                                     </div>
-                                                    <p id="drag6"  class="prInit ">
+                                                    <p id="drag6" class="prInit ">
                                                         < textarea id="d2" className="textarea" rows="5" cols="5" readOnly>{(item.description)}</textarea> </p>
                                                 </div>
                                             )
                                         }
                                         )}
-                                        {this.state.Byme.filter(item => (item.priority === 'low')&&(item.status==='blocked')).map(item => {
+                                        {this.state.Byme.filter(item => (item.priority === 'low') && (item.status === 'blocked')).map(item => {
 
                                             return (
 
@@ -301,7 +347,7 @@ export default class Byme extends Component {
                                                     <div id="i7" className="col-lg-4 col-md-4 col-sm-4 a" >
                                                         <i onClick={() => this.showvis(item, item.userBean)} class="fas fa-info-circle"></i>
                                                     </div>
-                                                    <p id="drag6"  class="prLow ">
+                                                    <p id="drag6" class="prLow ">
                                                         < textarea id="d2" className="textarea" rows="5" cols="5" readOnly>{(item.description)}</textarea> </p>
                                                 </div>
                                             )
