@@ -1,38 +1,103 @@
-#Page {
-    background: #ebebeb;
-     width: 350px;
-    border-radius: 20px;
-    margin-top: 50%;
-}
-#cardHead{
-    border-radius: 20px 20px 0px 0px;
-}
-#alert {
-    margin-bottom:10px;
-    text-align: center; 
-    padding-bottom:5px; 
-    display: block; 
-}
-#message {
-    font-size: 12px;
-}
-#container {
-    width: 350px;
-    padding: 0;
-}
-#alertHead {
-    width: 350px;
-    margin: auto;
-    border-radius: 10px;
-    margin-bottom: 10px;
-}
-#btn{
-    width: 25%;
-    float: right;
-    clear: both;
-    margin-top: -19px
-      
-}
-#fPass{
-    margin-top: -15px !important
-}
+body{
+/*      background-image: url('https://digitalsynopsis.com/wp-content/uploads/2017/02/beautiful-color-gradients-backgrounds-001-warm-flame.png');
+ */
+    background-color: burlywood !important;
+    background-size: 100%;
+    background-repeat: no-repeat;
+    height: 100%;
+    font-family: 'Numans', sans-serif;
+    }
+    .hidden{
+    /*   border: 1px solid ;
+     */    background-color: rgb(241, 233, 220,0.5);
+        width: 228px;
+        font-size: 30px;
+        color: red;
+        visibility: hidden;
+    }
+    
+    
+    
+    .cardlogin{
+    height: 400px;
+    width: 600px;
+    margin-top: 132px;
+    box-shadow: 5px 10px 18px #888888;
+    margin-left: 0px !important;
+  background-color: #ebebeb !important;
+    }
+    
+    .social_icon span{
+    font-size: 60px;
+    margin-left: 10px;  
+    color: lightgray;
+    }
+    
+    .social_icon span:hover{
+    color: white;
+    cursor: pointer;
+    }
+    
+    .cardheader h3{
+    color: rgb(49, 47, 47);
+    }
+    #forgot{
+        padding-right: 160px;
+    }
+    .imgcss{
+        height: 100px;
+        margin-left: 238px;
+        margin-bottom: -34px;
+    }
+    
+    .social_icon{
+    position: absolute;
+    right: 20px;
+    top: -45px;
+    }
+    .cardbody{
+        padding: 90px !important;
+        margin-top: -39px;
+    }
+    .input-group-prepend span{
+    width: 50px;
+    background-color: lightgray;
+    color: black;
+    border:0 !important;
+    }
+    
+    input:focus{
+    outline: 0 0 0 0  !important;
+    box-shadow: 0 0 0 0 !important;
+    
+    }
+    
+    .remember{
+    color: white;
+    }
+    
+    .remember input
+    {
+    width: 20px;
+    height: 20px;
+    margin-left: 15px;
+    margin-right: 5px;
+    }
+    
+    .login_btn{
+    color: black;
+    background-color:lightgray;
+    width: 100px;
+    }
+    
+    .login_btn:hover{
+    color: black;
+    background-color: white;
+    }
+    .aaa{
+        padding-right: 7% !important
+    }
+    .btnlogin{
+        float: right !important;
+
+    }
