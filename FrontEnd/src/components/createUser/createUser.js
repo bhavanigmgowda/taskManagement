@@ -33,11 +33,11 @@ export class CreateUser extends Component {
                 console.log(response.data.message)
                 if (response.data.statusCode === 201) {
                     document.getElementById("success").hidden = false;
-                    $('#successMessage').html("User Created successfully Go to LoginPage to login");
-                     setTimeout((function hide() { document.getElementById("success").hidden = true; }), 3000);
-                        setTimeout(()=>{
+                    $('#successMessage').html("Registered successfully");
+                        
+                     setTimeout(()=>{
                                  this.props.history.push('/Login');               
-                        },5000 )
+                        },3000 )
 
                 } else if (response.data.statusCode === 401) {
                     this.setState({ show2: true })
@@ -81,7 +81,7 @@ export class CreateUser extends Component {
                 
                 if (pass !== rpass) {
                     document.getElementById("alert").hidden = false;
-                    $('#message').html("Passwords do not match ").css('font-size', '12px').css('text-align', 'center');
+                    $('#message').html("Password did not match please re-enter correct password").css('font-size', '12px').css('text-align', 'center');
                     setTimeout((function hide() { document.getElementById("alert").hidden = true; }), 2000); 
                 }
                 if (rpass === "") {
@@ -133,8 +133,8 @@ export class CreateUser extends Component {
             <div >
                 <SimpleNavBar />
                 <div id="content-wrap" className="container-fluid mt-5">
-                    {this.state.show ? <div id="alertHead" className="alert alert-danger" role="alert" >User Creation Failed server not responding </div> : null}
-                    {this.state.show2 ? <div id="alertHead" className="alert alert-danger" role="alert">User Creation Failed email already exist </div> : null}
+                    {this.state.show ? <div id="alertHead" className="alert alert-danger" role="alert" >Registration Failed Server Did Not Respond </div> : null}
+                    {this.state.show2 ? <div id="alertHead" className="alert alert-danger" role="alert">Registration Failed Email Already Exist </div> : null}
                     <div style={{ textAlign: '"center"' }}>
                         <div id="success" className="alert alert-success" hidden="true">
                             <small id="successMessage" />
@@ -142,9 +142,9 @@ export class CreateUser extends Component {
                     </div>
                     <div className="row">
                         <div id="container" className="col-auto container mt-5">
-                            <div id="create" className="card ">
+                            <div id="create" className="card shadow-lg">
                                 <div id="cardHead" className="card-header">
-                                    <legend className="text-center">Create User</legend>
+                                    <legend className="text-center">Registration Form</legend>
                                 </div>
                                 <div className="card-body">
                                     <form  id="apply-form" onSubmit={this.create.bind(this)}>

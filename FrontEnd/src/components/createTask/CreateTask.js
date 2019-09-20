@@ -3,6 +3,7 @@ import '../createUser/create.css'
 import Axios from 'axios'
 import $ from 'jquery'
 import Footer from '../navBar/footer'
+import NavBarForTask from '../navBar/NavBarForTask'
 
 
 export class CreateUser extends Component {
@@ -19,7 +20,8 @@ export class CreateUser extends Component {
             status: 'todo',
             endDate: '',
             userBean: JSON.parse(window.localStorage.getItem('beans')),
-            show: false
+            show: false,
+            show2:false
         }
     }
     cancel(e) {
@@ -59,13 +61,17 @@ export class CreateUser extends Component {
             }
         ).then((response) => {
             console.log(response)
-            this.setState({ show: true })
             console.log("book details" + this.state.taskId)
 
             console.log(response.data.message)
             if (response.data.statusCode === 201) {
-               // alert("Task added Successfully redirecting to homepage")
-                this.props.history.push('/homePage')
+                this.setState({ show2: true })
+                setTimeout(() => {
+                    this.setState(this.setState({ show2: false }))
+                }, 2000);
+                setTimeout(()=>{
+                    this.props.history.push('/homePage');               
+           },1000 )
 
             } else if (response.data.statusCode === 401) {
                 this.setState({ show: true })
@@ -155,12 +161,15 @@ export class CreateUser extends Component {
     render() {
         return (
             <div>
+                <NavBarForTask/>
+                
             <div id="page-container">
-                <div id="content-wrap" className="container-fluid mt-5">
-                    {this.state.show ? <div id="taskalertHead" class="alert alert-danger" role="alert">Task Creation Failed Email does not Exist!!! </div> : null}
+                <div id="content-wrap" className="container-fluid ">
+                    {this.state.show ? <div id="taskalertHead" class="alert alert-danger">Task Creation Failed Email does not Exist!!! </div> : null}
+                    {this.state.show2 ? <div id="taskalertHead" class="alert alert-success" >Task Created Successfully </div> : null}
                     <div className="row">
-                        <div id="container" className="col-auto container">
-                            <div id="create" className="card ">
+                        <div id="container" className="col-auto container mt-5">
+                            <div id="create" className="card shadow-lg mt-5" >
                                 <div  id="cardHead" className="card-header" >
                                     <legend className="text-center">Create Task</legend>
                                 </div>
@@ -170,7 +179,7 @@ export class CreateUser extends Component {
                                             <div className="input-group-prepend">
                                                 <label className="input-group-text"><i className="fas fa-hashtag" /></label>
                                             </div>
-                                            <input className="form-control"onBlur={this.hideSubject} required="required" type="text" name="subject" title="Enter Subject" id="subject" placeholder="Enter Subject" onChange={(event) => {
+                                            <input className="form-control" onKeyPress={this.hideSubject} required="required" type="text" name="subject" title="Enter Subject" id="subject" placeholder="Enter Subject" onChange={(event) => {
                                                 this.setState({
                                                     subject: event.target.value
                                                 })
@@ -190,7 +199,7 @@ export class CreateUser extends Component {
                                             <div className="input-group-prepend">
                                                 <label className="input-group-text"><i className="fas fa-at" /></label>
                                             </div>
-                                            <input className="form-control" required="required" onBlur={this.hideEmail} type="email" name="AssignTo" id="AssignTo" title="Enter Email" placeholder="Enter email whom to be assigned" onChange={(event) => {
+                                            <input className="form-control" required="required" onKeyPress={this.hideEmail} type="email" name="AssignTo" id="AssignTo" title="Enter Email" placeholder="Enter email whom to be assigned" onChange={(event) => {
                                                 this.setState({
                                                     assignedTo: event.target.value
                                                 })
@@ -198,7 +207,7 @@ export class CreateUser extends Component {
                                         </div>
                                         <div id="errormsg3" className="error" >Please set Email field**</div>
                                         <div className="input-group mb-3">
-                                            <select id="Priority" className="form-control" onBlur={this.hidePriority} required name="Priority" title="Select Priority" onChange={(event) => {
+                                            <select id="Priority" className="form-control" onKeyPress={this.hidePriority} required name="Priority" title="Select Priority" onChange={(event) => {
                                                 this.setState({
                                                     priority: event.target.value
                                                 })
@@ -214,7 +223,7 @@ export class CreateUser extends Component {
                                             <div className="input-group-prepend">
                                                 <label className="input-group-text"><i className="far fa-calendar-alt" /></label>
                                             </div>
-                                            <input className="form-control" onBlur={this.hideDate} required="required" type="date" name="EndDate" title="Enter Deadline" id="EndDate" placeholder="Enter Deadline" onChange={(event) => {
+                                            <input className="form-control" onKeyPress={this.hideDate} required="required" type="date" name="EndDate" title="Enter Deadline" id="EndDate" placeholder="Enter Deadline" onChange={(event) => {
                                                 this.setState({
                                                     endDate: event.target.value
                                                 })
@@ -238,9 +247,10 @@ export class CreateUser extends Component {
                         </div>
                     </div>
                 </div>
-            </div>
+                </div>
             <Footer />
             </div>
+
         )
     }
 }

@@ -1,43 +1,14 @@
 import React, { Component } from 'react'
 import './home.css'
 import { NavLink } from 'react-router-dom';
-import Carousel from 'react-multi-carousel';
-import 'react-multi-carousel/lib/styles.css';
+import Carousel from 'react-bootstrap/Carousel'
 import Footer from '../navBar/footer';
 
-const responsive = {
-  superLargeDesktop: {
-    // the naming can be any, depends on you.
-    breakpoint: { max: 4000, min: 3000 },
-    items: 5,
-    slidesToSlide: 4
-  },
-  desktop: {
-    breakpoint: { max: 3000, min: 1024 },
-    items: 3,
-    slidesToSlide: 3
-  },
-  tablet: {
-    breakpoint: { max: 1024, min: 464 },
-    items: 2,
-    slidesToSlide: 2
-  },
-  mobile: {
-    breakpoint: { max: 464, min: 0 },
-    items: 1,
-    slidesToSlide: 1
-  },
-};
-
 export class WelcomePage extends Component {
-
-
-
 
   render() {
     return (
       <div id="page-container" >
-
         <div id="content-wrap" >
           <nav className="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
             <NavLink id="text" className="navbar-brand text-light">Task Manager</NavLink>
@@ -47,33 +18,57 @@ export class WelcomePage extends Component {
             <div id="my-nav" className="collapse navbar-collapse justify-content-end"> <NavLink to="/Login" className="btn btn-outline-primary btn-sm font-weight-bold mr-2">Log In</NavLink> <NavLink to="/createUser" className="btn btn-outline-success btn-sm font-weight-bold mr-2">Create Account</NavLink> </div>
           </nav>
 
-          <Carousel id="carousel"
-            swipeable={true}
-            draggable={false}
-            showDots={true}
-            responsive={responsive}
-            ssr={true} // means to render carousel on server-side.
-            infinite={true}
-            autoPlay={this.props.deviceType !== "mobile" ? true : false}
-            autoPlaySpeed={2500}
-            keyBoardControl={true}
-            customTransition="all .5"
-            transitionDuration={500}
-            containerClass="carousel-container"
-            removeArrowOnDeviceType={["tablet", "mobile"]}
-            deviceType={this.props.deviceType}
-            dotListClass="custom-dot-list-style"
-            itemClass="carousel-item-padding-40-px">
-            <div><img id="image" src="https://cdn.pixabay.com/photo/2018/03/01/09/33/business-3190209_1280.jpg" /></div>
-            <div><img id="image" src="https://cdn.pixabay.com/photo/2018/02/09/10/46/paper-3141341_1280.jpg" /></div>
-            <div><img id="image" src="https://images.unsplash.com/photo-1547480053-7d174f67b557?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1050&q=80" /></div>
-            <div><img id="image" src="https://images.unsplash.com/photo-1507925921958-8a62f3d1a50d?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1055&q=80" /></div>
-            <div><img id="image" src="https://images.unsplash.com/photo-1484480974693-6ca0a78fb36b?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1052&q=80" /></div>
-            <div><img id="image" src="https://images.unsplash.com/photo-1527507631895-7cb2a9968c74?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1050&q=80" /></div>
-            <div><img id="image" src="https://images.unsplash.com/photo-1488998427799-e3362cec87c3?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1050&q=80" /></div>
-            <div><img id="image" src="https://images.unsplash.com/photo-1520971081497-3aa1750677b8?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1050&q=80" /></div>
-            <div><img id="image" src="https://images.unsplash.com/photo-1529119651565-dc15bd8c75fd?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1050&q=80" /></div>
-          </Carousel>
+
+          <Carousel id="carousel">
+  <Carousel.Item>
+    <img id="image"
+      className="d-block shadow"
+      src="https://cdn.pixabay.com/photo/2018/03/01/09/33/business-3190209_1280.jpg"
+      alt="First slide"
+    />
+    <Carousel.Caption>
+      <h3>Work Anywhere</h3>
+      <p>Compatiable with desktops and laptops</p>
+    </Carousel.Caption>
+  </Carousel.Item>
+
+  <Carousel.Item>
+    <img id="image"
+      className="d-block "
+      src="https://cdn.pixabay.com/photo/2018/02/09/10/46/paper-3141341_1280.jpg"
+      alt="Second slide"
+    />
+
+    <Carousel.Caption>
+      <h3>Deadline</h3>
+      <p>Assign Date for Deadline</p>
+    </Carousel.Caption>
+  </Carousel.Item>
+  <Carousel.Item>
+    <img id="image"
+      className="d-block"
+      src="https://images.unsplash.com/photo-1547480053-7d174f67b557?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1050&q=80"
+      alt="Third slide"
+    />
+
+    <Carousel.Caption>
+      <h3>Things To Do</h3>
+      <p>Assign Task to Others</p>
+    </Carousel.Caption>
+  </Carousel.Item>
+
+  <Carousel.Item>
+    <img id="image"
+      className="d-block "
+      src="https://images.unsplash.com/photo-1529119651565-dc15bd8c75fd?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1050&q=80"
+      alt="First slide"
+    />
+    <Carousel.Caption>
+      <h3>Sticky Notes</h3>
+      <p>View Task as Sticky Notes</p>
+    </Carousel.Caption>
+  </Carousel.Item>
+</Carousel>
 
           <div id="deck" className="card-deck" >
   <div id="roundCard" className="card shadow">

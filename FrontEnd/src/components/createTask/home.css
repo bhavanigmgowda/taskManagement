@@ -1,15 +1,15 @@
 #deck {
     margin: 5%;
 }
-
 #image {
-    width: 100%;
-   padding: 1.250em; 
-    margin-top:20%; 
+  height: 330px;
+  width: 100%;
+  margin-top: 6%;
+  border-radius: 8px;
 }
-#content {
-    font-size: 16px;
-    margin-top: 2%;
+#carousel {
+  width: 88%;
+  margin: auto;
 }
 #page-container {
     position: relative;
@@ -32,7 +32,7 @@
     height: 2.5rem;            /* Footer height */
   }
 
-#text {
-    font-family: 'Titillium Web', sans-serif;
-    justify-content: center;
+*:not(i){
+    font-family: 'Titillium Web', sans-serif !important; 
 }
+

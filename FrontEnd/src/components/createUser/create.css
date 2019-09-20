@@ -1,11 +1,13 @@
 #create {
-    background: #ebebeb;
-    width: 350px;
-    border-radius: 20px;
+    background: white;
+    width: 100%;
+    margin-top: 5%;
+    margin-bottom: auto;
+    border:hidden;
 }
 
 #cardHead {
-    border-radius: 20px 20px 0px 0px;
+    background: white
 }
 
 #alert {
@@ -20,7 +22,7 @@
 }
 
 #container {
-    width: 350px;
+    width: 365px;
     padding: 0;
 }
 
@@ -57,22 +59,10 @@
     text-align: center;
 }
 
-#Page {
-    background: #ebebeb;
-    width: 350px;
-    border-radius: 20px;
-    margin-top: 100px;
-}
-
-#btn {
+#Loginbtn {
     width: 25%;
     float: right;
     clear: both;
-    margin-top: -19px;
-}
-
-#fPass {
-    margin-top: -5% !important;
 }
 
 .error {
