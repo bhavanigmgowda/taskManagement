@@ -1,7 +1,11 @@
 import React, { Component } from 'react'
 import { Modal, Button, Card } from 'react-bootstrap'
 import Axios from 'axios';
+import ListGroup from 'react-bootstrap/ListGroup'
 import SearchNavabar from '../navBar/SearchNavabar';
+import InputGroup from 'react-bootstrap/InputGroup';
+import FormControl from 'react-bootstrap/FormControl'
+
 import './newprofile.css'
 
 export default class MyProfile1 extends Component {
@@ -9,7 +13,7 @@ export default class MyProfile1 extends Component {
         super(props);
         this.state = {
             beans: JSON.parse(window.localStorage.getItem('beans')),
-           // Id: '',
+            // Id: '',
             show: false,
         }
         console.log('bean inside constructor', this.state.beans);
@@ -29,7 +33,7 @@ export default class MyProfile1 extends Component {
             empId: bean.empId,
             password: bean.password
         })
-        console.log("updatedata",this.state.beans)
+        console.log("updatedata", this.state.beans)
     }
 
     handleClose() {
@@ -39,92 +43,51 @@ export default class MyProfile1 extends Component {
     updateUserData() {
         const beans = this.state;
         const userData = beans;
-        console.log('AccountData',userData);
-        if(JSON.parse(window.localStorage.getItem('isValid'))){
-        Axios.put('http://localhost:8080/updateUser',userData).then((response) => {
-            console.log('Updated Successfully');
-            this.handleClose();
+        console.log('AccountData', userData);
+        if (JSON.parse(window.localStorage.getItem('isValid'))) {
+            Axios.put('http://localhost:8080/updateUser', userData).then((response) => {
+                console.log('Updated Successfully');
+                this.handleClose();
 
-        }).catch((error) => {
-            console.log('Error', error);
-        })}
-       
+            }).catch((error) => {
+                console.log('Error', error);
+            })
+        }
+
     }
     render() {
+        let cardStyle =  {
+            boxShadow: '0 4px 8px 0 rgba(0,0,0,0.2)',
+            transition: '0.3s',
+            width: '40%',
+            marginLeft:'30%',
+            marginTop:'5%'
+            }
+          
+          let containerStyle = {
+            padding: '2px 16px'
+          }
         return (
             <div>
                 <SearchNavabar />
                 <div class="container-fluid ">
-                    <div class="row">
-                        <div class=" offset-md-4 col-md-4 ">
-                            <div class="card" id="myprofile">
-                                <h4 id="chead" class="card-header" style={{ height: '60%' }}>
-                                    <center>  User Details</center>
-                                </h4>
-                                <div class="card-body " id="card">
-
-                                    <div className="input-group mb-3">
-                                        <div className="input-group-prepend">
-                                            <span style={{ width: '100px' }} className="input-group-text" id="basic-addon1">EId </span>
-                                        </div>
-
-
-                                        <h6 className="h5"> {this.state.beans.empId}</h6>
-
-
-                                    </div>
-
-
-
-                                    <div className="input-group mb-4">
-                                        <div className="input-group-prepend">
-                                            <span style={{ width: '100px' }} className="input-group-text" id="basic-addon1">Name </span>
-                                        </div>
-
-                                        <h6 className="h5"> {this.state.beans.empName}</h6>
-
-
-
-
-                                    </div>
-
-
-
-                                    <div className="input-group mb-3">
-                                        <div className="input-group-prepend">
-                                            <span style={{ width: '100px' }} className="input-group-text" id="basic-addon1">Email </span>
-                                        </div>
-
-
-                                        <h6 className="h5"> {this.state.beans.email}</h6>
-
-
-                                    </div>
-
-                                    <div className="input-group mb-3">
-                                        <div className="input-group-prepend">
-                                            <span style={{ width: '100px' }} className="input-group-text" id="basic-addon1">Designation </span>
-                                        </div>
-
-                                        <h6 className="h5"> {this.state.beans.designation}</h6>
-                                    </div>
-
-                                    <div className="input-group mb-3">
-                                        <div className="input-group-prepend">
-                                            <span style={{ width: '100px' }} className="input-group-text" id="basic-addon1">Password </span>
-                                        </div>
-
-                                        <h6 className="h5"> {this.state.beans.password}</h6>
-                                    </div>
-
-
-
-                                </div>
-                                <div class="card-footer">
-                                    <center>  <button onClick={this.editUser.bind(this, this.state.beans)} className="btn btn-outline-success">Edit</button></center>
-
-                                </div>
-                            </div>
+               
+                    
+                    <div style={{textAlign:'center'}}>
+                    
+                        <div style={cardStyle}>
+                        <div><b style={{fontSize:'40px',color:'gray'}}>Profile Details</b></div>
+                        <hr></hr>
+                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQWn7BLocAz66HZJPCRcwrccj11-2uE61lyW4bGmlQWXOdAh-8R" style={{width:'40%'}}/>
+                        <div style={containerStyle}>
+                            <h4><b>{this.state.beans.empName}</b></h4> 
+                            <h4><b>{this.state.beans.empId}</b></h4> 
+                            <h4><b>{this.state.beans.email}</b></h4>
+                            <h4><b> {this.state.beans.designation}</b></h4>
+                        </div>
+                        <hr></hr>
+                         <button onClick={this.editUser.bind(this, this.state.beans)} className="btn btn-outline-success">Edit</button>
+                        <hr></hr>
                         </div>
                     </div>
 
@@ -136,11 +99,13 @@ export default class MyProfile1 extends Component {
                         <Modal.Body>
                             <div className="row">
                                 <div className="col">
+                                    <label  style={{color:"gray"}}>Enter Name</label>
                                     <input type="text" onChange={(event) => { this.setState({ empName: event.target.value }) }}
                                         value={this.state.empName} className="form-control" placeholder="Employee Name" />
                                 </div>
 
                                 <div className="col">
+                                <label  style={{color:"gray"}}>Enter Email</label>
                                     <input type="text" onChange={(event) => { this.setState({ email: event.target.value }) }}
                                         value={this.state.email} className="form-control" placeholder="Email" />
                                 </div>
@@ -148,14 +113,12 @@ export default class MyProfile1 extends Component {
                             <br />
                             <div className="row">
                                 <div className="col">
+                                <label style={{color:"gray"}}>Enter Designation</label>
                                     <input type="text" onChange={(event) => { this.setState({ designation: event.target.value }) }}
                                         value={this.state.designation} className="form-control" placeholder="Designation" />
                                 </div>
 
-                                <div className="col">
-                                    <input type="text" onChange={(event) => { this.setState({ password: event.target.value }) }}
-                                        value={this.state.password} className="form-control" placeholder="Password" />
-                                </div>
+                                
                             </div>
                         </Modal.Body>
                         <Modal.Footer>
