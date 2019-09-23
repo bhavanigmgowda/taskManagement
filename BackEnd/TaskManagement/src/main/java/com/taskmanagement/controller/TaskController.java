@@ -77,5 +77,11 @@ public class TaskController {
 	public Response getAssignedTask(@RequestParam("email") String email, HttpServletRequest req) {
 		return service.getAssignedTask(email, req);
 	}// End of getAssignedTask()
+	
+	//controller for getting completed task per endpdate
+	@GetMapping(value = "/completed-task", produces = MediaType.APPLICATION_JSON_VALUE)
+	public Response getCompletedTask(@RequestParam("email")String email,HttpServletRequest req) {
+		return service.getCompletedTask(email, req);
+	}//End of getCompletedTask()
 
 }

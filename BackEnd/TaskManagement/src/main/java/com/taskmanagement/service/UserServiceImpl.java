@@ -49,6 +49,7 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public Response createUser(UserBean user) {
 		Response response = new Response();
+
 		if (!repository.existsByEmail(user.getEmail())) {
 
 			repository.save(user);
@@ -67,10 +68,22 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public Response updateUser(UserBean user) {
 		Response response = new Response();
-		
+
 		if (repository.existsById(user.getEmployeeId())) {
 			
-			repository.save(user);
+			UserBean bean=repository.findById(user.getEmployeeId()).get();
+			if(user.getDesignation()!=null && user.getDesignation()!="" ) {
+			bean.setDesignation(user.getDesignation());
+			}
+			if(user.getEmail()!=null && user.getEmail()!="") {
+			bean.setEmail(user.getEmail());
+			}
+			if( user.getEmployeeName()!=null && user.getEmployeeName()!="") {
+			bean.setEmployeeName(user.getEmployeeName());
+			}
+			bean.setPassword(bean.getPassword());
+			bean.setEmployeeId(bean.getEmployeeId());
+			repository.save(bean);
 			response.setStatusCode(201);
 			response.setMessage("Success");
 			response.setDescription("User updated successfully");
@@ -84,16 +97,18 @@ public class UserServiceImpl implements UserService {
 
 	// service to updated password
 	@Override
-	public Response updatePassword(String password, String email, HttpServletRequest req) {
+	public Response updatePassword(String email, String password, HttpServletRequest req) {
 		Response response = new Response();
-
+		
 		if (repository.existsByEmail(email)) {
 			UserBean bean = repository.findByEmail(email).get();
+			if(password!=null && password!="") {
 			bean.setPassword(password);
+			}
 			repository.save(bean);
 			response.setStatusCode(201);
 			response.setMessage("Success");
-			response.setDescription("Password was reset");
+			response.setDescription("Password was Changed");
 		} else {
 			response.setStatusCode(401);
 			response.setMessage("Failure");
@@ -113,5 +128,20 @@ public class UserServiceImpl implements UserService {
 		response.setDescription("Logout successfully");
 		return response;
 	}// End of logout()
+
+	@Override
+	public Response checkEmail(String email) {
+		Response response = new Response();
+		if (repository.existsByEmail(email)) {
+			response.setStatusCode(201);
+			response.setMessage("Success");
+			response.setDescription("Email present in database");
+		} else {
+			response.setStatusCode(401);
+			response.setMessage("Failure");
+			response.setDescription("Email is not found");
+		}
+		return response;
+	}
 
 }// End of class

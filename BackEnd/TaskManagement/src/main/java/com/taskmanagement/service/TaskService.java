@@ -27,7 +27,9 @@ public interface TaskService {
 	public Response getAssignToTask(@RequestParam("email") String email, HttpServletRequest req);
 
 	public Response getAssignedTask(@RequestParam("email") String email, HttpServletRequest req);
-	
+
 	public Response searchBaseAll(@RequestParam("search") String data, @RequestParam("email") String email);
+	
+	public Response getCompletedTask(@RequestParam("email") String email, HttpServletRequest req);
 
 }

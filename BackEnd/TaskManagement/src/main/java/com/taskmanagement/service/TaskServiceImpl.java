@@ -1,7 +1,9 @@
 package com.taskmanagement.service;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -21,21 +23,21 @@ public class TaskServiceImpl implements TaskService {
 	TaskRepository taskRepository;
 	@Autowired
 	UserRepository userRepository;
-	
+
 	@Override
 	public Response createTask(String email, CreateTaskBean task, HttpServletRequest req) {
 		Response response = new Response();
-			if (userRepository.existsById(task.getUserBean().getEmployeeId()) && userRepository.existsByEmail(email)) {
+		if (userRepository.existsById(task.getUserBean().getEmployeeId()) && userRepository.existsByEmail(email)) {
 
-				taskRepository.save(task);
-				response.setStatusCode(201);
-				response.setMessage("Success");
-				response.setDescription("Task added successfully");
-			} else {
-				response.setStatusCode(401);
-				response.setMessage("Failure");
-				response.setDescription("user id does not exist ");
-			}
+			taskRepository.save(task);
+			response.setStatusCode(201);
+			response.setMessage("Success");
+			response.setDescription("Task added successfully");
+		} else {
+			response.setStatusCode(401);
+			response.setMessage("Failure");
+			response.setDescription("user id does not exist ");
+		}
 		return response;
 	}
 
@@ -43,18 +45,18 @@ public class TaskServiceImpl implements TaskService {
 	public Response updateStatus(int taskId, String status, HttpServletRequest req) {
 		CreateTaskBean taskbean = taskRepository.findById(taskId).get();
 		Response response = new Response();
-			if (taskbean != null) {
-				taskbean.setStatus(status);
-				taskRepository.save(taskbean);
-				response.setStatusCode(201);
-				response.setMessage("Success");
-				response.setDescription("Status Change successfully");
+		if (taskbean != null) {
+			taskbean.setStatus(status);
+			taskRepository.save(taskbean);
+			response.setStatusCode(201);
+			response.setMessage("Success");
+			response.setDescription("Status Change successfully");
 
-			} else {
-				response.setStatusCode(401);
-				response.setMessage("Failure");
-				response.setDescription("Status not Changed");
-			}
+		} else {
+			response.setStatusCode(401);
+			response.setMessage("Failure");
+			response.setDescription("Status not Changed");
+		}
 		return response;
 	}
 
@@ -62,27 +64,27 @@ public class TaskServiceImpl implements TaskService {
 	public Response getAllTask(HttpServletRequest req) {
 		Response response = new Response();
 		if (req.getSession(false) != null) {
-		if (taskRepository.findAll() != null) {
-		response.setStatusCode(201);
-		response.setMessage("Success");
-		response.setDescription("Task data found successfully");
-		List<CreateTaskBean> list = taskRepository.findAll();
+			if (taskRepository.findAll() != null) {
+				response.setStatusCode(201);
+				response.setMessage("Success");
+				response.setDescription("Task data found successfully");
+				List<CreateTaskBean> list = taskRepository.findAll();
 
-		Collections.sort(list, ((o1, o2) -> {
-		return o2.getAssignDate().compareTo(o1.getAssignDate());
-		}));
-		response.setTaskBean(list);
+				Collections.sort(list, ((o1, o2) -> {
+					return o2.getAssignDate().compareTo(o1.getAssignDate());
+				}));
+				response.setTaskBean(list);
 
-		return response;
+				return response;
+			} else {
+				response.setStatusCode(401);
+				response.setMessage("Failure");
+				response.setDescription("Task data not found");
+			}
 		} else {
-		response.setStatusCode(401);
-		response.setMessage("Failure");
-		response.setDescription("Task data not found");
-		}
-		} else {
-		response.setStatusCode(501);
-		response.setMessage("Login Failure");
-		response.setDescription("LoginFirst");
+			response.setStatusCode(501);
+			response.setMessage("Login Failure");
+			response.setDescription("LoginFirst");
 
 		}
 		return response;
@@ -164,43 +166,43 @@ public class TaskServiceImpl implements TaskService {
 	@Override
 	public Response getAssignToTask(String email, HttpServletRequest req) {
 		Response response = new Response();
-				if (userRepository.existsByEmail(email)) {
-					response.setStatusCode(201);
-					response.setMessage("Success");
-					response.setDescription("All Task data assigned Found ");
-					response.setTaskBean(taskRepository.getAssignTo(email));
+		if (userRepository.existsByEmail(email)) {
+			response.setStatusCode(201);
+			response.setMessage("Success");
+			response.setDescription("All Task data assigned Found ");
+			response.setTaskBean(taskRepository.getAssignTo(email));
 
-					return response;
-				} else {
-					response.setStatusCode(401);
-					response.setMessage("Failure");
-					response.setDescription("Task data not found");
-				}
 			return response;
+		} else {
+			response.setStatusCode(401);
+			response.setMessage("Failure");
+			response.setDescription("Task data not found");
+		}
+		return response;
 	}
 
 	@Override
 	public Response getAssignedTask(String email, HttpServletRequest req) {
 		Response response = new Response();
-				if (userRepository.existsByEmail(email)) {
+		if (userRepository.existsByEmail(email)) {
 
-					response.setStatusCode(201);
-					response.setMessage("Success");
-					response.setDescription("All Task Assigned Found Successfully");
-					response.setTaskBean(taskRepository.getAssignedTask(email));
+			response.setStatusCode(201);
+			response.setMessage("Success");
+			response.setDescription("All Task Assigned Found Successfully");
+			response.setTaskBean(taskRepository.getAssignedTask(email));
 
-					return response;
-				} else {
-					response.setStatusCode(401);
-					response.setMessage("Failure");
-					response.setDescription("Task data not found");
-				}
 			return response;
+		} else {
+			response.setStatusCode(401);
+			response.setMessage("Failure");
+			response.setDescription("Task data not found");
+		}
+		return response;
 	}
 
 	@Override
 	public Response searchBaseAll(String data, String email) {
-		
+
 		Response response = new Response();
 		try {
 			List<CreateTaskBean> createTaskBean = taskRepository.findBySearchTerm(data, email);
@@ -224,8 +226,26 @@ public class TaskServiceImpl implements TaskService {
 		}
 
 	}
-	
-	
-	
+
+	@Override
+	public Response getCompletedTask(String email, HttpServletRequest req) {
+		Response response = new Response();
+		if (userRepository.existsByEmail(email)) {
+			response.setStatusCode(201);
+			response.setMessage("Success");
+			response.setDescription("All Task data Assigned Found Successfully");
+			Map<String, List<CreateTaskBean>> map = new HashMap<>();
+			List<String> endList = taskRepository.findEndDate(email);
+			for (String i : endList) {
+				map.put(i, taskRepository.findCompletedTask(email, i));
+			}
+			response.setCompletedTask(map);
+		} else {
+			response.setStatusCode(401);
+			response.setMessage("Failure");
+			response.setDescription("Task data not found");
+		}
+		return response;
+	}
 
 }
