@@ -2,8 +2,11 @@ import React, { Component } from 'react'
 import Form from 'react-bootstrap/Form'
 import { Button } from 'react-bootstrap'
 import { BrowserRouter as Router, Route, Link } from 'react-router-dom'
-import './forgotPasswordEmailCheck.css'
+import '../createUser/create.css'
 import Axios from 'axios'
+import SimpleNavBarCreate from '../navBar/simplenavbarcreate'
+import Footer from '../navBar/footer'
+import Modal from "react-responsive-modal";
 
 export default class forgotPasswordEmailCheck extends Component {
 
@@ -12,10 +15,11 @@ export default class forgotPasswordEmailCheck extends Component {
         this.state = {
             email: '',
             show: false,
-            showServer: false
+            showServer: false,
         }
 
     }
+
 
     checkEmail = (event) => {
         event.preventDefault();
@@ -28,7 +32,7 @@ export default class forgotPasswordEmailCheck extends Component {
                     console.log("Data Found ...");
 
                     this.props.history.push({
-                        pathname: '/setPassword',
+                        pathname: '/confirmPassword',
                         state: { email: this.state.email }
                     })
                     console.log("props" + this.props.history.location.state.email)
@@ -60,17 +64,23 @@ export default class forgotPasswordEmailCheck extends Component {
 
 
     render() {
+        const { open } = this.state;
         return (
             <div>
+                <SimpleNavBarCreate  />
+
                 <div className="container-fluid mt-5">
                 </div>
-                <div className="row">
-                    <div id="container" className="col-auto container mt-5">
-                        <div id="Page" className="card ">
-
+                <div className="row mr-0 mt-5">
+                    <div id="container" className="col-auto container-fluid mt-5">
+                        <div id="create" className="card shadow-lg" style={{width:'100%'}}>
+                        <div id="cardHead" className="card-header text-center">
+									<h3>Account Recovery</h3>
+									<p>Please enter your email</p>
+								</div>
                             <div className="card-body">
                                 <form role="form" onSubmit={this.checkEmail}>
-                                    <div className="input-group mb-3">
+                                    <div className="input-group mb-3 ">
                                         <div className="input-group-prepend">
                                             <label className="input-group-text"><i className="fas fa-at" /></label>
                                         </div>
@@ -84,15 +94,10 @@ export default class forgotPasswordEmailCheck extends Component {
                                         <h6 id="message">EMAIL NOT FOUND</h6>
                                     </div> : null}
                                     {this.state.showServer ? <div>
-                                            <h6 id="alert" className="alert alert-danger" >Server Not Responding</h6>
-                                        </div> : null}
-
-                                    <div className="input-group mb-3 container-fluid">
-
-                                    </div>
-                                    <div>
-                                        <input type="submit" id="btn" title="submit" value="Submit" className="form-control-plaintext btn btn-outline-success btn-sm" />
-
+                                        <h6 id="alert" className="alert alert-danger" >Server Not Responding</h6>
+                                    </div> : null}
+                                    <div className="input-group container float-right clearfix" style={{width:'30%'}}>
+                                        <button type="submit" title="submit" className="form-control-plaintext btn btn-outline-primary btn-sm" >Submit</button>
                                     </div>
 
                                 </form>
@@ -100,12 +105,9 @@ export default class forgotPasswordEmailCheck extends Component {
                         </div>
                     </div>
                 </div>
+                <Footer />
             </div>
 
         )
     }
-
-    // 
-    //
-    // 
 }
