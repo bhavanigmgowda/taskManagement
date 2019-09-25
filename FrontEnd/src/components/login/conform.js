@@ -2,10 +2,11 @@ import React, { Component } from 'react'
 import Form from 'react-bootstrap/Form'
 import { Button } from 'react-bootstrap'
 import { BrowserRouter as Router, Route, Link } from 'react-router-dom'
-import './forgotPasswordEmailCheck.css'
+import './ConfirmPassword.css'
 import Axios from 'axios'
 import SimpleNavBarCreate from '../navBar/simplenavbarcreate'
 import Footer from '../navBar/footer'
+import $ from 'jquery'
 export default class ConfirmPassword extends Component {
 
     constructor(props) {
@@ -13,26 +14,40 @@ export default class ConfirmPassword extends Component {
         this.state = {
             password: '',
             confirmpassword: '',
-            show: false,
-            email: ''
+            email: '',
+            showSuccess: false,
+            showServer:false,
+            showInvalidPassword:false,
+            showPassword:false,
+            showConfirmPassword:false,
+            type: 'password',
+            typec:'password'
         }
 
     }
-
-
+    handleClick = () => this.setState(({type}) => ({
+        type: type === 'text' ? 'password' : 'text'
+      }))
+      handleClickConfirm = () => this.setState(({typec}) => ({
+        typec: typec === 'text' ? 'password' : 'text'
+      }))
 
     setPassword = (event) => {
+        event.preventDefault();
         console.log("props" + this.props.history.location.state.email)
         let email = this.props.history.location.state.email;
-        event.preventDefault();
+        
         Axios.patch('http://localhost:8080/update-password' + "?password=" + this.state.password + '&email=' + email)
             .then((response) => {
                 console.log(response)
 
                 if (response.data.statusCode == 201) {
                     console.log("Data Found ...");
-                    alert("password Changed")
-                    this.props.history.push("/")
+
+                    this.setState({ showSuccess: true })
+                    setTimeout(() => {
+                        this.props.history.push('/Login');
+                    }, 3000)
                 }
                 else {
                     console.log("Data Not Found ...");
@@ -41,12 +56,51 @@ export default class ConfirmPassword extends Component {
                 }
 
             }).catch((error) => {
-
+                this.setState({showServer:true})
+                setTimeout(() => {
+                    this.setState({showServer:false})
+                }, 3000)
                 console.log(error)
             })
+        }
+
+        componentDidMount() {
+            var that=this;
+
+            $(document).ready(function () {
+                $('#submit').click(function (e) {
+                    var pass = (document.getElementById("password").value).trim();
+                    var rpass = (document.getElementById('password_confirmation').value).trim();
+
+                    if (pass !== rpass) {
+                        that.setState({ showInvalidPassword: true });
+                    setTimeout(() => {
+                        that.setState({showInvalidPassword:false});
+                    }, 3000)
+                    }
+
+                    if(rpass===""){
+                        that.setState({showConfirmPassword:true})
+                    }
+                    if(pass===""){
+                        that.setState({showPassword:true});
+                    }
+                    if(pass!=="" && rpass!=="" && pass===rpass){
+                        return true;
+                    }
+                    return false;
+    });
+});
+}
+
+hidePassword=()=>{
+    this.setState({showPassword:false})
+}
+hideCPassword=()=>{
+    this.setState({showConfirmPassword:false})
+}
 
 
-    }
 
     render() {
         return (
@@ -54,54 +108,54 @@ export default class ConfirmPassword extends Component {
                 <SimpleNavBarCreate />
 
                 <div className="container-fluid mt-5">
-                    <div style={{ textAlign: '"center"' }}>
-                        <div id="success" className="alert alert-success" role="success" hidden="true">
-                            <h6 id="successMessage" />
-                        </div>
-                    </div>
+                    {this.state.showSuccess ? <div id="success" className="alert alert-success"><small><b>Password Changed Successfully</b></small> </div> : null}
                     <div className="row">
                         <div id="container" className="col-auto container mt-5">
                             <div id="create" className="card shadow-lg ">
                                 <div id="cardHead" className="card-header text-center">
                                     <h3>Change Password</h3>
-                                    <p>Please enter new password and confirm password</p>
+                                    <p>Enter new password and confirm password</p>
                                 </div>
                                 <div className="card-body">
-                                    <form role="form" onSubmit={this.setPassword.bind(this)}>
+                                    <form onSubmit={this.setPassword.bind(this)}>
                                         <div className="input-group mb-3">
                                             <div className="input-group-prepend">
                                                 <label className="input-group-text"><i className="fas fa-key" /></label>
                                             </div>
-                                            <input required type="password" className="form-control" placeholder="Enter New Password" value={this.state.password}
+                                            <input  required type={this.state.type} id="password" onKeyPress={this.hidePassword} className="form-control border border-right-0" placeholder="Enter New Password" value={this.state.password}
                                                 onChange={(event) => { this.setState({ password: event.target.value }) }} />
+                                                 <div className="input-group-append btn " style={{borderRadius:'0px 5px 5px 0px' ,border:"1px solid #ced4da" }} onClick={this.handleClick}>{this.state.type === 'text' ?<i class="far fa-eye-slash mt-1"></i>  : <i class="far fa-eye mt-1"></i>}</div>
                                         </div>
+                                        {this.state.showPassword ? <div id="errordiv"  className="container-fluid">
+                                     <small >Please Enter Password**</small>
+                                        </div> : null}
                                         <div className="input-group mb-3">
                                             <div className="input-group-prepend">
                                                 <label className="input-group-text"><i className="fas fa-key" /></label>
                                             </div>
-                                            <input required type="password" className="form-control" placeholder="Enter Confirm Password" value={this.state.confirmpassword}
+                                            <input required type={this.state.typec} onKeyPress={this.hideCPassword} id="password_confirmation" className="form-control border border-right-0" placeholder="Enter Confirm Password" value={this.state.confirmpassword}
                                                 onChange={(event) => { this.setState({ confirmpassword: event.target.value }) }} />
+                                                <div className="input-group-append btn"style={{borderRadius:'0px 5px 5px 0px' ,border:"1px solid #ced4da" }} onClick={this.handleClickConfirm}>{this.state.typec === 'text' ?<i class="far fa-eye-slash mt-1"></i>  : <i class="far fa-eye mt-1"></i>}</div>
                                         </div>
-                                        {this.state.show ? <div>
-                                            <h6 id="alert" className="alert alert-danger" >Invalid Credentials</h6>
+                                        {this.state.showConfirmPassword ? <div id="errordiv"  className="container-fluid">
+                                     <small >Please confirm Password**</small>
                                         </div> : null}
-                                        {this.state.showServer ? <div>
-                                            <h6 id="alert" className="alert alert-danger" >Server Not Responding</h6>
+                                        {this.state.showInvalidPassword ? <div>
+                                            <small className="alert alert-danger text-center font-weight-bold d-block">Passwords didn't match Try again</small>
                                         </div> : null}
-                                        <div className="input-group mb-2 mt-2 container-fluid">
-                                        </div>
-                                        {this.state.show ? <div class="alert alert-success" style={{ color: "White" }} >Password Change Successfully...!</div> : null}
+                                        {this.state.showServer ? <div className="alert alert-danger d-block text-center ">
+                                     <small className="font-weight-bold ">Server did not respond</small>
+                                        </div> : null}
                                         <div id="loginButtton">
-                                            <button id="btnlogin" className="btn btn-primary" type="submit">Change</button>
+                                            <button id="btnlogin" id="submit" className="btn btn-primary float-right btn-sm" type="submit">Change</button>
                                         </div>
                                     </form>
                                 </div>
                             </div>
                         </div>
-                        <Footer/>
+                        <Footer />
                     </div>
                 </div>
-               
             </div>
         )
     }
