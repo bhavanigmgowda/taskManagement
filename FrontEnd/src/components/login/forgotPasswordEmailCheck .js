@@ -1,12 +1,10 @@
 import React, { Component } from 'react'
-import Form from 'react-bootstrap/Form'
-import { Button } from 'react-bootstrap'
-import { BrowserRouter as Router, Route, Link } from 'react-router-dom'
 import '../createUser/create.css'
 import Axios from 'axios'
 import SimpleNavBarCreate from '../navBar/simplenavbarcreate'
 import Footer from '../navBar/footer'
-import Modal from "react-responsive-modal";
+import $ from 'jquery'
+import './ConfirmPassword.css'
 
 export default class forgotPasswordEmailCheck extends Component {
 
@@ -14,8 +12,9 @@ export default class forgotPasswordEmailCheck extends Component {
         super(props)
         this.state = {
             email: '',
-            show: false,
+            showNoEmail: false,
             showServer: false,
+            showEmail:false
         }
 
     }
@@ -39,8 +38,12 @@ export default class forgotPasswordEmailCheck extends Component {
                 }
                 else {
                     console.log("Data Not Found ...");
-                    this.setState({ show: true })
-
+                    this.setState({ showNoEmail: true })
+                    setTimeout(() => {
+                        this.setState({
+                            showNoEmail: false
+                        })
+                    }, 3000);
                 }
 
             }).catch((error) => {
@@ -51,55 +54,68 @@ export default class forgotPasswordEmailCheck extends Component {
                     }
                 )
                 setTimeout(() => {
-                    this.setState(this.setState({
+                    this.setState({
                         showServer: false
-                    }))
-                }, 2000);
-
-
+                    })
+                }, 3000);
             })
     }
+componentDidMount() {
+    var that=this;
 
+    $(document).ready(function () {
+        $('#submit').click(function (e) {
+
+            var email=(document.getElementById("email").value).trim();
+
+            if(email==="") {
+                that.setState({showEmail:true})
+            }
+
+});
+    });
+}
 
 
 
     render() {
-        const { open } = this.state;
         return (
             <div>
-                <SimpleNavBarCreate  />
+                <SimpleNavBarCreate />
 
                 <div className="container-fluid mt-5">
                 </div>
                 <div className="row mr-0 mt-5">
                     <div id="container" className="col-auto container-fluid mt-5">
-                        <div id="create" className="card shadow-lg" style={{width:'100%'}}>
-                        <div id="cardHead" className="card-header text-center">
-									<h3>Account Recovery</h3>
-									<p>Please enter your email</p>
-								</div>
+                        <div id="create" className="card shadow-lg" style={{ width: '100%' }}>
+                            <div id="cardHead" className="card-header text-center">
+                                <h3>Account Recovery</h3>
+                                <p>Please enter your email</p>
+                            </div>
                             <div className="card-body">
                                 <form role="form" onSubmit={this.checkEmail}>
                                     <div className="input-group mb-3 ">
                                         <div className="input-group-prepend">
                                             <label className="input-group-text"><i className="fas fa-at" /></label>
                                         </div>
-                                        <input className="form-control" required="required" type="email" name="Name" title="Enter Name" id="email" placeholder="Enter Email" onChange={(event) => {
+                                        <input autoComplete="off" className="form-control" required="required" type="email" name="email" title="Enter Email" id="email" placeholder="Enter Email" onChange={(event) => {
                                             this.setState({
                                                 email: event.target.value
                                             })
                                         }} />
+                                         {this.state.showEmail ? <div id="alertHead"  className="container-fluid">
+                                     <small >Please Enter Email**</small>
+                                        </div> : null}
                                     </div>
-                                    {this.state.show ? <div id="alert" className="alert alert-danger">
-                                        <h6 id="message">EMAIL NOT FOUND</h6>
+                                    {this.state.showNoEmail ? <div id="alert" className="alert alert-danger">
+                                        <small className="text-center font-weight-bold d-block" >Email not found</small>
                                     </div> : null}
-                                    {this.state.showServer ? <div>
-                                        <h6 id="alert" className="alert alert-danger" >Server Not Responding</h6>
+                                    {this.state.showServer ? <div id="alert" className="alert alert-danger">
+                                        <small className="text-center font-weight-bold d-block" >Server failed to respond</small>
                                     </div> : null}
-                                    <div className="input-group container float-right clearfix" style={{width:'30%'}}>
+                                    <div className="input-group container float-right clearfix" style={{ width: '30%',padding:'0%' }}>
                                         <button type="submit" title="submit" className="form-control-plaintext btn btn-outline-primary btn-sm" >Submit</button>
                                     </div>
-
                                 </form>
                             </div>
                         </div>

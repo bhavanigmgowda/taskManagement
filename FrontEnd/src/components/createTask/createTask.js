@@ -20,8 +20,15 @@ export class CreateUser extends Component {
             status: 'todo',
             endDate: '',
             userBean: JSON.parse(window.localStorage.getItem('beans')),
-            show: false,
-            show2:false
+            showEmailDNE: false,
+            showSuccess:false,
+            showSubject:false,
+            showDescription:false,
+            showAssignTo:false,
+            showPriority:false,
+            showEnddate:false,
+            showDateInvalid:false,
+            showServerError:false,
         }
     }
     cancel(e) {
@@ -30,14 +37,14 @@ export class CreateUser extends Component {
     }
 
     textarea = () => {
-        document.getElementById("info").hidden = false;
+        this.setState({showChar:true})
         $("#description").keyup(function () {
-            $("#info").text("Characters left: " + (180 - $(this).val().length)).css('font', '11px').css('text-align', 'center').css('margin-top', '-10px').css('color', 'red');
+            $("#info").text("Characters left: " + (180 - $(this).val().length));
         });
     }
     
     hideCharacterCount = () => {
-        document.getElementById("info").hidden = true;
+       this.setState({showChar:false})
     }
 
     create(e) {
@@ -65,49 +72,62 @@ export class CreateUser extends Component {
 
             console.log(response.data.message)
             if (response.data.statusCode === 201) {
-                this.setState({ show2: true })
-                setTimeout(() => {
-                    this.setState(this.setState({ show2: false }))
-                }, 2000);
+                this.setState({ showSuccess: true })
                 setTimeout(()=>{
                     this.props.history.push('/homePage');               
-           },1000 )
+           },3000 )
 
             } else if (response.data.statusCode === 401) {
-                this.setState({ show: true })
+                this.setState({ showEmailDNE: true })
                 setTimeout(() => {
-                    this.setState(  this.setState({ show: false })    )
+                    this.setState(  this.setState({ showEmailDNE: false })    )
                 }, 3000);
             }
 
         }).catch((error) => {
-
+            this.setState({ showServerError: true })
+            setTimeout(() => {
+                this.setState(this.setState({ showServerError: false }))
+            }, 3000);
             console.log(error)
         })
     }
     hideSubject = () => {
-        $('#errormsg1').css('display','none');
+        this.setState({
+            showSubject: false
+        })
 
     }
     hideDescription = () => {
-        $('#errormsg2').css('display','none');
+        this.setState({
+            showDescription: false
+        })
 
     }
     hideEmail = () => {
-        $('#errormsg3').css('display','none');
+        this.setState({
+            showAssignTo: false
+        })
     }
     hidePriority = () => {
-        $('#errormsg4').css('display','none');
+        this.setState({
+            showPriority: false
+        })
     }
     hideDate = () => {
-        $('#errormsg5').css('display','none');
+        this.setState({
+            showEnddate: false
+        })
     }
 
 
 
     componentDidMount() {
+        var that=this;
         $(document).ready(function () {
             $('#submit').click(function (e) {
+
+                
                 var subject = (document.getElementById("subject").value).trim();
                 var description = (document.getElementById('description').value).trim();
                 var endDate = (document.getElementById("EndDate").value);
@@ -116,41 +136,42 @@ export class CreateUser extends Component {
                 var priority = (document.getElementById('Priority').value);
                 var now = new Date();
 
-                console.log("some date",selectedDate)
+                console.log("some date",endDate)
                 console.log("proioe",priority)
-                if(selectedDate === "Invalid Date"){
-                    $("#errormsg5").css('display','block');
+
+                if(endDate === ""){
+                    that.setState({ showEnddate: true })
                 }
                 if(priority === "Choose Priority"){
-                    $("#errormsg4").css('display','block');
+                    that.setState({ showPriority: true })
                 }
                 if(AssignTo===""){
-                    $("#errormsg3").css('display','block'); 
+                    that.setState({ showAssignTo: true })
                 }
                 if (description === "") {
-                    $("#errormsg2").css('display','block');  
+                    that.setState({ showDescription: true })
                 }
                 if (subject === "") {
-                    $("#errormsg1").css('display','block');
+                    that.setState({ showSubject: true })
                 }
 
                 if (subject === "" && description === "" && AssignTo === "" && endDate==="") {
-                    $(".error").css('display','block');
-                    document.getElementById("alert").hidden = false;
-                    $('#message').html("All fields are Mandatory");
-                    setTimeout((function hide() { document.getElementById("alert").hidden = true; }), 2000);
-                    return false;  
+                    that.setState({ showFieldsMadatory: true })
+                    setTimeout(() => {
+                        that.setState({
+                            showFieldsMadatory: false
+                        })
+                    }, 3000); 
                 }
                 if (selectedDate < now)  {
-                    document.getElementById("alert").hidden = false;
-                    $('#message').html("Assign Date must be greater than or Equal to Current date");
-                    setTimeout((function hide() { document.getElementById("alert").hidden = true; }), 4000);
-                    return false;
+                    that.setState({ showDateInvalid: true })
+                    setTimeout(() => {
+                        that.setState({
+                            showDateInvalid: false
+                        })
+                    }, 3000); 
                 }
-
-                if (subject !== "" && description !== "" && AssignTo !== "" && endDate!=="") {
-                    $('#message').html("");
-                    document.getElementById("alert").hidden = true;
+                if (subject !== "" && description !== "" && AssignTo !== "" && endDate!=="" &&(selectedDate>=now)) {
                     return true;
                 }else {
                     return false;
@@ -162,12 +183,12 @@ export class CreateUser extends Component {
         return (
             <div>
                 <NavBarForTask/>
-                
-            <div id="page-container">
-                <div id="content-wrap" className="container-fluid ">
-                    {this.state.show ? <div id="taskalertHead" class="alert alert-danger">Task Creation Failed Email does not Exist!!! </div> : null}
-                    {this.state.show2 ? <div id="taskalertHead" class="alert alert-success" >Task Created Successfully </div> : null}
+                <div className="container-fluid ">
+                {this.state.showServerError ? <div id="alertHead" className="alert alert-danger " role="alert" ><small className="font-weight-bold">Task Creation Failed Server Failed to Respond</small> </div> : null}
+                    {this.state.showEmailDNE ? <div id="alertHead" class="alert alert-danger "><small className="font-weight-bold">Task Creation Failed Email does not Exist!!!</small> </div> : null}
+                    {this.state.showSuccess ? <div id="alertHead" class="alert alert-success " ><small className="font-weight-bold">Task Created Successfully</small> </div> : null}
                     <div className="row">
+                        
                         <div id="container" className="col-auto container mt-5">
                             <div id="create" className="card shadow-lg mt-5" >
                                 <div  id="cardHead" className="card-header" >
@@ -179,13 +200,13 @@ export class CreateUser extends Component {
                                             <div className="input-group-prepend">
                                                 <label className="input-group-text"><i className="fas fa-hashtag" /></label>
                                             </div>
-                                            <input className="form-control" onKeyPress={this.hideSubject} required="required" type="text" name="subject" title="Enter Subject" id="subject" placeholder="Enter Subject" onChange={(event) => {
+                                            <input autoComplete="off" className="form-control" onKeyPress={this.hideSubject} required="required" type="text" name="subject" title="Enter Subject" id="subject" placeholder="Enter Subject" onChange={(event) => {
                                                 this.setState({
                                                     subject: event.target.value
                                                 })
                                             }} />
                                         </div>
-                                        <div id="errormsg1" className="error" >Please Enter Subject field**</div>
+                                        {this.state.showSubject ? <div id="errordiv" className="container-fluid">Please set subject**</div> : null}
                                         <div className="input-group mb-3">
                                             <textarea  onBlur={this.hideCharacterCount} onKeyPress={this.hideDescription}  onFocus={this.textarea} type="text" className="form-control" id="description" name="description" title="Enter Description" maxLength={180} placeholder="Enter Description (character limit: 180)" rows={3} onChange={(event) => {
                                                 this.setState({
@@ -193,19 +214,19 @@ export class CreateUser extends Component {
                                                 })
                                             }} />
                                         </div>
-                                        <div id="errormsg2" className="error" >Please Description field**</div>
-                                        <div id="info" ></div>
+                                        {this.state.showChar ? <div id="errordiv" className="container-fluid text-right font-weight-normal"><h6 id="info">Characters left :</h6> </div> : null}
+                                        {this.state.showDescription ? <div id="errordiv" className="container-fluid">Please set Description**</div> : null}
                                         <div className="input-group mb-3">
                                             <div className="input-group-prepend">
                                                 <label className="input-group-text"><i className="fas fa-at" /></label>
                                             </div>
-                                            <input className="form-control" required="required" onKeyPress={this.hideEmail} type="email" name="AssignTo" id="AssignTo" title="Enter Email" placeholder="Enter email whom to be assigned" onChange={(event) => {
+                                            <input autoComplete="off" className="form-control" required="required" onKeyPress={this.hideEmail} type="email" name="AssignTo" id="AssignTo" title="Enter Email" placeholder="Enter email whom task to be assigned" onChange={(event) => {
                                                 this.setState({
                                                     assignedTo: event.target.value
                                                 })
                                             }} />
                                         </div>
-                                        <div id="errormsg3" className="error" >Please set Email field**</div>
+                                        {this.state.showAssignTo ? <div id="errordiv" className="container-fluid">Please set Email**</div> : null}
                                         <div className="input-group mb-3">
                                             <select id="Priority" className="form-control" onKeyPress={this.hidePriority} required name="Priority" title="Select Priority" onChange={(event) => {
                                                 this.setState({
@@ -213,12 +234,13 @@ export class CreateUser extends Component {
                                                 })
                                             }}>
                                                 <option selected disabled hidden>Choose Priority</option>
-                                                <option defaultvalue="low">low</option>
-                                                <option value="intermediate">Intermediate</option>
+                                                <option value="low">Low</option>
+                                                <option value="intermediate">Medium</option>
                                                 <option value="high">High</option>
+                                                <option value="critical">Critical</option>
                                             </select>
                                         </div>
-                                        <div id="errormsg4" className="error" >Please select priority field**</div>
+                                        {this.state.showPriority ? <div id="errordiv" className="container-fluid">Please set priority**</div> : null}
                                         <div className="input-group mb-3">
                                             <div className="input-group-prepend">
                                                 <label className="input-group-text"><i className="far fa-calendar-alt" /></label>
@@ -229,14 +251,14 @@ export class CreateUser extends Component {
                                                 })
                                             }}/>
                                         </div>
-                                        <div id="errormsg5" className="error" >Please select Date**</div>
-                                        <div style={{ textAlign: '"center"' }}>
-                                            <div id="alert" className="alert alert-danger" role="alert" hidden="true">
-                                                <small id="message" />
-                                            </div>
-                                        </div>
-                                        
-                                        <div className="input-group mb-3 container-fluid">
+                                        {this.state.showEnddate ? <div id="errordiv" className="container-fluid">Please select Date**</div> : null}
+
+{this.state.showFieldsMadatory ? <div id="alert" className="alert alert-danger "><small><b>All fileds are Mandatory</b></small></div> : null}
+{this.state.showDateInvalid ? <div id="alert" className="alert alert-danger" ><small><b>Assign Date must be greater than or Equal to Current date</b></small></div> : null}
+
+
+
+                                        <div className="input-group container-fluid">
                                             <button type="reset" id="reset" title="reset" className="form-control-plaintext btn btn-outline-primary btn-sm">Reset</button>
                                             <button type="submit" id="submit" title="submit" className="form-control-plaintext btn btn-outline-success btn-sm">Submit</button>
                                             <button type="cancel" id="cancel" title="cancel" className="form-control-plaintext btn btn-outline-info btn-sm" onClick={this.cancel.bind(this)} >Cancel</button>
@@ -246,7 +268,6 @@ export class CreateUser extends Component {
                             </div>
                         </div>
                     </div>
-                </div>
                 </div>
             <Footer />
             </div>
