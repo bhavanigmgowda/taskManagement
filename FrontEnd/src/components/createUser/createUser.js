@@ -73,6 +73,15 @@ export class User extends Component {
                 console.log(error);
             })
     }
+    hideOnReset=()=>{
+        this.hideName();
+        this.hidePassword();
+        this.hideCPassword();
+        this.hideEmail();
+        this.hideDesignation();
+    }
+
+
     hideName = () => {
         this.setState({
             showName: false
@@ -100,9 +109,7 @@ export class User extends Component {
     }
 
     componentDidMount() {
-
         var that = this;
-
         $(document).ready(function () {
             $('#submit').click(function (e) {
 
@@ -158,12 +165,13 @@ export class User extends Component {
 
     render() {
         return (
-            <div >
+            <div id="form-container">
+                <div id="content-wrap">
                 <SimpleNavBar />
                 <div id="content-wrap" className="container-fluid mt-5">
-                    {this.state.showServerError ? <div id="alertHead" className="alert alert-danger" role="alert" ><small className="font-weight-bold">Registration Failed Server Did Not Respond</small> </div> : null}
-                    {this.state.showExistEmail ? <div id="alertHead" className="alert alert-danger" role="alert"><small className="font-weight-bold">Registration Failed Email Already Exist</small> </div> : null}
-                    {this.state.showSuccess ? <div id="alertHead" className="alert alert-success" role="success" ><small className="font-weight-bold">Registration Success </small> </div> : null}
+                    {this.state.showServerError ? <div id="alertHead" className="alert alert-danger" role="alert" ><h6 className="font-weight-bold">Registration Failed Server Did Not Respond</h6> </div> : null}
+                    {this.state.showExistEmail ? <div id="alertHead" className="alert alert-danger" role="alert"><h6 className="font-weight-bold">Registration Failed Email Already Exist</h6> </div> : null}
+                    {this.state.showSuccess ? <div id="alertHead" className="alert alert-success" role="success" ><h6 className="font-weight-bold">Registration Success </h6> </div> : null}
                     <div className="row">
                         <div id="container" className="col-auto container mt-5">
                             <div id="create" className="card shadow-lg">
@@ -234,10 +242,10 @@ export class User extends Component {
                                         {this.state.showPasswordMismatch ? <div id="alert" className="alert alert-danger" ><small><b>Passwords didn't match Try again</b></small></div> : null}
 
                                         <div className="input-group mb-3 container-fluid">
-                                            <input type="reset" id="reset" title="reset" className="form-control-plaintext btn btn-outline-primary btn-sm" />
+                                            <input type="reset" id="reset" title="reset" onClick={this.hideOnReset} className="form-control-plaintext btn btn-outline-primary btn-sm" />
 
                                             <input type="submit" onSubmit={this.validate} id="submit" title="submit" className="form-control-plaintext btn btn-outline-success btn-sm" />
-                                            <button type="cancel" id="cancel" title="cancel" className="form-control-plaintext btn btn-outline-info btn-sm" onClick={this.cancel.bind(this)}>Cancel</button>
+                                            <button type="cancel" id="cancel" title="cancel" className="form-control-plaintext btn btn-outline-danger btn-sm" onClick={this.cancel.bind(this)}>Cancel</button>
                                         </div>
                                     </form>
                                 </div>
@@ -245,7 +253,8 @@ export class User extends Component {
                         </div>
                     </div>
                 </div>
-                <Footer />
+            </div>
+            <Footer />
             </div>
         )
     }

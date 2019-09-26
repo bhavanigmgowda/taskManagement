@@ -17,6 +17,10 @@
     position: relative;
     min-height: 100vh;
   }
+#form-container {
+  position: relative;
+  min-height: 93vh;
+}
   
   #content-wrap {
     padding-bottom: 2.5rem;    /* Footer height */
