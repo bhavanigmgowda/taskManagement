@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { BrowserRouter as Router, Route, Link } from 'react-router-dom'
+import { BrowserRouter as Router, Route, Link ,withRouter} from 'react-router-dom'
 import Axios from 'axios'
 import SimpleNavBarCreate from '../navBar/simplenavbarcreate';
 import Footer from '../navBar/footer';
@@ -20,11 +20,13 @@ export class Login extends Component {
 
 		}
 	}
+
 	hideEmail = () => {
 		this.setState({
 			showEmail: false
 		})
 	}
+	
 	hidePassword = () => {
 		this.setState({
 			showPassword: false
@@ -169,7 +171,7 @@ export class Login extends Component {
 										</div>
 										{this.state.showPassword ? <div id="errordiv" className="container-fluid">Please enter password** </div> : null}
 										{this.state.showInvalid ? <div>
-											<small className="alert alert-danger container-fluid text-center font-weight-bold d-block" >Invalid Username and/or Password</small>
+											<small className="alert alert-danger container-fluid text-center font-weight-bold d-block" >Invalid Email and/or Password</small>
 										</div> : null}
 										{this.state.showServer ? <div>
 											<small className="alert alert-danger container-fluid text-center font-weight-bold d-block" >Server Not Responding</small>
@@ -195,4 +197,4 @@ export class Login extends Component {
 		)
 	}
 }
-export default Login
+export default withRouter(Login);
