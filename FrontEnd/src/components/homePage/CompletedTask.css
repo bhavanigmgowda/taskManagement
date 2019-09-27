@@ -1,0 +1,72 @@
+
+
+  .task-title {
+    white-space: normal;
+    margin-top: 4px;
+  }
+  
+  #calender {
+   width: 100%;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+  }
+
+    .prHigh{
+  
+      background-color: white !important   ;
+      border-top: 25px solid rgb(216, 133, 112) !important;
+      border-radius: 15px 10px 0px 0px;
+      box-shadow: 5px 10px 18px #888888;
+      box-shadow: 10px;
+      margin-bottom: 68px;
+  
+  
+  
+    }
+    .prLow{
+      background-color: white !important   ;
+        border-top: 25px solid rgb(232, 241, 144) !important;
+        border-radius: 15px 10px 0px 0px;
+        box-shadow: 5px 10px 18px #888888;
+          box-shadow: 10px;
+        margin-bottom: 68px; 
+    }
+    .prInit{
+      background-color: white !important   ;
+      border-top: 25px solid rgb(188, 241, 144) !important;
+      border-radius: 15px 10px 0px 0px;
+      box-shadow: 5px 10px 18px #888888;
+            box-shadow: 10px;
+      margin-bottom: 68px;
+    
+    }
+.fromTo{
+  margin-top: 2%;
+
+}
+  .space{
+        margin-left: 28px;
+  
+  }
+  .center{
+    justify-content: center !important;
+  }
+  .fromdate{
+    margin-right: 141px;
+    margin-left: 169px;
+  }
+  .applybtn{
+
+  }
+  .comTable{
+    width: 46%;
+    justify-content: center;
+    margin-left: 29%;
+  }
+  .dates{
+    height: 20% !important;
+
+  }
+  
+ 
