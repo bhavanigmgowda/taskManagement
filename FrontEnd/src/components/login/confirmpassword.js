@@ -21,10 +21,12 @@ export default class ConfirmPassword extends Component {
             showPassword: false,
             showConfirmPassword: false,
             type: 'password',
-            typec: 'password'
+            typec: 'password',
+            showPasswordPattern:false,
+            showPasswordCriteria:false
         }
-
     }
+  
     handleClick = () => this.setState(({ type }) => ({
         type: type === 'text' ? 'password' : 'text'
     }))
@@ -85,8 +87,13 @@ export default class ConfirmPassword extends Component {
                 }
                 if (pass === "") {
                     that.setState({ showPassword: true });
+                    that.setState({showPasswordCriteria:false})
                 }
-                if (pass !== "" && rpass !== "" && pass === rpass) {
+                if(pass!=="" ){
+                    that.handleChange();
+                    console.log("value : ", that.handleChange());
+                }
+                if (pass !== "" && rpass !== "" && pass === rpass && that.handleChange()===true) {
                     return true;
                 }
                 return false;
@@ -100,7 +107,21 @@ export default class ConfirmPassword extends Component {
     hideCPassword = () => {
         this.setState({ showConfirmPassword: false })
     }
-
+    handleChange=()=> {
+        var pass=document.getElementById('password').value;
+        var that=this;
+        var reg = /(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}/;
+        var test = reg.test(pass);
+        if (test) {
+            that.setState({ showPasswordPattern: false })
+            that.setState({showPasswordCriteria:false})
+            return true;
+        }else{
+            that.setState({ showPasswordPattern: true })
+            that.setState({showPasswordCriteria:true})
+            return false;
+        }        
+   }
 
 
     render() {
@@ -130,6 +151,7 @@ export default class ConfirmPassword extends Component {
                                             {this.state.showPassword ? <div id="errordiv" className="container-fluid">
                                                 Please Enter Password**
                                         </div> : null}
+                                        {this.state.showPasswordCriteria ? <div id="errordiv" className="container-fluid">Password didn't Match Criteria see below details</div> : null}
                                             <div className="input-group mb-3">
                                                 <div className="input-group-prepend">
                                                     <label className="input-group-text"><i className="fas fa-key" /></label>
@@ -147,6 +169,7 @@ export default class ConfirmPassword extends Component {
                                             {this.state.showPasswordExist ? <div>
                                                 <small className="alert alert-danger text-center font-weight-bold d-block">Password already Exist Try New One</small>
                                             </div> : null}
+                                            {this.state.showPasswordPattern ? <div id="alert" className="alert alert-danger text-justify" ><small><b><ul><li>Password: min. 6 character</li><li>min. one uppercase alphabet [A-Z]</li><li>min. one lowercase alphabet [a-z]</li><li>min. one digit [0-9]</li></ul> </b></small></div> : null}
                                             {this.state.showServer ? <div className="alert alert-danger d-block text-center ">
                                                 <small className="font-weight-bold ">Server did not respond</small>
                                             </div> : null}

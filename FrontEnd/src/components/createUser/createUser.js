@@ -25,7 +25,10 @@ export class User extends Component {
             showFieldsMadatory: false,
             showSuccess: false,
             type: 'password',
-            typec: 'password'
+            typec: 'password',
+            showPasswordPattern:false,
+            showPasswordCriteria:false
+
 
         }
     }
@@ -151,7 +154,12 @@ export class User extends Component {
                     }, 3000);
 
                 }
-                if (name !== "" && designation !== "" && email !== "" && (pass === rpass)) {
+                if(pass!="" ){
+                    that.handleChange();
+                    console.log("value : ", that.handleChange());
+                }
+
+                if (name !== "" && designation !== "" && email !== "" && (pass === rpass) && that.handleChange()==true) {
                     return true;
                 }
                 else {
@@ -161,6 +169,22 @@ export class User extends Component {
         });
 
     }
+    handleChange=(pass)=> {
+        var pass=document.getElementById('password').value;
+        var that=this;
+        var reg = /(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}/;
+        var test = reg.test(pass);
+        if (test) {
+            
+            that.setState({ showPasswordPattern: false })
+            that.setState({showPasswordCriteria:false})
+            return true;
+        }else{
+            that.setState({ showPasswordPattern: true })
+            that.setState({showPasswordCriteria:true})
+            return false;
+        }        
+   }
 
 
     render() {
@@ -227,7 +251,8 @@ export class User extends Component {
                                             <div className="input-group-append btn" style={{borderRadius:'0px 5px 5px 0px' ,border:"1px solid #ced4da" }} onClick={this.handleClick}>{this.state.type === 'text' ? <i class="far fa-eye-slash mt-1"></i> : <i class="far fa-eye mt-1"></i>}</div>
                                         </div>
                                         {this.state.showPassword ? <div id="errordiv" className="container-fluid">Please fill out Password field**</div> : null}
-
+                                        
+                                        {this.state.showPasswordCriteria ? <div id="errordiv" className="container-fluid">Password didn't Match Criteria see below details</div> : null}
                                         <div className="input-group mb-3">
                                             <div className="input-group-prepend">
                                                 <label className="form-control-plaintext input-group-text"><i className="fas fa-key" /></label>
@@ -240,7 +265,7 @@ export class User extends Component {
 
                                         {this.state.showFieldsMadatory ? <div id="alert" className="alert alert-danger "><small><b>All fileds are mandatory</b></small></div> : null}
                                         {this.state.showPasswordMismatch ? <div id="alert" className="alert alert-danger" ><small><b>Passwords didn't match Try again</b></small></div> : null}
-
+                                        {this.state.showPasswordPattern ? <div id="alert" className="alert alert-danger text-justify" ><small><b><ul><li>Password: min. 6 character</li><li>min. one uppercase alphabet [A-Z]</li><li>min. one lowercase alphabet [a-z]</li><li>min. one digit [0-9]</li></ul> </b></small></div> : null}
                                         <div className="input-group mb-3 container-fluid">
                                             <input type="reset" id="reset" title="reset" onClick={this.hideOnReset} className="form-control-plaintext btn btn-outline-primary btn-sm" />
 
