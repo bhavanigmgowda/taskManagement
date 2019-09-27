@@ -6,7 +6,7 @@ import Footer from '../navBar/footer'
 import NavBarForTask from '../navBar/NavBarForTask'
 
 
-export class CreateUser extends Component {
+export class CreateTask extends Component {
     constructor(props) {
         super(props)
         this.state = {
@@ -179,7 +179,7 @@ export class CreateUser extends Component {
                         })
                     }, 3000);
                 }
-                if (subject !== "" && description !== "" && AssignTo !== "" && endDate !== "" && (selectedDate >= now)) {
+                if (subject !== "" && priority!=="Choose Priority" && description !== "" && AssignTo !== "" && endDate !== "" && (selectedDate >= now)) {
                     return true;
                 } else {
                     return false;
@@ -286,4 +286,4 @@ export class CreateUser extends Component {
     }
 }
 
-export default CreateUser
+export default CreateTask
