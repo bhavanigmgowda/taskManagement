@@ -1,5 +1,7 @@
 package com.taskmanagement.controller;
 
+import java.util.Date;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,7 +65,7 @@ public class TaskController {
 	public Response getTaskByPriority(@RequestParam("priority") String priority, HttpServletRequest req) {
 		return service.getTaskByPriority(priority, req);
 	}// End of getTaskByPriority()
-
+	
 	// controller to get task based on task assigned to others
 	@GetMapping(path = "/get-assign-to-task", produces = { MediaType.APPLICATION_JSON_VALUE,
 			MediaType.APPLICATION_XML_VALUE })
@@ -84,16 +86,23 @@ public class TaskController {
 		return service.getCompletedTask(email, req);
 	}//End of getCompletedTask()
 
+	@GetMapping(value = "/completed-task-from-to", produces = MediaType.APPLICATION_JSON_VALUE)
+	public Response getCompletedTaskByDate(@RequestParam("from") Date from,@RequestParam("to") Date to,
+			@RequestParam("email") String email,HttpServletRequest req) {
+		return service.getCompletedTaskByDate(from, to, email, req);
+	}//End of getCompletedTask()
+
+	
 	//controller for searching task which are assigned to me
-	@GetMapping(value = "/get-task-to-me" ,produces = MediaType.APPLICATION_JSON_VALUE )
+	@GetMapping(value = "/search-task-to-me" ,produces = MediaType.APPLICATION_JSON_VALUE )
 	public Response getTaskToMe(@RequestParam("email")String email,@RequestParam("searchTerm") String data,HttpServletRequest req) {
 		return service.searchTaskToMe(data, email);
 	}//End of getTaskToMe()
-	
+
 	//controller for searching task which are assigned by me to others
-		@GetMapping(value = "/get-task-by-me" ,produces = MediaType.APPLICATION_JSON_VALUE )
-		public Response getTaskByMe(@RequestParam("id")int empId,@RequestParam("searchTerm") String data,HttpServletRequest req) {
-			return service.searchTaskByMe(data, empId);
+		@GetMapping(value = "/search-task-by-me" ,produces = MediaType.APPLICATION_JSON_VALUE )
+		public Response getTaskByMe(@RequestParam("email")String email,@RequestParam("searchTerm") String data,HttpServletRequest req) {
+			return service.searchTaskByMe(data, email);
 		}//End of getTaskToMe()
 		
 }

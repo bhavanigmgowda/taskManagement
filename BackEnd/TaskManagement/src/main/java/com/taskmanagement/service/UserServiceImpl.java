@@ -139,6 +139,25 @@ public class UserServiceImpl implements UserService {
 		return response;
 	}// End of logout()
 
+
+@Override
+	public Response getUserProfile(String email) {
+		Response response = new Response();
+		if (repository.existsByEmail(email)) {
+			UserBean bean=repository.findByEmail(email).get();
+			response.setStatusCode(201);
+			response.setMessage("Success");
+			response.setDescription("user profile fetched successfully");
+			response.setUserBean(Arrays.asList(bean));
+		} else {
+			response.setStatusCode(401);
+			response.setMessage("Failure");
+			response.setDescription("Email is not found");
+		}
+		return response;
+		
+	}
+
 	@Override
 	public Response checkEmail(String email) {
 		Response response = new Response();

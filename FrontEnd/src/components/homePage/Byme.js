@@ -20,12 +20,12 @@ export default class Byme extends Component {
             user: ''
         }
     }
-    getData() {
-        if(this.props.searchData==null){
+   
+    componentDidMount(){
+        debugger
+        if(!this.props.searchData){   
             this.props.byme()
         }
-    }
-    componentDidMount(){
     }
     handleClose() {
         this.setState({ show: !this.state.show })
@@ -39,7 +39,7 @@ export default class Byme extends Component {
         this.setState({ show: !this.state.show })
     }
     render() {
-        if(this.props.searchData!=null){
+        if(this.props.searchData){
             console.log("searchData",this.props.searchData)
         return (
             <div>   
@@ -305,6 +305,8 @@ export default class Byme extends Component {
             </div>
 
         )
+                                    }else{
+                                        return(<div><h1>No Records Found</h1></div>)
                                     }
                            
     }

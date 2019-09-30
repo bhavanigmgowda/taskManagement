@@ -36,7 +36,7 @@ public interface TaskService {
 	
 	public Response searchTaskToMe(@RequestParam("search") String data, @RequestParam("email") String email);
 	
-	public Response searchTaskByMe(@RequestParam("search") String data,@RequestParam("email")int id);
+	public Response searchTaskByMe(@RequestParam("search") String data,@RequestParam("email")String  email);
 	
 	public Response getCompletedTaskByDate(@RequestParam("from") Date from,@RequestParam("to") Date to,
 											@RequestParam("email") String email,HttpServletRequest req);

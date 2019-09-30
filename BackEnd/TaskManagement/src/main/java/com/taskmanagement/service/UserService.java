@@ -23,5 +23,7 @@ public interface UserService {
 
 	public Response logout(HttpSession session);
 	
+        public Response getUserProfile(@RequestParam("email") String email);
+
 	public Response checkEmail(@RequestParam("email") String email);
 }
