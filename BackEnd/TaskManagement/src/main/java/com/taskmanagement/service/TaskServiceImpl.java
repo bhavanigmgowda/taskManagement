@@ -248,7 +248,8 @@ public class TaskServiceImpl implements TaskService {
 		response.setTaskBean(taskRepository.findCompleted(email));
 
 		response.setEnd(set);
-		} else {
+		} 
+		else {
 		response.setStatusCode(401);
 		response.setMessage("Failure");
 		response.setDescription("Task data not found");
@@ -275,13 +276,13 @@ public class TaskServiceImpl implements TaskService {
 		return response;
 	}
 	@Override
-	public Response searchTaskByMe(String data, int id) {
+	public Response searchTaskByMe(String data, String email) {
 		Response response=new Response();
 		if(taskRepository.countSubject(data) > 0 || taskRepository.countDescription(data) > 0) {
 			response.setStatusCode(201);
 			response.setMessage("success");
 			response.setDescription("Task to me found successfully");
-			response.setTaskBean(taskRepository.findByMe(data, id));
+			response.setTaskBean(taskRepository.findByMe(data, email));
 		} else {
 			response.setStatusCode(401);
 			response.setMessage("Failure");
@@ -307,5 +308,9 @@ public class TaskServiceImpl implements TaskService {
 		}
 		return response;
 	}
+	
+	
+	
+
 	
 }

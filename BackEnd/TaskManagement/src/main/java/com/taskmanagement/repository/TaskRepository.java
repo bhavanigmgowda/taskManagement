@@ -52,9 +52,9 @@ public interface TaskRepository extends JpaRepository<CreateTaskBean, Integer> {
 			+ " t.status='completed' and t.assignedTo=:email and t.completed between concat(:from ,'%') and concat(:to ,'%') ")
 	TreeSet<CreateTaskBean> fromTo(String email, Date from, Date to);
 
-	@Query(value = "select t from CreateTaskBean t where t.userBean.employeeId=:id and (t.subject LIKE %:searchTerm% or"
+	@Query(value = "select t from CreateTaskBean t where t.userBean.email=:email and (t.subject LIKE %:searchTerm% or"
 			+ " t.description LIKE %:searchTerm% ) ")
-	List<CreateTaskBean> findByMe(@Param("searchTerm") String searchTerm, @Param("id") int id);
+	List<CreateTaskBean> findByMe(@Param("searchTerm") String searchTerm, @Param("email") String email);
 
 	@Query(value = "select t from CreateTaskBean t where t.assignedTo=:email and (t.subject LIKE %:searchTerm% or"
 			+ " t.description LIKE %:searchTerm% )")
