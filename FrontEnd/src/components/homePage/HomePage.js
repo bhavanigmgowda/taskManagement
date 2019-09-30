@@ -1,37 +1,37 @@
 import React, { Component } from 'react';
 import Axios from 'axios';
 import './HomePage.css';
-import { Nav, NavDropdown, Navbar } from 'react-bootstrap'
-import { NavLink, Link, withRouter } from 'react-router-dom';
-import { Modal, Button, Card } from 'react-bootstrap'
-import UserContext from '../UserContext';
-import App from '../../App';
+import {NavDropdown, Navbar, Nav } from 'react-bootstrap'
+import { NavLink,withRouter } from 'react-router-dom';
+import { Button, } from 'react-bootstrap'
 import SearchNavabar from '../navBar/SearchNavabar';
+import { Modal} from 'react-bootstrap'
+import moment from 'moment';
+import Footer from '../navBar/footer';
+import '../login/welcom.css'
 export class HomePage extends Component {
 
     constructor(props) {
         super(props)
-        this.componentDidMount();
-
         this.state = {
             todo: [],
             complete: [],
             blocked: [],
             onProgress: [],
-            userEmail:this.props.value,
             containerName: '',
             showButton: false,
-            isValid: JSON.parse(window.localStorage.getItem('isValid')),
+            isValid: JSON.parse(localStorage.getItem('isValid'))==='true'?true:false,
             show: false,
             popup: [],
             user: '',
             datas: [],
-            mail: JSON.parse(window.localStorage.getItem('beans'))
+            mail: JSON.parse(window.localStorage.getItem('beans')),
+            email : null
         }
-        console.log('bean ', this.state.taskBean);
+      { this.state.userEmail=this.props.value}
+            console.log('bean ', this.state.taskBean);
         this.getTask = this.getTask.bind(this);
     }
-
     onDragOver = (ev, a) => {
         var x = document.getElementById(a).id;
         this.setState({
@@ -39,32 +39,44 @@ export class HomePage extends Component {
         })
         ev.preventDefault();
     }
-    
     drag(ev) {
         console.log("drag", ev.dataTransfer.setData("text", ev.target.id));
     }
-
     componentDidMount() {
-        console.log("componentDidMount")
-        this.setState({
-            userEmail:this.props.value
-        })
-        this.getTask()
+        if(!this.props.value){
+            let userData = JSON.parse(window.localStorage.getItem('beans')) 
+            this.setState({
+                email : userData.email
+            },()=>{
+                this.getTask()
+            })
+        }else{
+            this.setState({
+                email : this.props.value
+            },()=>{
+                this.getTask()
+            })
+        }
+        // console.log("componentDidMount")
+        // this.setState({
+        //     userEmail:this.props.value
+        // })
+        
     }
-    
     getTask() {
         let mail=[]
+        let ddd = JSON.parse(window.localStorage.getItem('isValid'))
+        console.log('SSS',typeof ddd)
         if (JSON.parse(window.localStorage.getItem('isValid'))) {
                 console.log("login",JSON.parse(window.localStorage.getItem('beans')))
-               
-                    mail=JSON.parse(window.localStorage.getItem('beans'))
-                
-                 console.log("login======mail",mail)
-          Axios.get('http://localhost:8080/getAssignedTask?email=' +mail.email)
+              mail=JSON.parse(window.localStorage.getItem('beans'))
+                 console.log("login======mail",mail) 
+          Axios.get('http://localhost:8080/getAssignedTask?email='+this.state.email)
                 .then((response) => {
-                    console.log("aaaaaaaaaaaaaaaaaa",response.data.message)
+                    console.log("aaaaaaaaaaaaaaaaaa",this.state.userEmail)
                     if (response.data.statusCode === 201) {
                         //setstat
+                        console.log("object",response.data.taskBean)
                         this.setState({
                             todo: response.data.taskBean.filter(item => item.status === 'todo'),
                             complete: response.data.taskBean.filter(item => item.status === 'completed'),
@@ -72,6 +84,7 @@ export class HomePage extends Component {
                             onProgress: response.data.taskBean.filter(item => item.status === 'onProgress'),
                         })
                         console.log('bean if', this.state.todo);
+                        localStorage.setItem("pages", JSON.stringify("tome"));
                     } else {
                         this.pRef.current.style.visibility = "visible"
                     }
@@ -115,45 +128,83 @@ export class HomePage extends Component {
         })
         this.setState({ show: !this.state.show })
     }
-
     handleClose() {
         this.setState({ show: !this.state.show })
     }
-
     getEmailData = (data) => {
         console.log('Dataaaaaa================', data)
         this.setState({
             datas: data
         })
     }
-   
-
     completed(e) {
         e.preventDefault();
         this.props.history.push('/completedTask')
     }
-
     getEmail = (data) => {
         console.log('Dataaaaaa', data)
     }
-
-
-    render() {
-        let a = [];
-        let b = '';
+        render() {
+      
         return (
-            <div>
-                <SearchNavabar />
-                <Navbar className=" justify-content-between">
-                    <NavDropdown title="ToMe" id="basic-nav-dropdown">
-                        <NavLink className="nav-link" to="/homePage" >To Me</NavLink>
-                        <NavLink className="nav-link" to="/byme">By Me</NavLink>
+            <div id="page-container" >
+                <Nav >
+                    <NavDropdown title="To Me" id="basic-nav-dropdown">
+                        <NavLink   className="nav-link" to="/homePage" >To Me</NavLink>
+                        <NavLink  className="nav-link" onClick={this.props.byme} >By Me</NavLink>
                     </NavDropdown>
-                    <Button class="btn  mr-sm-2   btn-sm" onClick={(e) => { this.completed(e) }} variant="outline-success" type="button" >
-                        Completed Task
-                         </Button>
-                </Navbar>
-        
+                    <NavLink className="nav-link" to="/completedTask" style={{ marginLeft: '91%', marginTop: '-46px' }}>Completed Task</NavLink>
+                </Nav> 
+                   <div  id="content-wrap"  >
+                {/* <SearchNavabar /> */}
+                {console.log("============",this.props.value)}
+              
+                <Modal show={this.state.show} onHide={this.handleClose.bind(this)}  >
+                    <Modal.Header closeButton>
+                        <Modal.Title>Task Details
+                        <div>subject  {this.state.popup.subject}</div></Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <div className="input-group mb-3">
+                            <textarea value={this.state.popup.description} type="text" className="form-control" placeholder="Designation" readOnly />  </div>
+                        <div className="input-group mb-3">
+                            <div className="input-group-prepend">
+                                <span style={{ width: '100% ' }} className="input-group-text" id="basic-addon1">Assigned To</span>
+                            </div>
+
+                            <input type="text"
+                                value={this.state.popup.assignedTo} className="form-control" placeholder="Designation" readOnly /></div>
+
+
+                        <div className="input-group mb-3">
+                            <div className="input-group-prepend">
+                                <span style={{ width: '100% ' }} className="input-group-text" id="basic-addon1">Assign Date</span>
+                            </div>
+
+                            <input type="text"
+                                value={moment(this.state.popup.assignDate).format("DD-MM-YYYY")} className="form-control" placeholder="Password" readOnly /></div>
+                        <div className="input-group mb-3">
+                            <div className="input-group-prepend">
+                                <span style={{ width: '100% ' }} className="input-group-text" id="basic-addon1">End Date</span>
+                            </div>
+
+                            <input type="text"
+                                value={moment(this.state.popup.endDate).format("DD-MM-YYYY")} className="form-control" placeholder="Email" readOnly /> </div>
+                        <div className="input-group mb-3">
+                            <div className="input-group-prepend">
+                                <span style={{ width: '100% ' }} className="input-group-text" id="basic-addon1">Priority</span>
+                            </div>
+                            {console.log("prio", this.state.popup.priority)}
+                            <input type="text"
+                                value={this.state.popup.priority} className="form-control" readOnly /> </div>
+
+
+                    </Modal.Body>
+                    <Modal.Footer style={{ color: 'red' }} >
+                        Number of days {moment(this.state.popup.endDate).diff(moment(this.state.popup.assignDate), 'days')}
+                    </Modal.Footer>
+                </Modal>
+
                 <div className="container-fluid">
                     <center>
                         <div className="row container">
@@ -222,8 +273,6 @@ export class HomePage extends Component {
                                     </div>
                             </div>
                             <div className="col-lg-4 col-md-3 col-sm-3" id="onProgress" onDragOver={(e) => this.onDragOver(e, "onProgress")}>
-
-
                                 <div className="col-auto">
                                     <div id="card bg-default head" >
                                         <h5 id="card-header" className="card-header header">
@@ -231,10 +280,8 @@ export class HomePage extends Component {
                                         </h5>
                                     </div>
                                     <div className="  card-body cards">
-
                                         {this.state.onProgress.filter(item => item.priority === 'critical').map(item => {
                                             return (
-
                                                 <div className="col-auto container" onDragEnd={() => this.update(item.taskId, item.status)}
                                                     onDragStart={(e) => this.drag(e, "onProgress")}  >
                                                     <div className="cor" onClick={() => this.update(item.taskId, "completed")}>
@@ -246,41 +293,31 @@ export class HomePage extends Component {
                                                     <p id="drag6" draggable="true" class="prCri ">
                                                         < textarea id="d2" className="textarea" rows="5" cols="5" readOnly>{(item.description)}</textarea> </p>
                                                     <div class="container-fluid">
-
-
                                                     </div>
 
                                                 </div>
                                             )
                                         }
                                         )}
-
                                         {this.state.onProgress.filter(item => item.priority === 'high').map(item => {
                                             return (
-
                                                 <div className="col-auto container" onDragEnd={() => this.update(item.taskId, item.status)}
                                                     onDragStart={(e) => this.drag(e, "onProgress")}  >
                                                     <div className="cor" onClick={() => this.update(item.taskId, "completed")}>
                                                         <i class="far fa-check-circle"></i></div>
-
                                                     <div id="i7" className="col-lg-4 col-md-4 col-sm-4 a" >
                                                         <i onClick={() => this.showvis(item, item.userBean)} class="fas fa-info-circle"></i>
                                                     </div>
                                                     <p id="drag6" draggable="true" class="prHigh ">
                                                         < textarea id="d2" className="textarea" rows="5" cols="5" readOnly>{(item.description)}</textarea> </p>
                                                     <div class="container-fluid">
-
-
                                                     </div>
-
                                                 </div>
                                             )
                                         }
                                         )}
                                         {this.state.onProgress.filter(item => item.priority === 'intermediate').map(item => {
-
                                             return (
-
                                                 <div className="col-auto container" onDragEnd={() => this.update(item.taskId, item.status)}
                                                     onDragStart={(e) => this.drag(e, "onProgress")}  >
                                                     <div className="cor" onClick={() => this.update(item.taskId, "completed")}>
@@ -292,16 +329,12 @@ export class HomePage extends Component {
                                                     <p id="drag6" draggable="true" class="prInit ">
                                                         < textarea id="d2" className="textarea" rows="5" cols="5" readOnly>{(item.description)}</textarea> </p>
                                                     <div class="container-fluid">
-
-
                                                     </div>
-
                                                 </div>
                                             )
                                         }
                                         )}
                                         {this.state.onProgress.filter(item => (item.priority === 'low')).map(item => {
-
                                             return (
                                                 <div className="col-auto" draggable="true" onDragEnd={() => this.update(item.taskId, item.status)}
                                                     onDragStart={(e) => this.drag(e, "onProgress")}  >
@@ -317,12 +350,9 @@ export class HomePage extends Component {
                                             )
                                         }
                                         )}
-
                                     </div>
                                 </div>
-
                             </div>
-
                             <div className="col-lg-4 col-md-3 col-sm-3" id="blocked" onDragOver={(e) => this.onDragOver(e, "blocked")}>
                                 <div className="col-auto">
                                     <div id="card bg-default head" >
@@ -332,7 +362,6 @@ export class HomePage extends Component {
                                     </div>
                                     <div className=" card-body cards">
                                         {this.state.blocked.filter(item => item.priority === 'critical').map(item => {
-
                                             return (
                                                 <div className="col-auto"
                                                     onDragEnd={() => this.update(item.taskId, item.status)}
@@ -347,7 +376,6 @@ export class HomePage extends Component {
                                         }
                                         )}
                                         {this.state.blocked.filter(item => item.priority === 'high').map(item => {
-
                                             return (
                                                 <div className="col-auto"
                                                     onDragEnd={() => this.update(item.taskId, item.status)}
@@ -365,7 +393,6 @@ export class HomePage extends Component {
                                             return (
                                                 <div className="col-auto" onDragEnd={() => this.update(item.taskId, item.status)}
                                                     onDragStart={(e) => this.drag(e, "blocked")} >
-
                                                     <div id="i7" className="col-lg-4 col-md-4 col-sm-4 a" >
                                                         <i onClick={() => this.showvis(item, item.userBean)} class="fas fa-info-circle"></i>
                                                     </div>
@@ -376,9 +403,7 @@ export class HomePage extends Component {
                                         }
                                         )}
                                         {this.state.blocked.filter(item => item.priority === 'low').map(item => {
-
                                             return (
-
                                                 <div className="col-auto"
                                                     onDragEnd={() => this.update(item.taskId, item.status)}
                                                     onDragStart={(e) => this.drag(e, "blocked")} >
@@ -392,21 +417,24 @@ export class HomePage extends Component {
                                             )
                                         }
                                         )}
-
                                     </div>
                                 </div>
                             </div>
+                           
                         </div>
-
+                     
                     </center>
+                   
+                    <Footer/>
                 </div>
+             
             </div>
-
+         <div> </div>
+            </div>
+            
 
         )
     }
 }
-
-
 export default withRouter(HomePage)
 

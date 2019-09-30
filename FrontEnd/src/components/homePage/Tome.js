@@ -1,56 +1,57 @@
-import React, { Component } from 'react'
-import Axios from 'axios';
-import SearchNavabar from '../navBar/SearchNavabar';
-
-export default class Tome extends Component {
-    constructor(props){
-        super(props)
-        this.state={
-            Tome:[],
-            beans:JSON.parse(window.localStorage.getItem('beans')),
-        }
-    }
-
-    componentDidMount(){
-        console.log('componentDidMount');
-        Axios.get('http://localhost:8080/getAssignedTask?email='+this.state.beans.email
-           
-        ).then((response)=>{
-            console.log('Response taskBean',response);
-            if(response.data.message ==="Success"){
-              localStorage.setItem("taskBeans",JSON.stringify(response.data.taskBean));
-              this.setState({
-                Tome: response.data.taskBean
-                
-            })
-
-               
-
-                     
-            }
-      }).catch((error)=>{
-             console.log('Error',error);
-         })
-     
-
-    }
-    render() {
-        return (
-            <div>
-                <SearchNavabar/>
-                <div>
-                    {this.state.Tome.map(item => {
-
-
-                        return (
-                            <div id="drag3" className="sticky" >
-                                <p class="danger">{item.description} </p>
-                            </div>                            
-                    )
-                    })}
-                </div>
-
-            </div>
-        )
-    }
-}
+import React from 'react'; 
+import ReactDOM from 'react-dom'; 
+  
+class Test extends React.Component { 
+    constructor(props) 
+    { 
+        super(props); 
+        this.state = { hello : "World!" }; 
+    } 
+  
+    componentWillMount() 
+    { 
+        console.log("componentWillMount()"); 
+    } 
+  
+    componentDidMount() 
+    { 
+        console.log("componentDidMount()"); 
+    } 
+  
+    changeState() 
+    { 
+        this.setState({ hello : "Geek!" }); 
+    } 
+  
+    render() 
+    { 
+        return ( 
+            <div> 
+            <h1>GeeksForGeeks.org, Hello{ this.state.hello }</h1> 
+            <h2> 
+             <a onClick={this.changeState.bind(this)}>Press Here!</a> 
+            </h2> 
+            </div>); 
+    } 
+  
+    shouldComponentUpdate(nextProps, nextState) 
+    { 
+        console.log("shouldComponentUpdate()"); 
+        return true; 
+    } 
+  
+    componentWillUpdate() 
+    { 
+        console.log("componentWillUpdate()"); 
+    } 
+  
+    componentDidUpdate() 
+    { 
+        console.log("componentDidUpdate()"); 
+    } 
+} 
+  
+ReactDOM.render( 
+    <Test />, 
+    document.getElementById('root')); 
+    export default Test;
