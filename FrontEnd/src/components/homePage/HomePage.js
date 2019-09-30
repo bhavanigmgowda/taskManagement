@@ -30,7 +30,6 @@ export class HomePage extends Component {
         }
       { this.state.userEmail=this.props.value}
             console.log('bean ', this.state.taskBean);
-        this.getTask = this.getTask.bind(this);
     }
     onDragOver = (ev, a) => {
         var x = document.getElementById(a).id;
@@ -71,7 +70,7 @@ export class HomePage extends Component {
                 console.log("login",JSON.parse(window.localStorage.getItem('beans')))
               mail=JSON.parse(window.localStorage.getItem('beans'))
                  console.log("login======mail",mail) 
-          Axios.get('http://localhost:8080/getAssignedTask?email='+this.state.email)
+          Axios.get('http://localhost:8080/get-assigned-task?email='+this.state.email)
                 .then((response) => {
                     console.log("aaaaaaaaaaaaaaaaaa",this.state.userEmail)
                     if (response.data.statusCode === 201) {
@@ -95,6 +94,9 @@ export class HomePage extends Component {
             this.props.history.push('/')
         }
     }
+    updateCom(a,b){
+
+    }
     update(a, b) {
         console.log("=======classname of update======", this.state.containerName);
         var c = this.state.containerName
@@ -108,7 +110,7 @@ export class HomePage extends Component {
         }
         console.log("==========status=======", b)
         if (b === "onProgress" && c == "onProgress" || b === "blocked" && c == "blocked" || b === "completed") {
-            Axios.put('http://localhost:8080/updateTaskStatus?taskId=' + a + '&status=' + b)
+            Axios.put('http://localhost:8080/update-task-status?taskId=' + a + '&status=' + b)
                 .then((response) => {
                     console.log(response.data.message)
                     if (response.data.statusCode === 201) {
@@ -120,6 +122,7 @@ export class HomePage extends Component {
                 })
         }
     }
+
     showvis(item, userBean) {
         console.log("showvis", item)
         this.setState({
@@ -128,6 +131,7 @@ export class HomePage extends Component {
         })
         this.setState({ show: !this.state.show })
     }
+
     handleClose() {
         this.setState({ show: !this.state.show })
     }
@@ -159,7 +163,7 @@ export class HomePage extends Component {
                 {/* <SearchNavabar /> */}
                 {console.log("============",this.props.value)}
               
-                <Modal show={this.state.show} onHide={this.handleClose.bind(this)}  >
+                <Modal size="sm" centered show={this.state.show} onHide={this.handleClose.bind(this)}  >
                     <Modal.Header closeButton>
                         <Modal.Title>Task Details
                         <div>subject  {this.state.popup.subject}</div></Modal.Title>
@@ -169,11 +173,11 @@ export class HomePage extends Component {
                             <textarea value={this.state.popup.description} type="text" className="form-control" placeholder="Designation" readOnly />  </div>
                         <div className="input-group mb-3">
                             <div className="input-group-prepend">
-                                <span style={{ width: '100% ' }} className="input-group-text" id="basic-addon1">Assigned To</span>
-                            </div>
+                                <span style={{ width: '100% ' }} className="input-group-text" id="basic-addon1">Assigned by</span>
+                            </div>  
 
                             <input type="text"
-                                value={this.state.popup.assignedTo} className="form-control" placeholder="Designation" readOnly /></div>
+                                value={this.state.user.email} className="form-control" placeholder="Designation" readOnly /></div>
 
 
                         <div className="input-group mb-3">
@@ -272,19 +276,19 @@ export class HomePage extends Component {
                                 </div>
                                     </div>
                             </div>
-                            <div className="col-lg-4 col-md-3 col-sm-3" id="onProgress" onDragOver={(e) => this.onDragOver(e, "onProgress")}>
+                            <div className="col-lg-4 col-md-3 col-sm-4 col-3" id="onProgress" onDragOver={(e) => this.onDragOver(e, "onProgress")}>
                                 <div className="col-auto">
                                     <div id="card bg-default head" >
                                         <h5 id="card-header" className="card-header header">
                                             <center className="letter" > In Progress </center>
                                         </h5>
                                     </div>
-                                    <div className="  card-body cards">
+                                    <div className="card-body cards">
                                         {this.state.onProgress.filter(item => item.priority === 'critical').map(item => {
                                             return (
                                                 <div className="col-auto container" onDragEnd={() => this.update(item.taskId, item.status)}
                                                     onDragStart={(e) => this.drag(e, "onProgress")}  >
-                                                    <div className="cor" onClick={() => this.update(item.taskId, "completed")}>
+                                                    <div className="cor" onClick={() => this.updateCom(item.taskId, "completed")}>
                                                         <i class="far fa-check-circle"></i></div>
 
                                                     <div id="i7" className="col-lg-4 col-md-4 col-sm-4 a" >
@@ -294,7 +298,6 @@ export class HomePage extends Component {
                                                         < textarea id="d2" className="textarea" rows="5" cols="5" readOnly>{(item.description)}</textarea> </p>
                                                     <div class="container-fluid">
                                                     </div>
-
                                                 </div>
                                             )
                                         }
@@ -303,7 +306,7 @@ export class HomePage extends Component {
                                             return (
                                                 <div className="col-auto container" onDragEnd={() => this.update(item.taskId, item.status)}
                                                     onDragStart={(e) => this.drag(e, "onProgress")}  >
-                                                    <div className="cor" onClick={() => this.update(item.taskId, "completed")}>
+                                                    <div className="cor" onClick={() => this.updateCom(item.taskId, "completed")}>
                                                         <i class="far fa-check-circle"></i></div>
                                                     <div id="i7" className="col-lg-4 col-md-4 col-sm-4 a" >
                                                         <i onClick={() => this.showvis(item, item.userBean)} class="fas fa-info-circle"></i>
@@ -320,7 +323,7 @@ export class HomePage extends Component {
                                             return (
                                                 <div className="col-auto container" onDragEnd={() => this.update(item.taskId, item.status)}
                                                     onDragStart={(e) => this.drag(e, "onProgress")}  >
-                                                    <div className="cor" onClick={() => this.update(item.taskId, "completed")}>
+                                                    <div className="cor" onClick={() => this.updateCom(item.taskId, "completed")}>
                                                         <i class="far fa-check-circle"></i></div>
 
                                                     <div id="i7" className="col-lg-4 col-md-4 col-sm-4 a" >
@@ -339,7 +342,7 @@ export class HomePage extends Component {
                                                 <div className="col-auto" draggable="true" onDragEnd={() => this.update(item.taskId, item.status)}
                                                     onDragStart={(e) => this.drag(e, "onProgress")}  >
 
-                                                    <div className="cor" onClick={() => this.update(item.taskId, "completed")}>
+                                                    <div className="cor" onClick={() => this.updateCom(item.taskId, "completed")}>
                                                         <i class="far fa-check-circle"></i></div>
                                                     <div id="i7" className="col-lg-4 col-md-4 col-sm-4 a" >
                                                         <i onClick={() => this.showvis(item, item.userBean)} class="fas fa-info-circle"></i>

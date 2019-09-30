@@ -19,35 +19,26 @@ let pro = [{}]
 let expandRow = {
     renderer: row => (<div className="bs-example">
         <div className="accordion" id="accordionExample">
+        <div className="row">
             {uniqueArr.filter(item => (item.endDate === row.endDate)).map((item, index) => {
-                {
-                    console.log("index", index)
-                }
                 return (
-                    <div className="row">
-                        <div className="col-md-12">
-                            <div className="card-body">
+                 <div className='col-sm-4'>
                                 <p className="card-text">
-                                </p><div className="row">
-                                    <div className="col-md-12">
-                                        <div className="col-lg-6"  >
+                                </p>
                                             {console.log("index", index)}
                                             <div className="col-auto" >
-                                                <p id="drag1" className="prHigh"  >
+                                                <p id="drag1" className="prHigh">
                                                     < textarea id="d2" className="textarea" rows="5" readOnly>{(item.description)}</textarea> </p>
                                             </div>
-                                        </div>
-                                    </div>
-                                </div>
                                 <p />
                             </div>
-                        </div>
-                    </div>
                 )
             })
             }
         </div>
     </div>
+    </div>
+
     )
 };
 export default class CompletedTask extends Component {
@@ -84,7 +75,7 @@ export default class CompletedTask extends Component {
         e.preventDefault();
         const { from, to } = this.state;
         console.log("===from date====", from, to)
-        Axios.post('http://localhost:8080/fromTo?email=' + this.state.mail.email + '&from=' + from + '&to=' + to)
+        Axios.post('http://localhost:8080/completed-task-from-to?email=' + this.state.mail.email + '&from=' + from + '&to=' + to)
             .then((response) => {
                 console.log('Response Object', response.data.completedTask);
                 if (response.data.message === "Success") {
