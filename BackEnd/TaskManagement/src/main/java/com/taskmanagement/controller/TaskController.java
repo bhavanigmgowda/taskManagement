@@ -7,6 +7,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -30,7 +31,7 @@ public class TaskController {
 	}// End of createTask()
 
 	// controller for updating the task status
-	@PostMapping(value = "/update-task-status", produces = MediaType.APPLICATION_JSON_VALUE)
+	@PutMapping(value = "/update-task-status", produces = MediaType.APPLICATION_JSON_VALUE)
 	public Response updateStatus(@RequestParam("taskId") int taskId, @RequestParam("status") String status,
 			HttpServletRequest req) {
 		return service.updateStatus(taskId, status, req);
@@ -53,7 +54,6 @@ public class TaskController {
 	@GetMapping(path = "/get-task-by-subject", produces = { MediaType.APPLICATION_JSON_VALUE,
 			MediaType.APPLICATION_XML_VALUE })
 	public Response getTaskBySubject(@RequestParam("subject") String subject, HttpServletRequest req) {
-
 		return service.getTaskBySubject(subject, req);
 	}// End of getTaskBySubject()
 
@@ -84,4 +84,16 @@ public class TaskController {
 		return service.getCompletedTask(email, req);
 	}//End of getCompletedTask()
 
+	//controller for searching task which are assigned to me
+	@GetMapping(value = "/get-task-to-me" ,produces = MediaType.APPLICATION_JSON_VALUE )
+	public Response getTaskToMe(@RequestParam("email")String email,@RequestParam("searchTerm") String data,HttpServletRequest req) {
+		return service.searchTaskToMe(data, email);
+	}//End of getTaskToMe()
+	
+	//controller for searching task which are assigned by me to others
+		@GetMapping(value = "/get-task-by-me" ,produces = MediaType.APPLICATION_JSON_VALUE )
+		public Response getTaskByMe(@RequestParam("id")int empId,@RequestParam("searchTerm") String data,HttpServletRequest req) {
+			return service.searchTaskByMe(data, empId);
+		}//End of getTaskToMe()
+		
 }

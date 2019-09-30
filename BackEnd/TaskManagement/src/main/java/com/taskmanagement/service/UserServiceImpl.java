@@ -70,16 +70,16 @@ public class UserServiceImpl implements UserService {
 		Response response = new Response();
 
 		if (repository.existsById(user.getEmployeeId())) {
-			
-			UserBean bean=repository.findById(user.getEmployeeId()).get();
-			if(user.getDesignation()!=null && user.getDesignation()!="" ) {
-			bean.setDesignation(user.getDesignation());
+
+			UserBean bean = repository.findById(user.getEmployeeId()).get();
+			if (user.getDesignation() != null && user.getDesignation().trim() != "") {
+				bean.setDesignation(user.getDesignation());
 			}
-			if(user.getEmail()!=null && user.getEmail()!="") {
-			bean.setEmail(user.getEmail());
+			if (user.getEmail() != null && user.getEmail().trim() != "") {
+				bean.setEmail(user.getEmail());
 			}
-			if( user.getEmployeeName()!=null && user.getEmployeeName()!="") {
-			bean.setEmployeeName(user.getEmployeeName());
+			if (user.getEmployeeName() != null && user.getEmployeeName().trim() != "") {
+				bean.setEmployeeName(user.getEmployeeName());
 			}
 			bean.setPassword(bean.getPassword());
 			bean.setEmployeeId(bean.getEmployeeId());
@@ -99,21 +99,31 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public Response updatePassword(String email, String password, HttpServletRequest req) {
 		Response response = new Response();
-		
+
 		if (repository.existsByEmail(email)) {
 			UserBean bean = repository.findByEmail(email).get();
-			if(password!=null && password!="") {
-			bean.setPassword(password);
+			if (!(password.equals(bean.getPassword()))) {
+				if (password != null && password.trim() != "") {
+					bean.setPassword(password);
+					repository.save(bean);
+					response.setStatusCode(201);
+					response.setMessage("Success");
+					response.setDescription("Password was Changed");
+				} else {
+					response.setStatusCode(402);
+					response.setMessage("Failure");
+					response.setDescription("password did not change");
+				}
+
+			} else {
+				response.setStatusCode(401);
+				response.setMessage("Failure");
+				response.setDescription("Entered Password already exists!!!");
 			}
-			repository.save(bean);
-			response.setStatusCode(201);
-			response.setMessage("Success");
-			response.setDescription("Password was Changed");
 		} else {
-			response.setStatusCode(401);
+			response.setStatusCode(402);
 			response.setMessage("Failure");
 			response.setDescription("password did not change");
-
 		}
 		return response;
 	}// End of updatePassword()

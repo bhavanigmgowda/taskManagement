@@ -1,9 +1,10 @@
 package com.taskmanagement.service;
 
+import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.Date;
 import java.util.List;
-import java.util.Map;
+import java.util.TreeSet;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -231,15 +232,56 @@ public class TaskServiceImpl implements TaskService {
 	public Response getCompletedTask(String email, HttpServletRequest req) {
 		Response response = new Response();
 		if (userRepository.existsByEmail(email)) {
+		response.setStatusCode(201);
+		response.setMessage("Success");
+		response.setDescription("All Task data Assigned Found Successfully");
+		TreeSet<CreateTaskBean> set=new TreeSet<>();
+		List<String> endList = taskRepository.findEndDate(email);
+		ArrayList<CreateTaskBean> arrayList=new ArrayList<>();
+
+		for (String i : endList) {
+		set.addAll(taskRepository.findCompletedTaskBySet(email, i));
+		arrayList.addAll(taskRepository.findCompletedTask(email, i));
+		System.out.println(set);
+		}
+
+		response.setTaskBean(taskRepository.findCompleted(email));
+
+		response.setEnd(set);
+		} else {
+		response.setStatusCode(401);
+		response.setMessage("Failure");
+		response.setDescription("Task data not found");
+		}
+		return response;
+		}
+
+	
+	
+	@Override
+	public Response searchTaskToMe(String data, String email) {
+		Response response=new Response();
+		
+		if(taskRepository.countSubject(data) > 0 || taskRepository.countDescription(data) > 0) {
 			response.setStatusCode(201);
-			response.setMessage("Success");
-			response.setDescription("All Task data Assigned Found Successfully");
-			Map<String, List<CreateTaskBean>> map = new HashMap<>();
-			List<String> endList = taskRepository.findEndDate(email);
-			for (String i : endList) {
-				map.put(i, taskRepository.findCompletedTask(email, i));
-			}
-			response.setCompletedTask(map);
+			response.setMessage("success");
+			response.setDescription("Task to me found successfully");
+			response.setTaskBean(taskRepository.findToMe(data, email));
+		} else {
+			response.setStatusCode(401);
+			response.setMessage("Failure");
+			response.setDescription("Task data not found");
+		}
+		return response;
+	}
+	@Override
+	public Response searchTaskByMe(String data, int id) {
+		Response response=new Response();
+		if(taskRepository.countSubject(data) > 0 || taskRepository.countDescription(data) > 0) {
+			response.setStatusCode(201);
+			response.setMessage("success");
+			response.setDescription("Task to me found successfully");
+			response.setTaskBean(taskRepository.findByMe(data, id));
 		} else {
 			response.setStatusCode(401);
 			response.setMessage("Failure");
@@ -248,4 +290,22 @@ public class TaskServiceImpl implements TaskService {
 		return response;
 	}
 
+	@Override
+	public Response getCompletedTaskByDate(Date from, Date to, String email, HttpServletRequest req) {
+		Response response = new Response();
+		if (userRepository.existsByEmail(email)) {
+
+		response.setEnd(taskRepository.fromTo(email, from, to));
+		response.setStatusCode(201);
+		response.setMessage("Success");
+		response.setDescription("All Task data Assigned Found Successfully");
+
+		} else {
+		response.setStatusCode(401);
+		response.setMessage("Failure");
+		response.setDescription("Task data not found");
+		}
+		return response;
+	}
+	
 }

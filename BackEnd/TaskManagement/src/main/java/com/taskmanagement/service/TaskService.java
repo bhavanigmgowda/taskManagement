@@ -1,5 +1,7 @@
 package com.taskmanagement.service;
 
+import java.util.Date;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.web.bind.annotation.RequestBody;
@@ -31,5 +33,13 @@ public interface TaskService {
 	public Response searchBaseAll(@RequestParam("search") String data, @RequestParam("email") String email);
 	
 	public Response getCompletedTask(@RequestParam("email") String email, HttpServletRequest req);
-
+	
+	public Response searchTaskToMe(@RequestParam("search") String data, @RequestParam("email") String email);
+	
+	public Response searchTaskByMe(@RequestParam("search") String data,@RequestParam("email")int id);
+	
+	public Response getCompletedTaskByDate(@RequestParam("from") Date from,@RequestParam("to") Date to,
+											@RequestParam("email") String email,HttpServletRequest req);
+	
+	
 }

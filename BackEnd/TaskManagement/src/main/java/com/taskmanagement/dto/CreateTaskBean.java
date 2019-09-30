@@ -2,6 +2,7 @@ package com.taskmanagement.dto;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -22,7 +23,7 @@ import lombok.Data;
 @Table(name = "assign_task")
 @JsonRootName("Assign-Task")
 @SuppressWarnings(value = { "serial" })
-public class CreateTaskBean implements Serializable {
+public class CreateTaskBean implements Serializable,Comparable<CreateTaskBean> {
 
 	@Id
 	@Column(name = "task_id")
@@ -43,8 +44,14 @@ public class CreateTaskBean implements Serializable {
 	private String assignedTo;
 	@Column(name = "status")
 	private String status;
-
+	@Column(name = "completed")
+	private Date completed;
 	@ManyToOne
 	@JoinColumn(name = "emp_id")
 	private UserBean userBean;
+	
+	@Override
+	public int compareTo(CreateTaskBean o) {
+		return this.completed.compareTo(o.completed);
+	}
 }
