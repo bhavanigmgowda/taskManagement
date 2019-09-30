@@ -6,7 +6,7 @@ import SearchNavabar from '../navBar/SearchNavabar';
 import InputGroup from 'react-bootstrap/InputGroup';
 import FormControl from 'react-bootstrap/FormControl'
 
-import './myprofile.css'
+import '../css/myprofile.css'
 
 export default class MyProfile1 extends Component {
     constructor(props) {

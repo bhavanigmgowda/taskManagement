@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import '../createUser/create.css'
+import '../css/create.css'
 import Axios from 'axios'
 import $ from 'jquery'
 import Footer from '../navBar/footer'

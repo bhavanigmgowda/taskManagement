@@ -5,23 +5,19 @@ import * as Axios from 'axios';
 
 import Login from './components/login/Login'
 import HomePage from './components/homePage/HomePage'
-import Stiky from './components/Sticky/Sticky'
-import createTask from './components/createTask/CreateTask'
+import createTask from './components/createTask/createTask'
 import createUser from './components/createUser/createUser'
-import myprofile from './components/createUser/MyProfile'
+import myprofile from './components/createUser/myprofile'
 
 import navBar from './components/navBar/NavBar'
 import byme from './components/homePage/Byme'
 import completedTask from './components/homePage/CompletedTask';
-import forgot from './components/login/forgot';
-import conform from './components/login/conform';
+import footer from './components/navBar/footer';
+import confirmpassword from './components/login/confirmpassword';
 import TaskInfo from './components/homePage/TaskInfo';
-import SimpleNavBar from './components/navBar/SimpleNavBar';
-import welcomePage from './components/login/welcomePage';
-import dnd from './components/Dnd';
-import UserContext from './components/UserContext';
+import SimpleNavBar from './components/navBar/simpleNavBar';
+import welcomePage from './components/welcome/welcomePage';
 import SearchNavabar from './components/navBar/SearchNavabar';
-import SearchPage from './components/createTask/SearchPage';
 import Byme from './components/homePage/Byme';
 
 let search=false
@@ -208,8 +204,7 @@ byme=()=>{
     return (
 
       
-      <UserContext.Provider value={this.state.email}>
-     
+<div>     
         {this.state.isValid ? <SearchNavabar 
         setVal={this.setVal} 
         clearSearch={this.clearSearch}  
@@ -218,11 +213,10 @@ byme=()=>{
         sendToApp={this.searchPage} 
         byme={this.byme}/> : null}
 
-        <Route exact path='/Stiky' component={Stiky}></Route>
         <Route exact path='/createUser' component={createUser}></Route>
         <Route exact path='/SimpleNavBar' component={SimpleNavBar}></Route>
-        <Route exact path='/conform' component={conform}></Route>
-        <Route exact path='/forgot' component={forgot}></Route>
+        <Route exact path='/confirmpassword' component={confirmpassword}></Route>
+        <Route exact path='/footer' component={footer}></Route>
         <Route exact path='/TaskInfo' component={TaskInfo}></Route>
         {this.state.search ?
 /*              <Route exact path='/searchPage' render={() => { return <SearchPage value={this.state.searchData} /> }}></Route>    
@@ -231,22 +225,20 @@ byme=()=>{
       :        <div><Route exact path='/homePage' render={() => { return <HomePage byme={this.byme} value={this.state.email} /> }} ></Route>      
         <Route exact path='/navBar' component={navBar}></Route>
         <Route exact path='/byme' render={() => { return <Byme byme={this.byme} searchData={this.state.taskData} />}}></Route>
-        <Route exact path='/dnd' component={dnd}></Route>
         <Route exact path='/completedTask' component={completedTask}></Route>
         <Route exact path='/myprofile' component={myprofile}></Route>
-        {(this.state.isValid&&this.props.location.pathname==='/')?<Redirect to='/homePage'  /> :null}
-        <Route exact path='/createTask' component={createTask}></Route>
+{/*         {(this.state.isValid&&this.props.location.pathname==='/')?<Redirect to='/homePage'  /> :null}
+ */}        <Route exact path='/createTask' component={createTask}></Route>
         </div> 
         }
         {this.state.isValid?null:<Route exact path='/' component={welcomePage}></Route>}
         
         <Route exact path='/Login' render={() => { return <Login clicked={this.getLoginData.bind(this)} /> }}></Route>
    
-      </UserContext.Provider>
-      
+        </div>      
     )
   }
 }
-export default withRouter(App);
+export default (App);
 
 

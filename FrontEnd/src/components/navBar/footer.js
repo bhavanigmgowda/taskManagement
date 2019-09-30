@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import '../createTask/home.css'
+import '../css/home.css'
 
 export class Footer extends Component {
     render() {

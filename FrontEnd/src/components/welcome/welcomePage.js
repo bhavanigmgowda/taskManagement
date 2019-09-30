@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import './home.css'
+import '../css/home.css'
 import { NavLink } from 'react-router-dom';
 import Carousel from 'react-bootstrap/Carousel'
 import Footer from '../navBar/footer';

@@ -3,13 +3,13 @@ import { Nav, Navbar, NavbarBrand, NavDropdown, Form, FormControl, Button, Image
 import {NavLink, Link} from 'react-router-dom';
 import Axios from 'axios';
 import { withRouter } from "react-router";
-import  './SearchNavabar.css'
+import  '../css/SearchNavabar.css'
   class SearchNavabar extends Component {
     constructor(props) {
         super(props);
         this.state = {
             search: '',
-            isValid: JSON.parse(window.localStorage.getItem('isValid')),
+            isValid: false,
             userbean: JSON.parse(localStorage.getItem("beans"))
 
         }
@@ -24,7 +24,7 @@ componentDidMount(){
        
         const email = this.state.userbean.email
         console.log("this.state.search:", this.state.search);
-        Axios.get('http://localhost:8080/searchAll?search=' + this.state.search + "&&email=" + email).then((response) => {
+        Axios.get('http://localhost:8080/search-all?search=' + this.state.search + "&&email=" + email).then((response) => {
             console.log('Response Object', response.data);
             if (response.data.message === "Success") {
                 console.log("datasearch")

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import $ from 'jquery'
 import Axios from 'axios'
-import './create.css'
+import '../css/create.css'
 import Footer from '../navBar/footer'
 import SimpleNavBar from '../navBar/simpleNavBar';
 

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Axios from 'axios';
-import './HomePage.css';
+import '../css/HomePage.css';
 import {NavDropdown, Navbar, Nav } from 'react-bootstrap'
 import { NavLink,withRouter } from 'react-router-dom';
 import { Button, } from 'react-bootstrap'
@@ -8,7 +8,7 @@ import SearchNavabar from '../navBar/SearchNavabar';
 import { Modal} from 'react-bootstrap'
 import moment from 'moment';
 import Footer from '../navBar/footer';
-import '../login/welcom.css'
+import '../css/welcom.css'
 export class HomePage extends Component {
 
     constructor(props) {

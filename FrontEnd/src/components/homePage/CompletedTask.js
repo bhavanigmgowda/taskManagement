@@ -1,9 +1,8 @@
 import React, { Component } from 'react'
 import { Form } from 'react-bootstrap'
-import './CompletedTask.css'
+import '../css/CompletedTask.css'
 import moment from 'moment';
 import Axios from 'axios';
-import 'react-day-picker/lib/style.css'
 import { Collapse, Button, CardBody, Card } from 'reactstrap';
 import BootstrapTable from 'react-bootstrap-table-next';
 import SearchNavabar from '../navBar/SearchNavabar';

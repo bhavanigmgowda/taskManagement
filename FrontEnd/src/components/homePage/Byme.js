@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import Axios from 'axios';
 import SearchNavabar from '../navBar/SearchNavabar';
-import './HomePage.css';
+import '../css/HomePage.css';
 import { Nav, NavDropdown } from 'react-bootstrap'
 import { NavLink } from 'react-router-dom';
 import { Modal} from 'react-bootstrap'
