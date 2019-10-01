@@ -27,10 +27,8 @@ export class User extends Component {
             showSuccess: false,
             type: 'password',
             typec: 'password',
-            showPasswordPattern:false,
-            showPasswordCriteria:false
-
-
+            showPasswordCriteria: false,
+            showEmailInvalid: false
         }
     }
     handleClick = () => this.setState(({ type }) => ({
@@ -64,25 +62,29 @@ export class User extends Component {
 
                 } else if (response.data.statusCode === 401) {
                     this.setState({ showExistEmail: true })
-                    setTimeout(() => {
-                        this.setState(this.setState({ showExistEmail: false }))
-                    }, 3000);
+                    // setTimeout(() => {
+                    //     this.setState(this.setState({ showExistEmail: false }))
+                    // }, 3000);
                 }
 
             }).catch((error) => {
                 this.setState({ showServerError: true })
-                setTimeout(() => {
-                    this.setState(this.setState({ showServerError: false }))
-                }, 3000);
+                // setTimeout(() => {
+                //     this.setState(this.setState({ showServerError: false }))
+                // }, 3000);
                 console.log(error);
             })
     }
-    hideOnReset=()=>{
+    hideOnReset = () => {
         this.hideName();
         this.hidePassword();
         this.hideCPassword();
         this.hideEmail();
         this.hideDesignation();
+        this.setState({showEmailInvalid:false});
+        this.setState({showPasswordCriteria:false});
+        this.setState({ showFieldsMadatory: false });
+        this.setState({showPasswordMismatch:false});
     }
 
 
@@ -125,16 +127,12 @@ export class User extends Component {
 
                 if (pass !== rpass) {
                     that.setState({ showPasswordMismatch: true })
-                    setTimeout(() => {
-                        that.setState({
-                            showPasswordMismatch: false
-                        })
-                    }, 3000);
                 }
                 if (rpass === "") {
                     that.setState({ showConfirmPassword: true })
                 }
                 if (pass === "") {
+                    that.setState({showPasswordCriteria:false})
                     that.setState({ showPassword: true })
                 }
                 if (designation === "") {
@@ -148,19 +146,15 @@ export class User extends Component {
                 }
                 if (name === "" && designation === "" && email === "" && pass === "" && rpass === "") {
                     that.setState({ showFieldsMadatory: true })
-                    setTimeout(() => {
-                        that.setState({
-                            showFieldsMadatory: false
-                        })
-                    }, 3000);
-
                 }
-                if(pass!="" ){
+                if (name !== "" && designation !== "" && email !== "" && pass !== "" && rpass !== "") {
+                    that.setState({ showFieldsMadatory: false })
+                }
+                if (pass != "") {
                     that.handleChange();
-                    console.log("value : ", that.handleChange());
                 }
 
-                if (name !== "" && designation !== "" && email !== "" && (pass === rpass) && that.handleChange()==true) {
+                if (name !== "" && designation !== "" && email !== "" && that.handleEmail() == true && (pass === rpass) && that.handleChange() == true) {
                     return true;
                 }
                 else {
@@ -170,115 +164,132 @@ export class User extends Component {
         });
 
     }
-    handleChange=(pass)=> {
-        var pass=document.getElementById('password').value;
-        var that=this;
+    handleEmail = () => {
+        var that = this;
+        var email = document.getElementById('email').value.trim();
+        if (email !== "") {
+            let lastAtPos = (document.getElementById("email").value).lastIndexOf('@');
+            let lastDotPos = (document.getElementById("email").value).lastIndexOf('.');
+
+            if (!(lastAtPos < lastDotPos && lastAtPos > 0 && (document.getElementById("email").value).indexOf('@@') == -1 && lastDotPos > 2 && ((document.getElementById("email").value).length - lastDotPos) > 2)) {
+                that.setState({ showEmailInvalid: true })
+                return false;
+            }
+        }
+        that.setState({ showEmailInvalid: false })
+        return true;
+    }
+
+
+    handleChange = (pass) => {
+        var pass = document.getElementById('password').value;
+        var that = this;
         var reg = /(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}/;
         var test = reg.test(pass);
         if (test) {
-            
-            that.setState({ showPasswordPattern: false })
-            that.setState({showPasswordCriteria:false})
+            that.setState({ showPasswordCriteria: false })
             return true;
-        }else{
-            that.setState({ showPasswordPattern: true })
-            that.setState({showPasswordCriteria:true})
+        } else {
+            that.setState({ showPasswordCriteria: true })
             return false;
-        }        
-   }
+        }
+    }
 
 
     render() {
         return (
-            <div id="form-container">
-                <div id="content-wrap">
-                <SimpleNavBar />
-                <div id="content-wrap" className="container-fluid mt-5">
-                    {this.state.showServerError ? <div id="alertHead" className="alert alert-danger" role="alert" ><h6 className="font-weight-bold">Registration Failed Server Did Not Respond</h6> </div> : null}
-                    {this.state.showExistEmail ? <div id="alertHead" className="alert alert-danger" role="alert"><h6 className="font-weight-bold">Registration Failed Email Already Exist</h6> </div> : null}
-                    {this.state.showSuccess ? <div id="alertHead" className="alert alert-success" role="success" ><h6 className="font-weight-bold">Registration Success </h6> </div> : null}
-                    <div className="row">
-                        <div id="container" className="col-auto container mt-5">
-                            <div id="create" className="card shadow-lg">
-                                <div id="cardHead" className="card-header">
-                                    <legend className="text-center">Registration Form</legend>
-                                </div>
-                                <div className="card-body">
-                                    <form id="apply-form" onSubmit={this.create.bind(this)}>
-                                        <div className="input-group mb-3">
-                                            <div className="input-group-prepend ">
-                                                <label className="input-group-text"><i className="fas fa-user" /></label>
+            <div id="page-container" >
+                <div id="content-wrap" className="mb-0">
+                    <SimpleNavBar />
+                    <div className="container-fluid ">
+                        {this.state.showServerError ? <div id="alertHead" className="alert alert-danger" role="alert" ><h6 className="font-weight-bold">Registration Failed Server Did Not Respond</h6> </div> : null}
+                        {this.state.showExistEmail ? <div id="alertHead" className="alert alert-danger" role="alert"><h6 className="font-weight-bold">Registration Failed Email Already Exist</h6> </div> : null}
+                        {this.state.showSuccess ? <div id="alertHead" className="alert alert-success" role="success" ><h6 className="font-weight-bold">Registration Success </h6> </div> : null}
+                        <div className="row">
+                            <div id="container" className="col-auto container mt-5 pb-5">
+                                <div id="create" className="card shadow-lg mt-5">
+                                    <div id="cardHead" className="card-header">
+                                        <legend className="text-center">Registration Form</legend>
+                                    </div>
+                                    <div className="card-body">
+                                        <form id="apply-form" onSubmit={this.create.bind(this)}>
+                                            <div className="input-group mb-3">
+                                                <div className="input-group-prepend ">
+                                                    <label className="input-group-text"><i className="fas fa-user" /></label>
+                                                </div>
+                                                <input autoComplete="off" className="form-control" onKeyPress={this.hideName} type="text" name="Name" title="Enter Name" id="Name" placeholder="Enter name of Employee" onChange={(event) => {
+                                                    this.setState({
+                                                        employeeName: event.target.value
+                                                    })
+                                                }} />
                                             </div>
-                                            <input autoComplete="off" className="form-control" onKeyPress={this.hideName} type="text" name="Name" title="Enter Name" id="Name" placeholder="Enter name of Employee" onChange={(event) => {
-                                                this.setState({
-                                                    employeeName: event.target.value
-                                                })
-                                            }} />
-                                        </div>
-                                        {this.state.showName ? <div id="errordiv" className="container-fluid">Please fill out Name field** </div> : null}
-                                        <div className="input-group mb-3">
-                                            <div className="input-group-prepend">
-                                                <label className="input-group-text"><i className="fas fa-at" /></label>
+                                            {this.state.showName ? <div id="errordiv" className="container-fluid">Please fill out Name field** </div> : null}
+                                            <div className="input-group mb-3">
+                                                <div className="input-group-prepend">
+                                                    <label className="input-group-text"><i className="fas fa-at" /></label>
+                                                </div>
+                                                <input autoComplete="off" className="form-control" onKeyPress={this.hideEmail} type="email" name="email" id="email" title="Enter Email" placeholder="Enter Email" onChange={(event) => {
+                                                    this.setState({
+                                                        email: event.target.value
+                                                    })
+                                                }} />
                                             </div>
-                                            <input autoComplete="off" className="form-control" onKeyPress={this.hideEmail} type="email" name="email" id="email" title="Enter Email" placeholder="Enter Email" onChange={(event) => {
-                                                this.setState({
-                                                    email: event.target.value
-                                                })
-                                            }} />
-                                        </div>
-                                        {this.state.showEmail ? <div id="errordiv" className="container-fluid" >Please fill out Email field**</div> : null}
+                                            {this.state.showEmailInvalid ? <div id="errordiv" className="container-fluid" >Please enter a valid email address</div> : null}
+                                            {this.state.showEmail ? <div id="errordiv" className="container-fluid" >Please fill out Email field**</div> : null}
 
-                                        <div className="input-group mb-3">
-                                            <div className="input-group-prepend">
-                                                <label className="input-group-text"><i className="fas fa-user-tie" /></label>
+                                            <div className="input-group mb-3">
+                                                <div className="input-group-prepend">
+                                                    <label className="input-group-text"><i className="fas fa-user-tie" /></label>
+                                                </div>
+                                                <input autoComplete="off" className="form-control" onKeyPress={this.hideDesignation} type="text" name="Designation" title="Enter Desination" id="Designation" placeholder="Enter Designation" onChange={(event) => {
+                                                    this.setState({
+                                                        designation: event.target.value
+                                                    })
+                                                }} />
                                             </div>
-                                            <input autoComplete="off" className="form-control" onKeyPress={this.hideDesignation} type="text" name="Designation" title="Enter Desination" id="Designation" placeholder="Enter Designation" onChange={(event) => {
-                                                this.setState({
-                                                    designation: event.target.value
-                                                })
-                                            }} />
-                                        </div>
-                                        {this.state.showDesignation ? <div id="errordiv" className="container-fluid" >Please fill out Designation field** </div> : null}
+                                            {this.state.showDesignation ? <div id="errordiv" className="container-fluid " >Please fill out Designation field** </div> : null}
 
-                                        <div className="input-group mb-3">
-                                            <div className="input-group-prepend">
-                                                <label className="input-group-text"><i className="fas fa-key" /></label>
+                                            <div className="input-group  mb-3">
+                                                <div className="input-group-prepend ">
+                                                    <label className="input-group-text"><i className="fas fa-key" /></label>
+                                                </div>
+                                                <input className="form-control border border-right-0" onKeyPress={this.hidePassword} type={this.state.type} name="password" title="Enter Password" id="password" placeholder="Enter Password" onChange={(event) => {
+                                                    this.setState({
+                                                        password: event.target.value
+                                                    })
+                                                }} />
+                                                <div className="input-group-append btn " style={{ borderRadius: '0px 5px 5px 0px', border: "1px solid #ced4da" }} onClick={this.handleClick}>{this.state.type === 'text' ? <i class="far fa-eye-slash mt-1"></i> : <i class="far fa-eye mt-1"></i>}</div>
                                             </div>
-                                            <input className="form-control border border-right-0" onKeyPress={this.hidePassword} type={this.state.type} name="password" title="Enter Password" id="password" placeholder="Enter Password" onChange={(event) => {
-                                                this.setState({
-                                                    password: event.target.value
-                                                })
-                                            }} />
-                                            <div className="input-group-append btn" style={{borderRadius:'0px 5px 5px 0px' ,border:"1px solid #ced4da" }} onClick={this.handleClick}>{this.state.type === 'text' ? <i class="far fa-eye-slash mt-1"></i> : <i class="far fa-eye mt-1"></i>}</div>
-                                        </div>
-                                        {this.state.showPassword ? <div id="errordiv" className="container-fluid">Please fill out Password field**</div> : null}
-                                        
-                                        {this.state.showPasswordCriteria ? <div id="errordiv" className="container-fluid">Password didn't Match Criteria, see below details</div> : null}
-                                        <div className="input-group mb-3">
-                                            <div className="input-group-prepend">
-                                                <label className="form-control-plaintext input-group-text"><i className="fas fa-key" /></label>
-                                            </div>
-                                            <input className="form-control border border-right-0" onKeyPress={this.hideCPassword} type={this.state.typec} title="Confirm Password" name="password_confirmation" id="password_confirmation" placeholder="Confirm Password" />
-                                            <div className="input-group-append btn " style={{borderRadius:'0px 5px 5px 0px' ,border:"1px solid #ced4da" }} onClick={this.handleClickConfirm}>{this.state.typec === 'text' ? <i class="far fa-eye-slash mt-1"></i> : <i class="far fa-eye mt-1"></i>}</div>
-                                        </div>
-                                        {this.state.showConfirmPassword ? <div id="errordiv" className="container-fluid">Please set Confirm Password**</div> : null}
-                                        {this.state.showFieldsMadatory ? <div id="alert" className="alert alert-danger "><small><b>All fileds are mandatory</b></small></div> : null}
-                                        {this.state.showPasswordMismatch ? <div id="alert" className="alert alert-danger" ><small><b>Passwords didn't match Try again</b></small></div> : null}
-                                        {this.state.showPasswordPattern ? <div id="alert" className="alert alert-danger text-justify" ><small><b>Password must consists of : <br/><ul><li>min. 6 characters</li><li>min. one uppercase alphabet [A-Z]</li><li>min. one lowercase alphabet [a-z]</li><li>min. one digit [0-9]</li></ul> </b></small></div> : null}
-                                        <div className="input-group mb-3 container-fluid">
-                                            <input type="reset" id="reset" title="reset" onClick={this.hideOnReset} className="form-control-plaintext btn btn-outline-primary btn-sm" />
+                                            {this.state.showPassword ? <div id="errordiv" className="container-fluid">Please fill out Password field**</div> : null}
 
-                                            <input type="submit" onSubmit={this.validate} id="submit" title="submit" className="form-control-plaintext btn btn-outline-success btn-sm" />
-                                            <button type="cancel" id="cancel" title="cancel" className="form-control-plaintext btn btn-outline-danger btn-sm" onClick={this.cancel.bind(this)}>Cancel</button>
-                                        </div>
-                                    </form>
+                                            {this.state.showPasswordCriteria ? <div id="errordiv" className="container-fluid "><span className="text-center">Password min. 6 characters containing atleast 1 uppercase, 1 lowecase alphabet and 1 digit</span></div> : null}
+                                            <div className="input-group mb-3">
+                                                <div className="input-group-prepend">
+                                                    <label className="form-control-plaintext input-group-text"><i className="fas fa-key" /></label>
+                                                </div>
+                                                <input className="form-control border  border-right-0" onKeyPress={this.hideCPassword} type={this.state.typec} title="Confirm Password" name="password_confirmation" id="password_confirmation" placeholder="Confirm Password" />
+                                                <div className="input-group-append btn " style={{ borderRadius: '0px 5px 5px 0px', border: "1px solid #ced4da" }} onClick={this.handleClickConfirm}>{this.state.typec === 'text' ? <i class="far fa-eye-slash mt-1"></i> : <i class="far fa-eye mt-1"></i>}</div>
+                                            </div>
+                                            {this.state.showConfirmPassword ? <div id="errordiv" className="container-fluid">Please set Confirm Password**</div> : null}
+
+
+                                            {this.state.showFieldsMadatory ? <div id="alert" className="alert alert-danger"><small><b>All fileds are mandatory</b></small></div> : null}
+                                            {this.state.showPasswordMismatch ? <div id="alert" className="alert alert-danger" ><small><b>Passwords didn't match try again</b></small></div> : null}
+
+                                            <div className="input-group mb-3 container-fluid">
+                                                <input type="reset" id="reset" title="reset" onClick={this.hideOnReset} className="form-control-plaintext btn btn-outline-primary btn-sm" />
+
+                                                <input type="submit" onSubmit={this.validate} id="submit" title="submit" className="form-control-plaintext btn btn-outline-success btn-sm" />
+                                                <button type="cancel" id="cancel" title="cancel" className="form-control-plaintext btn btn-outline-danger btn-sm" onClick={this.cancel.bind(this)}>Cancel</button>
+                                            </div>
+                                        </form>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <Footer />
+                <Footer />
             </div>
         )
     }

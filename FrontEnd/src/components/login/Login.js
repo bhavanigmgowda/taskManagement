@@ -16,18 +16,15 @@ export class Login extends Component {
 			showServer: false,
 			showEmail: false,
 			showPassword: false,
-			type: 'password',
-			beans:null
+			type: 'password'
 
 		}
 	}
-
 	hideEmail = () => {
 		this.setState({
 			showEmail: false
 		})
 	}
-	
 	hidePassword = () => {
 		this.setState({
 			showPassword: false
@@ -56,13 +53,12 @@ export class Login extends Component {
 			if (response.data.statusCode === 201) {
 				console.log('data', response.data)
 				this.setState({
-					isValid: true,
-					beans:response.data.userBean[0].email
+					isValid: true
 				})
 				console.log(localStorage.setItem("isValid", JSON.stringify(this.state.isValid)));
 
-				console.log(localStorage.setItem("beans", JSON.stringify(response.data.userBean[0].email)));
-					this.props.clicked(this.state.beans)
+				console.log(localStorage.setItem("beans", JSON.stringify(response.data.userBean[0])));
+
 				this.props.history.push('/homePage')
 			}
 			else if (response.data.statusCode === 401) {
@@ -128,10 +124,11 @@ export class Login extends Component {
 
 	render() {
 		return (
-			<div id="form-container">
+			<div id="form-container" >
 				<div id="content-wrap">
-				<SimpleNavBarCreate />
-				<div className="container-fluid mt-5 pb-3">
+				<SimpleNavBarCreate/>		
+				<div className="container-fluid mt-5 pb-3 ">
+		
 					<div style={{ textAlign: '"center"' }}>
 						<div id="success" className="alert alert-success" role="success" hidden="true">
 							<h6 id="successMessage" />
@@ -173,7 +170,7 @@ export class Login extends Component {
 										</div>
 										{this.state.showPassword ? <div id="errordiv" className="container-fluid">Please enter password** </div> : null}
 										{this.state.showInvalid ? <div>
-											<small className="alert alert-danger container-fluid text-center font-weight-bold d-block" >Invalid Email and/or Password</small>
+											<small className="alert alert-danger container-fluid text-center font-weight-bold d-block" >Invalid Username and/or Password</small>
 										</div> : null}
 										{this.state.showServer ? <div>
 											<small className="alert alert-danger container-fluid text-center font-weight-bold d-block" >Server Not Responding</small>
@@ -199,4 +196,4 @@ export class Login extends Component {
 		)
 	}
 }
-export default withRouter(Login);
+export default Login

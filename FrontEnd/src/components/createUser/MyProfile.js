@@ -130,40 +130,45 @@ export default class MyProfile1 extends Component {
                     </div>
 
 
-                    <Modal show={this.state.show} onHide={this.handleClose.bind(this)}>
+                     <Modal  centered show={this.state.show} onHide={this.handleClose.bind(this)}>
                         <Modal.Header closeButton>
-                            <Modal.Title>Update User Details</Modal.Title>
+                            <Modal.Title style={{width:'100%',textAlign:'center'}}>Update User Details </Modal.Title>
                         </Modal.Header>
                         <Modal.Body>
-                            <div className="row">
-                                <div className="col">
-                                    <label style={{ color: "gray" }}>Enter Name</label>
-                                    <input type="text" onChange={(event) => { this.setState.userBean({ employeeName: event.target.value }) }}
-                                        value={this.state.userBean.employeeName} className="form-control" placeholder="Employee Name" />
+                            <div className="row ">
+                                <div className="col-10" style={{width:'100%',margin:'auto'}}>
+                                <label>Name:</label> 
+                                <div className="input-group mb-3">
+                                    <div className="input-group-prepend ">
+                                                <label className="input-group-text"><i className="fas fa-user" /></label>
+                                            </div>
+                                    <input type="text" title="Change Name" onChange={(event) => { this.setState({ employeeName: event.target.value }) }}
+                                        value={this.state.employeeName} className="form-control" placeholder="Employee Name" />
+                              
                                 </div>
-
-                                <div className="col">
-                                    <label style={{ color: "gray" }}>Enter Email</label>
-                                    <input type="text" onChange={(event) => { this.setState.userBean({ email: event.target.value }) }}
-                                        value={this.state.userBean.email} className="form-control" placeholder="Email" />
+                                <label>Email:</label>                                
+                                <div className="input-group mb-3">
+                                <div className="input-group-prepend ">
+                                                <label className="input-group-text"><i className="fas fa-at" /></label>
+                                            </div>
+                                    <input type="text" title="Change Email" onChange={(event) => { this.setState({ email: event.target.value }) }}
+                                        value={this.state.email} className="form-control" placeholder="Email" />
+                           
                                 </div>
-                            </div>
-                            <br />
-                            <div className="row">
-                                <div className="col">
-                                    <label style={{ color: "gray" }}>Enter Designation</label>
-                                    <input type="text" onChange={(event) => { this.setState.userBean({ designation: event.target.value }) }}
-                                        value={this.state.userBean.designation} className="form-control" placeholder="Designation" />
+                                <label>Designation:</label>                               
+                                <div className="input-group mb-3">
+                                <div className="input-group-prepend ">
+                                                <label className="input-group-text"><i className="fas fa-user-tie" /></label>
+                                            </div>
+                                    <input type="text" title="Change Designation" onChange={(event) => { this.setState({ designation: event.target.value }) }}
+                                        value={this.state.designation} className="form-control" placeholder="Designation" />
+                                
                                 </div>
-
-
+                                </div>
                             </div>
                         </Modal.Body>
                         <Modal.Footer>
-                            <button className="btn btn-outline-danger" onClick={this.handleClose.bind(this)}>
-                                Close
-</button>
-                            <button className="btn btn-outline-success" onClick={this.updateUserData.bind(this)}>
+                            <button className="btn btn-outline-success justify-content-center" onClick={this.updateUserData.bind(this)}>
                                 Save Changes
 </button>
                         </Modal.Footer>

@@ -14,7 +14,8 @@ export default class forgotPasswordEmailCheck extends Component {
             email: '',
             showNoEmail: false,
             showServer: false,
-            showEmail:false
+            showEmail: false,
+            showEmailInvalid: false
         }
 
     }
@@ -27,7 +28,7 @@ export default class forgotPasswordEmailCheck extends Component {
             .then((response) => {
                 console.log(response)
 
-                if (response.data.statusCode === 201) {
+                if (response.data.statusCode == 201) {
                     console.log("Data Found ...");
 
                     this.props.history.push({
@@ -60,68 +61,102 @@ export default class forgotPasswordEmailCheck extends Component {
                 }, 3000);
             })
     }
-componentDidMount() {
-    var that=this;
+    componentDidMount() {
+        var that = this;
 
-    $(document).ready(function () {
-        $('#submit').click(function (e) {
+        $(document).ready(function () {
+            $('#submit').click(function (e) {
+                console.log("email")
+                var email = (document.getElementById("email").value).trim();
 
-            var email=(document.getElementById("email").value).trim();
+                if (email === "") {
+                    console.log("email")
+                    that.setState({ showEmail: true })
+                    return false;
+                }
+                if (that.handleEmail() == true) {
+                    that.setState({ showEmailInvalid: false })
+                    return true;
+                }
+                else {
+                    that.setState({ showEmailInvalid: true })
+                    return false;
+                }
+            });
+        });
+    }
+    hideEmail=()=> {
+        this.setState({showEmail:false})
+    }
 
-            if(email==="") {
-                that.setState({showEmail:true})
+    handleEmail = () => {
+        var that = this;
+
+        var email = document.getElementById('email').value.trim();
+        if (email !== "") {
+            let lastAtPos = (document.getElementById("email").value).lastIndexOf('@');
+            let lastDotPos = (document.getElementById("email").value).lastIndexOf('.');
+
+            if (!(lastAtPos < lastDotPos && lastAtPos > 0 && (document.getElementById("email").value).indexOf('@@') == -1 && lastDotPos > 2 && ((document.getElementById("email").value).length - lastDotPos) > 2)) {
+                that.setState({ showEmailInvalid: true })
+                return false;
             }
-
-});
-    });
-}
-
-
+        }
+        that.setState({ showEmailInvalid: false })
+        return true;
+    }
 
     render() {
         return (
-            <div>
-                <SimpleNavBarCreate />
+            <div id="form-container">
+                <div id="content-wrap">
 
-                <div className="container-fluid mt-5">
-                </div>
-                <div className="row mr-0 mt-5">
-                    <div id="container" className="col-auto container-fluid mt-5">
-                        <div id="create" className="card shadow-lg" style={{ width: '100%' }}>
-                            <div id="cardHead" className="card-header text-center">
-                                <h3>Account Recovery</h3>
-                                <p>Please enter your email</p>
-                            </div>
-                            <div className="card-body">
-                                <form role="form" onSubmit={this.checkEmail}>
-                                    <div className="input-group mb-3 ">
-                                        <div className="input-group-prepend">
-                                            <label className="input-group-text"><i className="fas fa-at" /></label>
+                    <SimpleNavBarCreate />
+
+                    <div className="container-fluid mt-5 ">
+                    </div>
+                    <div className="row mr-0 mt-5 pb-2">
+                        <div id="container" className="col-auto container-fluid mt-5">
+                            <div id="create" className="card shadow-lg" style={{ width: '100%' }}>
+                                <div id="cardHead" className="card-header text-center">
+                                    <h3>Account Recovery</h3>
+                                    <p>Enter your email</p>
+                                </div>
+                                <div className="card-body">
+                                    <form role="form" onSubmit={this.checkEmail}>
+                                        <div className="input-group mb-3 ">
+                                            <div className="input-group-prepend">
+                                                <label className="input-group-text"><i className="fas fa-at" /></label>
+                                            </div>
+                                            <input autoComplete="off" className="form-control" type="email" onKeyPress={this.hideEmail} name="email" title="Enter Email" id="email" placeholder="Enter Email" onChange={(event) => {
+                                                this.setState({
+                                                    email: event.target.value
+                                                })
+                                            }} />
+
                                         </div>
-                                        <input autoComplete="off" className="form-control" required="required" type="email" name="email" title="Enter Email" id="email" placeholder="Enter Email" onChange={(event) => {
-                                            this.setState({
-                                                email: event.target.value
-                                            })
-                                        }} />
-                                         {this.state.showEmail ? <div id="alertHead"  className="container-fluid">
-                                     <small >Please Enter Email**</small>
+                                        {this.state.showEmail ? <div id="errordiv" className="container-fluid">
+                                            Please Enter Email**
                                         </div> : null}
-                                    </div>
-                                    {this.state.showNoEmail ? <div id="alert" className="alert alert-danger">
-                                        <small className="text-center font-weight-bold d-block" >Email not found</small>
-                                    </div> : null}
-                                    {this.state.showServer ? <div id="alert" className="alert alert-danger">
-                                        <small className="text-center font-weight-bold d-block" >Server failed to respond</small>
-                                    </div> : null}
-                                    <div className="input-group container float-right clearfix" style={{ width: '30%',padding:'0%' }}>
-                                        <button type="submit" title="submit" className="form-control-plaintext btn btn-outline-primary btn-sm" >Submit</button>
-                                    </div>
-                                </form>
+                                        {this.state.showEmailInvalid ? <div id="errordiv" className="container-fluid">
+                                        Please enter a valid email address
+                                        </div> : null}
+                                        {this.state.showNoEmail ? <div id="alert" className="alert alert-danger">
+                                            <small className="text-center font-weight-bold d-block" >Email not found</small>
+                                        </div> : null}
+                                        {this.state.showServer ? <div id="alert" className="alert alert-danger">
+                                            <small className="text-center font-weight-bold d-block" >Server failed to respond</small>
+                                        </div> : null}
+                                        <div className="input-group container float-right clearfix" style={{ width: '30%', padding: '0%' }}>
+                                            <button type="submit" title="submit" id="submit" className="form-control-plaintext btn btn-outline-primary btn-sm" >Submit</button>
+                                        </div>
+                                    </form>
+                                </div>
                             </div>
                         </div>
                     </div>
+                    <Footer />
                 </div>
-                <Footer />
             </div>
 
         )

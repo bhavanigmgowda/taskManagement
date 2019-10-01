@@ -168,51 +168,52 @@ export class HomePage extends Component {
                    <div  id="content-wrap"  >
                 {console.log("============",this.props.value)}
               
-                <Modal size="sm" centered show={this.state.show} onHide={this.handleClose.bind(this)}  >
-                    <Modal.Header closeButton>
-                        <Modal.Title>Task Details
-                        <div>subject  {this.state.popup.subject}</div></Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>
-                        <div className="input-group mb-3">
-                            <textarea value={this.state.popup.description} type="text" className="form-control" placeholder="Designation" readOnly />  </div>
-                        <div className="input-group mb-3">
-                            <div className="input-group-prepend">
-                                <span style={{ width: '100% ' }} className="input-group-text" id="basic-addon1">Assigned by</span>
-                            </div>  
+                 <div><Modal centered size="md" show={this.state.show} onHide={this.handleClose.bind(this)}  >
+                <Modal.Header closeButton>
+                    <Modal.Title>
+                        <div className="">Subject:  {this.state.popup.subject}</div></Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                <label className="mb-0">Description:</label>
+                    <div className="input-group mb-2">
+                        <textarea value={this.state.popup.description} type="text" className="form-control" placeholder="Designation" readOnly />  </div>
+                        <label className="mb-0">Assigned By :</label>
+                    <div className="input-group mb-2">
+                        <div className="input-group-prepend ">
+                            <label className="input-group-text "><i className="fas fa-at" /></label>
+                        </div>
+                        <input type="text" value={this.state.popup.assignedTo} className="form-control" placeholder="Designation" readOnly /></div>
+                        <label className="mb-0">Assigned On:</label>
+                    <div className="input-group mb-2">
+                        <div className="input-group-prepend">
+                            <label className="input-group-text"><i className="far fa-calendar-alt" /></label>
+                        </div>
+                        <input type="text"
+                            value={moment(this.state.popup.assignDate).format("DD-MM-YYYY")} className="form-control" placeholder="Password" readOnly /></div>
+                            <label className="mb-0">Deadline:</label>
+                    <div className="input-group mb-2">
+                        <div className="input-group-prepend">
+                            <label className="input-group-text"><i className="far fa-calendar-alt" /></label>
+                        </div>
 
-                            <input type="text"
-                                value={this.state.user.email} className="form-control" placeholder="Designation" readOnly /></div>
+                        <input type="text"
+                            value={moment(this.state.popup.endDate).format("DD-MM-YYYY")} className="form-control" placeholder="Email" readOnly /> </div>
+                            <label className="mb-0">Priority:</label>
+                    <div className="input-group mb-2">
+                        <div className="input-group-prepend">
+                            <label className="input-group-text"><i class="fas fa-tasks"></i></label>
+
+                        </div>
+                        {console.log("prio", this.state.popup.priority)}
+                        <input type="text"
+                            value={this.state.popup.priority} className="form-control" readOnly /> </div>
 
 
-                        <div className="input-group mb-3">
-                            <div className="input-group-prepend">
-                                <span style={{ width: '100% ' }} className="input-group-text" id="basic-addon1">Assign Date</span>
-                            </div>
-
-                            <input type="text"
-                                value={moment(this.state.popup.assignDate).format("DD-MM-YYYY")} className="form-control" placeholder="Password" readOnly /></div>
-                        <div className="input-group mb-3">
-                            <div className="input-group-prepend">
-                                <span style={{ width: '100% ' }} className="input-group-text" id="basic-addon1">End Date</span>
-                            </div>
-
-                            <input type="text"
-                                value={moment(this.state.popup.endDate).format("DD-MM-YYYY")} className="form-control" placeholder="Email" readOnly /> </div>
-                        <div className="input-group mb-3">
-                            <div className="input-group-prepend">
-                                <span style={{ width: '100% ' }} className="input-group-text" id="basic-addon1">Priority</span>
-                            </div>
-                            <input type="text"
-                                value={this.state.popup.priority} className="form-control" readOnly /> </div>
-
-
-                    </Modal.Body>
-                    <Modal.Footer style={{ color: 'red' }} >
-                        Number of days {moment(this.state.popup.endDate).diff(moment(this.state.popup.assignDate), 'days')}
-                    </Modal.Footer>
-                </Modal>
-
+                </Modal.Body>
+                <Modal.Footer style={{ color: 'red' }} className=" justify-content-center" >
+                    Number of days: {moment(this.state.popup.endDate).diff(moment(this.state.popup.assignDate), 'days')}
+                </Modal.Footer>
+            </Modal>
                 <div className="container-fluid">
                     <center>
                         <div className="row container">
