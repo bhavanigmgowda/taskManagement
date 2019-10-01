@@ -168,44 +168,44 @@ export class HomePage extends Component {
                    <div  id="content-wrap"  >
                 {console.log("============",this.props.value)}
               
-                 <div><Modal centered size="md" show={this.state.show} onHide={this.handleClose.bind(this)}  >
+                 <div> <div><Modal centered size="md" show={this.state.show} onHide={this.handleClose.bind(this)}  >
                 <Modal.Header closeButton>
                     <Modal.Title>
-                        <div className="">Subject:  {this.state.popup.subject}</div></Modal.Title>
+                        <div style={{color:'#808080'}}>Subject - <span style={{color:'black'}}> {this.state.popup.subject} </span></div></Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                <label className="mb-0">Description:</label>
+                <label className="mb-0" style={{color:'#808080'}}>Description</label>
                     <div className="input-group mb-2">
-                        <textarea value={this.state.popup.description} type="text" className="form-control" placeholder="Designation" readOnly />  </div>
-                        <label className="mb-0">Assigned By :</label>
+                        <textarea style={{color:'black'}} value={this.state.popup.description} type="text" className="form-control" placeholder="Designation" readOnly />  </div>
+                        <label className="mb-0" style={{color:'#808080'}}>Assigned By</label>
                     <div className="input-group mb-2">
                         <div className="input-group-prepend ">
                             <label className="input-group-text "><i className="fas fa-at" /></label>
                         </div>
-                        <input type="text" value={this.state.popup.assignedTo} className="form-control" placeholder="Designation" readOnly /></div>
-                        <label className="mb-0">Assigned On:</label>
+                        <input type="text" value={this.state.popup.assignedTo} style={{color:'black'}} className="form-control" placeholder="Designation" readOnly /></div>
+                        <label className="mb-0" style={{color:'#808080'}}>Assigned On</label>
                     <div className="input-group mb-2">
                         <div className="input-group-prepend">
                             <label className="input-group-text"><i className="far fa-calendar-alt" /></label>
                         </div>
-                        <input type="text"
+                        <input type="text" style={{color:'black'}}
                             value={moment(this.state.popup.assignDate).format("DD-MM-YYYY")} className="form-control" placeholder="Password" readOnly /></div>
-                            <label className="mb-0">Deadline:</label>
+                            <label className="mb-0" style={{color:'#808080'}}>Deadline</label>
                     <div className="input-group mb-2">
                         <div className="input-group-prepend">
                             <label className="input-group-text"><i className="far fa-calendar-alt" /></label>
                         </div>
 
-                        <input type="text"
+                        <input type="text" style={{color:'black'}}
                             value={moment(this.state.popup.endDate).format("DD-MM-YYYY")} className="form-control" placeholder="Email" readOnly /> </div>
-                            <label className="mb-0">Priority:</label>
+                            <label className="mb-0" style={{color:'#808080'}}>Priority</label>
                     <div className="input-group mb-2">
                         <div className="input-group-prepend">
                             <label className="input-group-text"><i class="fas fa-tasks"></i></label>
 
                         </div>
                         {console.log("prio", this.state.popup.priority)}
-                        <input type="text"
+                        <input type="text" style={{color:'black'}}
                             value={this.state.popup.priority} className="form-control" readOnly /> </div>
 
 
