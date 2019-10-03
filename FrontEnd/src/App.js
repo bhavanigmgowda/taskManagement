@@ -27,25 +27,61 @@ import SearchNavabar from './components/navBar/SearchNavBar';
 import Byme from './components/homePage/Byme';
 
 
+let search=false
+let emailData=null
 export class App extends Component {
   constructor(props) {
+    let email=JSON.parse(window.localStorage.getItem('beans'))
+
+    debugger
     super(props);
     this.state = {
       search: false,
       isValid: false,
-      email: "",
-      searchtask: null,
-      taskData: null
-    }
-  }
+      searchtask:null,
+      taskData:null,
+      email:JSON.parse(window.localStorage.getItem('beans'))
 
+    }
+      }
   getLoginData = (data) => {
-    console.log('Dataaaaaa', data)
     this.setState({
       email: data,
       isValid: localStorage.getItem("isValid") === 'true' ? true : false,
     })
     return (data)
+  }
+
+  getEmail(){
+    let email=null
+    if ((!this.state.email)) {
+      email = JSON.parse(window.localStorage.getItem('beans'))
+      if (email!=null) {
+        emailData=email
+
+        this.setState({
+          email : email
+        },()=>{
+          console.log("object")
+        })
+      }}
+  } 
+  componentDidMount() {
+    debugger
+    let email = ''
+    let isValid;
+    let page;
+    if(localStorage.getItem("isValid") === 'true'){
+      isValid = true
+    }else{
+      isValid = false
+    } 
+    this.setState({
+      isValid : isValid
+    })
+
+   this.getEmail();
+
   }
   clearSearch = () => {
     debugger
@@ -53,143 +89,86 @@ export class App extends Component {
       search: false
     })
   }
-
-  getEmail() {
-    let email = null
-    if ((!this.state.email)) {
-      email = JSON.parse(window.localStorage.getItem('beans'))
-      console.log("gmail", email)
-      if (email != null) {
-        console.log("email", this.state.email)
-
-        this.setState({
-          email: email
-        })
-        console.log("email", this.state.email)
-      }
-    }
-    return (this.state.email)
-  }
-
-  componentDidMount() {
-    let email = ''
-    this.getEmail()
-    let isValid;
-    let page;
-    if (localStorage.getItem("isValid") === 'true') {
-      isValid = true
-    } else {
-      isValid = false
-    }
-    this.setState({
-      isValid: isValid
-    })
-  } //End of componenet did mount
-
-  clearSearch = () => {
-    this.setState({
-      search: false
-    })
-  }
-
-
-  setVal = () => {
+  
+  setVal=()=>{
+    debugger
     this.setState({
       isValid: localStorage.getItem("isValid") === 'true' ? true : false,
     })
     this.props.history.push('/')
   }
-
-  byme = () => {
-    console.log('componentDidMount', this.state.taskData);
-    if (JSON.parse(window.localStorage.getItem('isValid'))) {
+byme=()=>{
+    
       Axios.get('http://localhost:8080/get-assign-to-task?email=' + this.state.email
       ).then((response) => {
-        console.log('Response taskBean', response);
-        if (response.data.message === "Success") {
-          this.setState({
-            taskData: response.data.taskBean
-          }, () => {
-            console.log("this.state.task", this.state.taskData)
-            this.props.history.push('/byme')
-          })
-          localStorage.setItem("pages", JSON.stringify("byme"));
-        }
+          if (response.data.message === "Success") {
+            this.setState({
+              taskData:response.data.taskBean
+            })
+              localStorage.setItem("pages", JSON.stringify("byme"));
+            } 
       }).catch((error) => {
-        console.log('Error', error);
       })
-    } else {
-      this.props.history.push('/')
-    }
-  }
+}
 
 
   searchPage = (data) => {
-    console.log("=========search=========", this.state.search)
-    console.log("=========search=========", this.state.searchData)
+    debugger
     if (JSON.parse(window.localStorage.getItem('isValid'))) {
       if (localStorage.getItem("pages") === '"byme"') {
         Axios.get('http://localhost:8080/search-task-by-me?searchTerm=' + data + "&&email=" + this.state.email).then((response) => {
-          console.log('Response Object', response.data.taskBean);
-          console.log("====================", response.data.taskBean)
-          if (response.data.message === "success") {
-            console.log("datasearch")
-            this.setState({
-              searchtask: response.data.taskBean,
-              search: true
+              if (response.data.message === "success") {
 
-            },()=>{
-              if(this.state.searchtask.length<=1&& this.state.searchtask[0].status==="completed"){
-                console.log("===============", this.state.searchtask[0].status)
+                  this.setState({
+                      searchtask: response.data.taskBean.filter(item => item.status != 'completed'),
+                      search: true
+                  },()=>{
+                    if((this.state.searchtask.length===0)){
+                      this.setState({
+                        searchtask: null,
+                    })
+                    }
+                  })              
+              }else{
                 this.setState({
                   searchtask: null,
+                  search: true
               })
               }
-            })
-          } else {
-            this.setState({
-              searchtask: null,
-              search: true
-
-            })
-          }
-        }).catch((error) => {
-          console.log('Error', error);
-        })
+          }).catch((error) => {
+              console.log('Error', error);
+          })
       }
       else {
         Axios.get('http://localhost:8080/search-task-to-me?searchTerm=' + data + "&&email=" + this.state.email).then((response) => {
-          console.log('Response Object', response.data);
-          console.log("====================", response.data.taskBean)
-          if (response.data.message === "success") {
-            console.log("datasearch")
-            this.setState({
-              searchtask: response.data.taskBean,
-              search: true
-            },()=>{
-              if(this.state.searchtask.length<=1&& this.state.searchtask[0].status==="completed"){
-                console.log("===============", this.state.searchtask[0].status)
+
+              if (response.data.message === "success") {
+                  this.setState({
+                    searchtask: response.data.taskBean.filter(item => item.status != 'completed'),
+                    search: true
+                  },()=>{
+                    if((this.state.searchtask.length===0)){
+                      this.setState({
+                        searchtask: null,
+                    })
+                    }
+                  })
+              } else{
                 this.setState({
                   searchtask: null,
+                  search: true
               })
               }
-            })
-          
-          } else {
-            this.setState({
-              searchtask: null,
-              search: true
-            })
-          }
-        }).catch((error) => {
-          console.log('Error', error);
-        })
+          }).catch((error) => {
+              console.log('Error', error);
+          })
       }
-    } else {
+  } else {
       this.props.history.push('/')
-    }
   }
-
+  
+  }
+  
 
   render() {
     const isLoggedIn = this.state.isvalid;
@@ -210,7 +189,7 @@ export class App extends Component {
             <Route exact path='/byme' render={() => { return <Byme byme={this.byme} searchData={this.state.taskData} /> }}></Route>
             <Route exact path='/completedTask' component={completedTask}></Route>
             <Route exact path='/myprofile' component={myprofile}></Route>
-            {(this.state.isValid &&this.props.location.pathname==='/') ? <Redirect to='/homePage' /> : null}
+            {(this.state.isValid && this.props.location.pathname === '/') ? <Redirect to='/homePage' /> : null}
             <Route exact path='/createTask' component={createTask}></Route>
           </div>
         }

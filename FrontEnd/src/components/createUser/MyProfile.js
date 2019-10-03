@@ -17,12 +17,10 @@ export default class MyProfile1 extends Component {
             email: JSON.parse(window.localStorage.getItem('beans')),
             userBean:'',
             show: false,
-           // employeeName:'',
-            //email:'',
-           // designation:''
-
+          
         }
-      //  this.userBean = '';
+        
+        
         this.getProfile = this.getProfile.bind(this);
 
 
@@ -36,7 +34,7 @@ export default class MyProfile1 extends Component {
         debugger
         console.log('inside get profile')
         if (JSON.parse(window.localStorage.getItem('isValid'))) {
-            Axios.get('http://localhost:8080/user-profile?email='+this.state.email).then((response) => {
+            Axios.get('http://localhost:8080/get-profile?email='+this.state.email).then((response) => {
 
                 if (response.data.message === 'Success') {
                      this.setState({
@@ -55,18 +53,23 @@ export default class MyProfile1 extends Component {
         this.getProfile();
     }
 
-    editUser(bean) {
 
-        this.setState({
-            employeeName: '',
-            email:'',
-            designation:'',
-            show: !this.state.show,
-            employeeId: '',
-            password: ''
-        })
+    editUser(bean) {
+        let obj=this.state.userBean;
+        // this.setState({
+        //     employeeName: '',
+        //     email:'',
+        //     designation:'',
+        //     show: !this.state.show,
+        //     employeeId: '',
+        //     password: ''
+        // })
+        obj.employeeName=bean.employeeName;
+        obj.employeeId=bean.employeeId;
+        obj.email=bean.email;
+        obj.designation=bean.designation;
         console.log("updatedata", this.state.beans)
-    }
+    } //end of edit user
 
     handleClose() {
         this.setState({ show: !this.state.show })
@@ -80,7 +83,7 @@ export default class MyProfile1 extends Component {
         const userData = beans;
         console.log('AccountData', userData);
         if (JSON.parse(window.localStorage.getItem('isValid'))) {
-            Axios.put('http://localhost:8080/update-user', userData).then((response) => {
+            Axios.put('http://localhost:8080/update-user?id='+this.state.userBean, userData).then((response) => {
                 console.log('Updated Successfully');
                 this.handleClose();
 
@@ -130,7 +133,8 @@ export default class MyProfile1 extends Component {
                     </div>
 
 
-                     <Modal  centered show={this.state.show} onHide={this.handleClose.bind(this)}>
+
+                    <Modal  centered show={this.state.show} onHide={this.handleClose.bind(this)}>
                         <Modal.Header closeButton>
                             <Modal.Title style={{width:'100%',textAlign:'center'}}>Update User Details </Modal.Title>
                         </Modal.Header>
@@ -173,6 +177,51 @@ export default class MyProfile1 extends Component {
 </button>
                         </Modal.Footer>
                     </Modal>
+
+
+
+
+
+
+{/* 
+                    <Modal show={this.state.show} onHide={this.handleClose.bind(this)}>
+                        <Modal.Header closeButton>
+                            <Modal.Title>Update User Details</Modal.Title>
+                        </Modal.Header>
+                        <Modal.Body>
+                            <div className="row">
+                                <div className="col">
+                                    <label style={{ color: "gray" }}>Enter Name</label>
+                                    <input type="text" onChange={(event) => { this.setState.userBean({ employeeName: event.target.value }) }}
+                                        value={this.state.userBean.employeeName} className="form-control" placeholder="Employee Name" />
+                                </div>
+
+                                <div className="col">
+                                    <label style={{ color: "gray" }}>Enter Email</label>
+                                    <input type="text" onChange={(event) => { this.setState.userBean({ email: event.target.value }) }}
+                                        value={this.state.userBean.email} className="form-control" placeholder="Email" />
+                                </div>
+                            </div>
+                            <br />
+                            <div className="row">
+                                <div className="col">
+                                    <label style={{ color: "gray" }}>Enter Designation</label>
+                                    <input type="text" onChange={(event) => { this.setState.userBean({ designation: event.target.value }) }}
+                                        value={this.state.userBean.designation} className="form-control" placeholder="Designation" />
+                                </div>
+
+
+                            </div>
+                        </Modal.Body>
+                        <Modal.Footer>
+                            <button className="btn btn-outline-danger" onClick={this.handleClose.bind(this)}>
+                                Close
+</button>
+                            <button className="btn btn-outline-success" onClick={this.updateUserData.bind(this)}>
+                                Save Changes
+</button>
+                        </Modal.Footer>
+                    </Modal> */}
                 </div>
                 <Footer />
             </div>

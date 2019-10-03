@@ -1,4 +1,3 @@
-
 import React, { Component } from 'react'
 import Form from 'react-bootstrap/Form'
 import { Button } from 'react-bootstrap'
@@ -166,7 +165,6 @@ export default class ConfirmPassword extends Component {
                                             {this.state.showPasswordExist ? <div>
                                                 <small className="alert alert-danger text-center font-weight-bold d-block">This password already exists create another</small>
                                             </div> : null}
-
                                             {this.state.showServer ? <div className="alert alert-danger d-block text-center ">
                                                 <small className="font-weight-bold ">Server did not respond</small>
                                             </div> : null}

@@ -1,9 +1,11 @@
+
 import React, { Component } from 'react';
 import Axios from 'axios';
 import './CompletedTask.css'
 import { Form } from 'react-bootstrap'
 import { Collapse, Button, CardBody, Card } from 'reactstrap';
 import moment from 'moment';
+import { Modal } from 'react-bootstrap'
 
 import { BrowserRouter as Router, Route, Link } from 'react-router-dom'
 let uniqueArr = [];
@@ -22,37 +24,43 @@ class completedTask extends Component {
             mail: JSON.parse(window.localStorage.getItem('beans')),
             end: [],
             expandedRows: [],
-            showButton: true
+            showButton: true,
+            popup: '',
+            user: '',
+            show: false,
+            btn:'+',
+
         };
-    }
+    } //End of constructor
+
     componentDidMount() {
+        debugger
         var myobj = {}
         console.log('componentDidMount');
         var moment = require('moment');
         var dateTo = moment().format('YYYY-MM-DD');
-var dateFrom = moment().subtract(7,'d').format('YYYY-MM-DD');
-console.log("datefrom ===========",dateFrom)
-        Axios.get('http://localhost:8080/completed-task-to-me?email=' + this.state.mail+'&from='+dateFrom)
+        var dateFrom = moment().subtract(7, 'd').format('YYYY-MM-DD');
+        console.log("datefrom ===========", dateFrom)
+        Axios.get('http://localhost:8080/completed-task-by-me?email=' + this.state.mail + '&from=' +dateFrom )
             .then((response) => {
-                console.log('Response Object', response.data.completedTask);
+                console.log('Response Object', response.data);
                 if (response.data.message === "Success") {
                     this.setState({
                         data: response.data.end,
-                        datas:response.data. taskBean
-                    },()=>{
-                        console.log("response.data.completedTask",)
+                        datas: response.data.taskBean
+                    }, () => {
+                        console.log("response.data.completedTask", response.data.end, response.data.taskBean)
                         uniqueArr = response.data.taskBean;
-                        myobj = response.data.completedTask;
+                        myobj = response.data.end;
                         pro = this.state.datas;
                     })
-                   
+
                 }
             }).catch((error) => {
                 console.log('Error', error);
             })
+    } //End of component-did-mount
 
-          
-    }
     fromTo(e) {
         e.preventDefault();
         const { from, to } = this.state;
@@ -63,12 +71,24 @@ console.log("datefrom ===========",dateFrom)
                 if (response.data.message === "Success") {
                     console.log('Response Object', response.data.end);
                     this.setState({
-                        datas: response.data.end,
+                        data: response.data.end,
+                        datas: response.data.taskBean
                     })
+                } else if (response.data.statusCode === 401) {
+
                 }
             }).catch((error) => {
                 console.log('Error', error);
             })
+    } //End of from-me
+
+    showvis(item, userBean) {
+        console.log("showvis")
+        this.setState({
+            popup: item,
+            user: userBean
+        })
+        this.setState({ show: !this.state.show })
     }
 
     handleRowClick(rowId) {
@@ -81,6 +101,16 @@ console.log("datefrom ===========",dateFrom)
         this.setState({ expandedRows: newExpandedRows });
     }
 
+    handleClose() {
+        this.setState({ show: !this.state.show })
+    }
+
+    toggle(data){
+        this.setState({
+            btn:'-'
+        })
+    }
+
     renderItem(item) {
         console.log("renderItem")
         const clickCallback = () => {
@@ -90,11 +120,12 @@ console.log("datefrom ===========",dateFrom)
             })
         };
         const itemRows = [
-            <div className="colCss">
-                <tr onClick={clickCallback} key={"row-data-" + item.taskId}>
-                    <td >       {
-                 moment(item.completed).format('DD-MMMM-YYYY')
-                }</td>
+            <div className="colCss"  onClick={clickCallback}>
+                <tr   key={"row-data-" + item.taskId}>
+                  
+                    <td> {
+                        moment(item.completed).format('DD-MMMM-YYYY')
+                    }<span onClick={(event) => { this.toggle(item.completed) }}  >{this.state.btn}</span></td>
                 </tr>
             </div>
         ];
@@ -105,14 +136,13 @@ console.log("datefrom ===========",dateFrom)
                     {uniqueArr.filter(data => (data.completed === item.completed)).map((item, index) => {
                         return (
                             <div className='col-sm-4'>
-                                <p className="card-text">
-                                </p>
-                                {console.log("index", index)}
-                                <div className="col-auto" >
-                                    <p id="drag1" className="prHigh">
-                                        < textarea id="d2" className="textarea" rows="5" readOnly>{(item.description)}</textarea> </p>
+                                <div id="i7" className="col-lg-4 col-md-4 col-sm-4 a " >
+                                    <i onClick={() => this.showvis(item, item.userBean)} class="fas fa-info-circle info "></i>
                                 </div>
+                                <p id="drag1" className="prInit">
+                                    < textarea id="d2" className="textarea" rows="5" readOnly>{(item.description)}</textarea> </p>
                                 <p />
+
                             </div>
                         )
                     })
@@ -125,7 +155,6 @@ console.log("datefrom ===========",dateFrom)
     }
 
     render() {
-        debugger
         let allItemRows = [];
 
         this.state.data.forEach(item => {
@@ -136,48 +165,91 @@ console.log("datefrom ===========",dateFrom)
         });
 
         return (
-            <div>
+            <div className="card-body completed">
+                <Modal centered size="md" show={this.state.show} onHide={this.handleClose.bind(this)}  >
+                    <Modal.Header closeButton>
+                        <Modal.Title>
+                            <div style={{ color: '#808080' }}>Subject  <span style={{ color: 'black' }}> {this.state.popup.subject} </span></div></Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <label className="mb-0" style={{ color: '#808080' }}>Description</label>
+                        <div className="input-group mb-2">
+                            <textarea style={{ color: 'black' }} value={this.state.popup.description} type="text" className="form-control" placeholder="Designation" readOnly />  </div>
+
+                        <label className="mb-0" style={{ color: '#808080' }}>Assigned To</label>
+                        <div className="input-group mb-2">
+                            <div className="input-group-prepend ">
+                                <label className="input-group-text "><i className="fas fa-at" /></label>
+                            </div>
+                            <input type="text" value={this.state.popup.assignedTo} style={{ color: 'black' }} className="form-control" placeholder="Designation" readOnly /></div>
+                        <label className="mb-0" style={{ color: '#808080' }}>Assigned On</label>
+                        <div className="input-group mb-2">
+                            <div className="input-group-prepend">
+                                <label className="input-group-text"><i className="far fa-calendar-alt" /></label>
+                            </div>
+                            <input type="text" style={{ color: 'black' }}
+                                value={moment(this.state.popup.assignDate).format("DD-MM-YYYY")} className="form-control" placeholder="Password" readOnly /></div>
+                        <label className="mb-0" style={{ color: '#808080' }}>Deadline</label>
+                        <div className="input-group mb-2">
+                            <div className="input-group-prepend">
+                                <label className="input-group-text"><i className="far fa-calendar-alt" /></label>
+                            </div>
+
+                            <input type="text" style={{ color: 'black' }}
+                                value={moment(this.state.popup.endDate).format("DD-MM-YYYY")} className="form-control" placeholder="Email" readOnly /> </div>
+                        <label className="mb-0" style={{ color: '#808080' }}>Priority</label>
+                        <div className="input-group mb-2">
+                            <div className="input-group-prepend">
+                                <label className="input-group-text"><i class="fas fa-tasks"></i></label>
+
+                            </div>
+                            {console.log("prio", this.state.popup.priority)}
+                            <input type="text" style={{ color: 'black' }}
+                                value={this.state.popup.priority} className="form-control" readOnly /> </div>
+
+
+                    </Modal.Body>
+                    <Modal.Footer style={{ color: 'red' }} className=" justify-content-center" >
+                        Number of days: {moment(this.state.popup.endDate).diff(moment(this.state.popup.assignDate), 'days')}
+                    </Modal.Footer>
+                </Modal>
+
                 <Form>
-                    <div className="row center">
-
+                    <div className="row col-lg-8 offset-4">
                         <div class="col-sm- my-1">
-                            <div class="input-group">
-                                <div class="input-group-prepend dates">
-                                    <div className="input-group-text space" >From Date</div>
+                            <div className="input-group mb-3">
+                                <div className="input-group-prepend">
+                                    <label className="input-group-text">From Date</label>
                                 </div>
-                                <Form.Group controlId="formBasicEmail">
-                                    <Form.Control className="input-width" type="date" placeholder="assignDate" onChange={(event) => {
-                                        this.setState({
-                                            from: event.target.value
-                                        })
-                                    }} />
-                                </Form.Group>
+                                
+                                <input type="date" onChange={(event) => {
+                                    this.setState({
+                                        from: event.target.value
+                                    })
+                                }} />
                             </div>
                         </div>
                         <div class="col-sm- my-1">
-                            <div class="input-group">
-                                <div class="input-group-prepend dates">
-                                    <div class="input-group-text space">To Date</div>
+                            <div className="input-group mb-3">
+                                <div className="input-group-prepend">
+                                    <label className="input-group-text">To Date</label>
                                 </div>
-                                <Form.Group controlId="formBasicEmail">
-                                    <Form.Control className="input-width" type="date" placeholder="assignDate" onChange={(event) => {
-                                        this.setState({
-                                            to: event.target.value
-                                        })
-                                    }} />
-                                </Form.Group>
-
+                                <input className="input-width" type="date" placeholder="assignDate" onChange={(event) => {
+                                    this.setState({
+                                        to: event.target.value
+                                    })
+                                }} />
                             </div>
                         </div>
-                        <div className="applybtn">
-                            <Button className="submit-button space" variant="primary" type="submit"
+                        <div class="col-sm- my-1">
+
+                            <Button className="submit-button applybtn" variant="primary" type="submit"
                                 onClick={this.fromTo.bind(this)} >
                                 Apply</Button></div>
                     </div>
                 </Form>
-
                 <div className=" card-body">
-                    <table className="tableClass">{allItemRows}</table>
+                    <table className="tableClass font-weight-bold">{allItemRows}</table>
                 </div>
             </div>
         );

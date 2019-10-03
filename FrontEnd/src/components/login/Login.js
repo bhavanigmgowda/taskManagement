@@ -1,3 +1,4 @@
+
 import React, { Component } from 'react';
 import { BrowserRouter as Router, Route, Link ,withRouter} from 'react-router-dom'
 import Axios from 'axios'
@@ -16,15 +17,17 @@ export class Login extends Component {
 			showServer: false,
 			showEmail: false,
 			showPassword: false,
-			type: 'password'
-
+			type: 'password',
+			userData:null
 		}
 	}
+
 	hideEmail = () => {
 		this.setState({
 			showEmail: false
 		})
 	}
+
 	hidePassword = () => {
 		this.setState({
 			showPassword: false
@@ -53,11 +56,15 @@ export class Login extends Component {
 			if (response.data.statusCode === 201) {
 				console.log('data', response.data)
 				this.setState({
-					isValid: true
+
+					isValid: true,
+					userData:response.data.userBean[0]
+				},()=>{
+					console.log(localStorage.setItem("beans", JSON.stringify(this.state.userData.email)));
 				})
 				console.log(localStorage.setItem("isValid", JSON.stringify(this.state.isValid)));
 
-				console.log(localStorage.setItem("beans", JSON.stringify(response.data.userBean[0])));
+				this.props.clicked(this.state.userData.email)
 
 				this.props.history.push('/homePage')
 			}
@@ -69,7 +76,7 @@ export class Login extends Component {
 					this.setState({
 						showInvalid: false
 					})
-				}), 3000);
+				}), 10000);
 
 			}
 			else if(response.data.statusCode === 501) {
@@ -79,7 +86,7 @@ export class Login extends Component {
 					this.setState({
 						showInvalid: false
 					})
-				}), 3000);
+				}), 10000);
 			}
 		}).catch((error) => {
 			this.setState(
@@ -110,7 +117,6 @@ export class Login extends Component {
 				if (email === "") {
 					that.setState({ showEmail: true })
 				}
-
 				if (email !== "" && password !== "") {
 					return true;
 				}
@@ -196,4 +202,95 @@ export class Login extends Component {
 		)
 	}
 }
-export default Login
+export default withRouter(Login)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

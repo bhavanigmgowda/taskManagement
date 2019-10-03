@@ -5,6 +5,7 @@ import '../createUser/create.css'
 import Axios from 'axios'
 import $ from 'jquery'
 import Footer from '../navBar/footer'
+import NavBarForTask from '../navBar/NavBarForTask'
 
 
 export class CreateTask extends Component {
@@ -20,7 +21,7 @@ export class CreateTask extends Component {
             assignedTo: '',
             status: 'todo',
             endDate: '',
-            userBean: JSON.parse(window.localStorage.getItem('beans')),
+            userBeans: JSON.parse(window.localStorage.getItem('beans')),
             showEmailDNE: false,
             showSuccess: false,
             showSubject: false,
@@ -30,8 +31,7 @@ export class CreateTask extends Component {
             showEnddate: false,
             showDateInvalid: false,
             showServerError: false,
-            showEmailInvalid:false,
-            
+            userBean:''
         }
     }
     cancel(e) {
@@ -42,7 +42,7 @@ export class CreateTask extends Component {
     textarea = () => {
         this.setState({ showChar: true })
         $("#description").keyup(function () {
-            $("#info").text((180 - $(this).val().length)+"/180");
+            $("#info").text("Characters left: " + (180 - $(this).val().length));
         });
     }
 
@@ -56,22 +56,39 @@ export class CreateTask extends Component {
         this.hideDescription();
         this.hidePriority();
         this.hideSubject();
-        this.setState({showEmailInvalid:false});
     }
 
-    create(e) {
-        e.preventDefault();
-        console.log(this.state.taskId);
 
-        console.log(this.state.description);
-        console.log(this.state.email);
-        console.log(this.state.subject);
-        console.log(this.state.priority);
+
+
+    getProfile() {
+        console.log('inside get profile')
+        if (JSON.parse(window.localStorage.getItem('isValid'))) {
+            Axios.get('http://localhost:8080/get-profile?email='+this.state.userBeans).then((response) => {
+
+                if (response.data.message === 'Success') {
+                     this.setState({
+                         userBean:response.data.userBean[0]
+                         },()=>{
+                             console.log("==========sfgfds========",this.state.userBean)
+                         })
+
+                }
+            }).catch((error) => {
+                console.log('Error', error);
+            })
+        }// end of if
+    } //End of getProfile
+
+    create(e) {
+
+        e.preventDefault();
         this.setState({
-            email: this.state.userBean.email,
-        })
+            email: this.state.userBeans,
+        },()=>{        console.log("==========",this.state.userBean)
+    })
         console.log(" details" + this.state.taskId)
-        console.log(this.state.userBean);
+        console.log(this.state.userBeans);
         Axios.post('http://localhost:8080/create-task', this.state,
             {
                 params: {
@@ -93,17 +110,21 @@ export class CreateTask extends Component {
                 this.setState({ showEmailDNE: true })
                 setTimeout(() => {
                     this.setState(this.setState({ showEmailDNE: false }))
-                }, 3000);
+                }, 10000);
             }
 
         }).catch((error) => {
             this.setState({ showServerError: true })
             setTimeout(() => {
                 this.setState(this.setState({ showServerError: false }))
-            }, 3000);
+            }, 10000);
             console.log(error)
         })
     }
+
+
+
+
     hideSubject = () => {
         this.setState({
             showSubject: false
@@ -136,6 +157,7 @@ export class CreateTask extends Component {
 
     componentDidMount() {
         var that = this;
+        this.getProfile();
         $(document).ready(function () {
             $('#submit').click(function (e) {
 
@@ -208,13 +230,15 @@ export class CreateTask extends Component {
             }
         }
         that.setState({ showEmailInvalid: false })
-        return true;
+        return true
     }
+
+
     render() {
         return (
             <div id="page-container" >
                 <div id="content-wrap">
-                    <NavBarForTask />
+                    
                     <div className="container-fluid ">
                         {this.state.showServerError ? <div id="alertHead" className="alert alert-danger " role="alert" ><h6 className="font-weight-bold">Task Creation Failed Server Failed to Respond</h6> </div> : null}
                         {this.state.showEmailDNE ? <div id="alertHead" className="alert alert-danger "><h6 className="font-weight-bold">Task Creation Failed Email does not Exist!!!</h6> </div> : null}
@@ -268,7 +292,7 @@ export class CreateTask extends Component {
                                                 }}>
                                                     <option selected disabled hidden>Choose Priority</option>
                                                     <option value="low">Low</option>
-                                                    <option value="intermediate">Medium</option>
+                                                    <option value="medium">Medium</option>
                                                     <option value="high">High</option>
                                                     <option value="critical">Critical</option>
                                                 </select>
@@ -308,6 +332,21 @@ export class CreateTask extends Component {
 
         )
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
 
 export default CreateTask
