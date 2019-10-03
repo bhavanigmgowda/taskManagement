@@ -54,6 +54,10 @@ public class UserController {
 		return service.checkEmail(email);
 	}//End of checkEmail()
 
+	@GetMapping("/get-profile")
+	public Response getProfile(@RequestParam("email")String email) {
+		return service.getProfile(email);
+	}
 	
 	@GetMapping("/logout")
 	public Response logout(HttpSession session) {
