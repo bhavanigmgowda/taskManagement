@@ -128,6 +128,27 @@ public class UserServiceImpl implements UserService {
 		return response;
 	}// End of updatePassword()
 
+	
+	public Response getProfile(@RequestParam("email")String email) {
+		Response response=new Response();
+		if(repository.existsByEmail(email)) {
+			UserBean bean=repository.findByEmail(email).get();
+			response.setDescription("profile found successfully" );
+			response.setMessage("Success");
+			response.setStatusCode(201);
+			response.setUserBean(Arrays.asList(bean));
+		}else {
+			response.setDescription("profile not found ");
+			response.setMessage("failure");
+			response.setStatusCode(401);
+			
+		}
+		return response;
+		
+	} //End of getProfile()
+	
+	
+
 	// logout service for session invalidation
 	@Override
 	public Response logout(HttpSession session) {

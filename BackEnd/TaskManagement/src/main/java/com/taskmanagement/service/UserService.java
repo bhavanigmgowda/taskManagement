@@ -22,6 +22,8 @@ public interface UserService {
 			HttpServletRequest req);
 
 	public Response logout(HttpSession session);
+
+	public Response getProfile(String email);
 	
 	public Response checkEmail(@RequestParam("email") String email);
 }
