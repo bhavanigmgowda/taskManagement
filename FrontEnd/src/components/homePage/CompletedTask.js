@@ -32,7 +32,7 @@ class completedTask extends Component {
         var dateTo = moment().format('YYYY-MM-DD');
 var dateFrom = moment().subtract(7,'d').format('YYYY-MM-DD');
 console.log("datefrom ===========",dateFrom)
-        Axios.get('http://localhost:8080/completed-task-to-me?email=' + this.state.mail.email+'&from='+dateFrom)
+        Axios.get('http://localhost:8080/completed-task-to-me?email=' + this.state.mail+'&from='+dateFrom)
             .then((response) => {
                 console.log('Response Object', response.data.completedTask);
                 if (response.data.message === "Success") {
@@ -57,7 +57,7 @@ console.log("datefrom ===========",dateFrom)
         e.preventDefault();
         const { from, to } = this.state;
         console.log("===from date====", from, to)
-        Axios.get('http://localhost:8080/completed-task-from-to?email=' + this.state.mail.email + '&from=' + from + '&to=' + to)
+        Axios.get('http://localhost:8080/completed-task-from-to?email=' + this.state.mail + '&from=' + from + '&to=' + to)
             .then((response) => {
                 console.log('Response Object', response.data.completedTask);
                 if (response.data.message === "Success") {
@@ -125,6 +125,7 @@ console.log("datefrom ===========",dateFrom)
     }
 
     render() {
+        debugger
         let allItemRows = [];
 
         this.state.data.forEach(item => {

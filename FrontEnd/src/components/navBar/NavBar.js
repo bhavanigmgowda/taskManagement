@@ -5,7 +5,7 @@ import Form from 'react-bootstrap/Form'
 import {Button} from 'react-bootstrap'
 import { BrowserRouter as Router, Route, Link } from 'react-router-dom'
 import { withRouter } from 'react-router-dom'
-import '../css/NavBar.css'
+import './NavBar.css'
 
 
 export class Navbar extends Component {

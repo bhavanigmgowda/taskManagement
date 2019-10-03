@@ -1,3 +1,5 @@
+
+
 .container {
     width: 100%;
     padding: 1%;
@@ -15,14 +17,14 @@
     width: 417px;
 
 }
-.logout {
+/*.logout {
     font-size: 20px;
     font-weight: 600;
     background-color: #314A77;
     position: absolute;
     
- 
-} 
+} */
+
 .log{
     margin-left: 284px !important;
 }

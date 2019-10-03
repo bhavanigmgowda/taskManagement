@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import '../css/home.css'
+import './home.css'
 import { NavLink } from 'react-router-dom';
 import Carousel from 'react-bootstrap/Carousel'
 import Footer from '../navBar/footer';
@@ -7,6 +7,7 @@ import Footer from '../navBar/footer';
 export class WelcomePage extends Component {
 
   render() {
+    debugger
     return (
       <div id="page-container" >
         <div id="content-wrap" >

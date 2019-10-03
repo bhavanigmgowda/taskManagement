@@ -70,14 +70,12 @@ class SearchNavabar extends Component {
                         </Form>
                         <Nav style={{ marginRight: '5%' }} className="nav-link">
                            
-                            <Link to="/CreateTask">
-                                <Button onClick={this.props.clearSearch} variant="outline-primary" type="button" style={{ marginRight: 90 }}>
+                            <Link onClick={this.props.clearSearch} to="/CreateTask">
+                                <Button  variant="outline-primary" type="button" style={{ marginRight: 90 }}>
                                     Create Task
                          </Button>
                             </Link> 
 
-
-                           
                           <NavDropdown style={{ color: 'white' }} title={<Image style={{ width: '29px' }} src="https://encrypted-tbn0.gstatic.com/                      images?q=tbn:ANd9GcQdPQGGJ6ovVg00Uma2J_nwYBCNd-WtChp-C7twldDylqqCajRIUA" roundedCircle />} id="basic-nav-dropdown">
                                 <div><NavLink className="nav-link" onClick={this.logout.bind(this)}>Logout</NavLink>
                                     <Link className="nav-link" onClick={this.props.clearSearch} to='/myprofile' >MyProfile</Link></div>
@@ -95,5 +93,4 @@ class SearchNavabar extends Component {
     }
 }
 export default withRouter(SearchNavabar)
-
 

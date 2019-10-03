@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import Axios from 'axios';
-import SearchNavabar from '../navBar/SearchNavabar';
 import './HomePage.css';
 import { Nav, NavDropdown } from 'react-bootstrap'
 import { NavLink } from 'react-router-dom';
@@ -50,47 +49,51 @@ export default class Byme extends Component {
                     </NavDropdown>
                     <NavLink className="nav-link" onClick={this.props.clearSearch} to="/completedTask" style={{ marginLeft: '91%', marginTop: '-46px' }}>Completed Task</NavLink>
                 </Nav>          
-                <Modal show={this.state.show} onHide={this.handleClose.bind(this)}  >
+               <Modal centered size="md" show={this.state.show}  onHide={this.handleClose.bind(this)}  >
                     <Modal.Header closeButton>
-                        <Modal.Title>Task Details
-                        <div>subject  {this.state.popup.subject}</div></Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>
-                        <div className="input-group mb-3">
-                            <textarea value={this.state.popup.description} type="text" className="form-control" placeholder="Designation" readOnly />  </div>
-                        <div className="input-group mb-3">
-                            <div className="input-group-prepend">
-                                <span style={{ width: '100% ' }} className="input-group-text" id="basic-addon1">Assigned To</span>
-                            </div>
-                            <input type="text"
-                                value={this.state.popup.assignedTo} className="form-control" placeholder="Designation" readOnly /></div>
+                    <Modal.Title>
+                        <div className="" style={{color:'#808080'}}>Subject - <span style={{color:'black'}}> {this.state.popup.subject} </span></div></Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                <label className="mb-0" style={{color:'#808080'}}>Description</label>
+                    <div className="input-group mb-2">
+                        <textarea style={{color:'black'}} value={this.state.popup.description} type="text" className="form-control" placeholder="Designation" readOnly />  </div>
+                        <label className="mb-0" style={{color:'#808080'}}>Assigned By</label>
+                    <div className="input-group mb-2">
+                        <div className="input-group-prepend ">
+                            <label className="input-group-text "><i className="fas fa-at" /></label>
+                        </div>
+                        <input type="text" value={this.state.popup.assignedTo} style={{color:'black'}} className="form-control" placeholder="Designation" readOnly /></div>
+                        <label className="mb-0" style={{color:'#808080'}}>Assigned On</label>
+                    <div className="input-group mb-2">
+                        <div className="input-group-prepend">
+                            <label className="input-group-text"><i className="far fa-calendar-alt" /></label>
+                        </div>
+                        <input type="text" style={{color:'black'}}
+                            value={moment(this.state.popup.assignDate).format("DD-MM-YYYY")} className="form-control" placeholder="Password" readOnly /></div>
+                            <label className="mb-0" style={{color:'#808080'}}>Deadline</label>
+                    <div className="input-group mb-2">
+                        <div className="input-group-prepend">
+                            <label className="input-group-text"><i className="far fa-calendar-alt" /></label>
+                        </div>
+
+                        <input type="text" style={{color:'black'}}
+                            value={moment(this.state.popup.endDate).format("DD-MM-YYYY")} className="form-control" placeholder="Email" readOnly /> </div>
+                            <label className="mb-0" style={{color:'#808080'}}>Priority</label>
+                    <div className="input-group mb-2">
+                        <div className="input-group-prepend">
+                            <label className="input-group-text"><i class="fas fa-tasks"></i></label>
+
+                        </div>
+                        {console.log("prio", this.state.popup.priority)}
+                        <input type="text" style={{color:'black'}}
+                            value={this.state.popup.priority} className="form-control" readOnly /> </div>
 
 
-                        <div className="input-group mb-3">
-                            <div className="input-group-prepend">
-                                <span style={{ width: '100% ' }} className="input-group-text" id="basic-addon1">Assign Date</span>
-                            </div>
-
-                            <input type="text"
-                                value={moment(this.state.popup.assignDate).format("DD-MM-YYYY")} className="form-control" placeholder="Password" readOnly /></div>
-                        <div className="input-group mb-3">
-                            <div className="input-group-prepend">
-                                <span style={{ width: '100% ' }} className="input-group-text" id="basic-addon1">End Date</span>
-                            </div>
-
-                            <input type="text"
-                                value={moment(this.state.popup.endDate).format("DD-MM-YYYY")} className="form-control" placeholder="Email" readOnly /> </div>
-                        <div className="input-group mb-3">
-                            <div className="input-group-prepend">
-                                <span style={{ width: '100% ' }} className="input-group-text" id="basic-addon1">Priority</span>
-                            </div>
-                            {console.log("prio", this.state.popup.priority)}
-                            <input type="text"
-                                value={this.state.popup.priority} className="form-control" readOnly /> </div>
-                    </Modal.Body>
-                    <Modal.Footer style={{ color: 'red' }} >
-                        Number of days {moment(this.state.popup.endDate).diff(moment(this.state.popup.assignDate), 'days')}
-                    </Modal.Footer>
+                </Modal.Body>
+                <Modal.Footer style={{ color: 'red' }} className=" justify-content-center" >
+                    Number of days: {moment(this.state.popup.endDate).diff(moment(this.state.popup.assignDate), 'days')}
+                </Modal.Footer>
                 </Modal>
                 <div className="container-fluid">
                     <center>

@@ -64,10 +64,10 @@ homepage(e){
                         <button className="navbar-toggler" data-target="#my-nav" data-toggle="collapse" aria-controls="my-nav" aria-expanded="false" aria-label="Toggle navigation">
                             <span className="navbar-toggler-icon" />
                         </button>
-                        <div id="my-nav" className="collapse navbar-collapse justify-content-end"> <NavDropdown  title={<Image src="src/assets/images.jpeg" roundedCircle />} id="basic-nav-dropdown">
-                                <NavDropdown.Item className="text-center text-danger" variant="link" onClick={this.logout.bind(this)}>Logout</NavDropdown.Item>                                
-                                <NavLink className="nav-link text-center" to="/myprofile">My Profile</NavLink>                                             
-                            </NavDropdown></div>
+                        <NavDropdown className=" offset-10 " style={{color:'white'}}  title={<Image style={{width:'29px',float:"left",marginLeft: '54%'}} src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQdPQGGJ6ovVg00Uma2J_nwYBCNd-WtChp-C7twldDylqqCajRIUA" roundedCircle />} id="basic-nav-dropdown">
+                                <NavDropdown.Item className="nav-link " variant="link" onClick={this.logout.bind(this)}>Logout</NavDropdown.Item>                                
+                                <NavLink className="nav-link text-dark" to="/myprofile">My Profile</NavLink>                                             
+                            </NavDropdown>
                     </nav>
                 </div>
             </div>

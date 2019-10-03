@@ -40,7 +40,7 @@ export class HomePage extends Component {
         if(!this.props.value){
             let userData = JSON.parse(window.localStorage.getItem('beans')) 
             this.setState({
-                email : userData.email
+                email : userData
             },()=>{
                 this.getTask()
             })
@@ -51,9 +51,8 @@ export class HomePage extends Component {
                 this.getTask()
             })
         }
-       
-        
     }
+
     getTask() {
         let mail=[]
         let ddd = JSON.parse(window.localStorage.getItem('isValid'))
@@ -85,8 +84,8 @@ export class HomePage extends Component {
             this.props.history.push('/')
         }
     }
-    updateCom(a,b){
 
+    updateCom(a,b){
         var moment = require('moment');
         var moment= moment().format('YYYY-MM-DD');
         console.log(moment)
@@ -153,6 +152,8 @@ export class HomePage extends Component {
     getEmail = (data) => {
         console.log('Dataaaaaa', data)
     }
+
+    
         render() {
       
         return (
@@ -160,58 +161,59 @@ export class HomePage extends Component {
                 <Nav >
                     <NavDropdown title="To Me" id="basic-nav-dropdown">
                         <NavLink   className="nav-link" to="/homePage"  >To Me</NavLink>
-                        <NavLink  className="nav-link" onClick={this.props.byme} >By Me</NavLink>
+                        <NavLink  className="nav-link" to="/byme" >By Me</NavLink>
                     </NavDropdown>
                     <NavLink className="nav-link" to="/completedTask" style={{ marginLeft: '91%', marginTop: '-46px' }}>Completed Task</NavLink>
                 </Nav> 
                    <div  id="content-wrap"  >
                 {console.log("============",this.props.value)}
               
-                <Modal size="sm" centered show={this.state.show} onHide={this.handleClose.bind(this)}  >
-                    <Modal.Header closeButton>
-                        <Modal.Title>Task Details
-                        <div>subject  {this.state.popup.subject}</div></Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>
-                        <div className="input-group mb-3">
-                            <textarea value={this.state.popup.description} type="text" className="form-control" placeholder="Designation" readOnly />  </div>
-                        <div className="input-group mb-3">
-                            <div className="input-group-prepend">
-                                <span style={{ width: '100% ' }} className="input-group-text" id="basic-addon1">Assigned by</span>
-                            </div>  
+                 <div> <div><Modal centered size="md" show={this.state.show} onHide={this.handleClose.bind(this)}  >
+                <Modal.Header closeButton>
+                    <Modal.Title>
+                        <div style={{color:'#808080'}}>Subject - <span style={{color:'black'}}> {this.state.popup.subject} </span></div></Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                <label className="mb-0" style={{color:'#808080'}}>Description</label>
+                    <div className="input-group mb-2">
+                        <textarea style={{color:'black'}} value={this.state.popup.description} type="text" className="form-control" placeholder="Designation" readOnly />  </div>
+                        <label className="mb-0" style={{color:'#808080'}}>Assigned By</label>
+                    <div className="input-group mb-2">
+                        <div className="input-group-prepend ">
+                            <label className="input-group-text "><i className="fas fa-at" /></label>
+                        </div>
+                        <input type="text" value={this.state.popup.assignedTo} style={{color:'black'}} className="form-control" placeholder="Designation" readOnly /></div>
+                        <label className="mb-0" style={{color:'#808080'}}>Assigned On</label>
+                    <div className="input-group mb-2">
+                        <div className="input-group-prepend">
+                            <label className="input-group-text"><i className="far fa-calendar-alt" /></label>
+                        </div>
+                        <input type="text" style={{color:'black'}}
+                            value={moment(this.state.popup.assignDate).format("DD-MM-YYYY")} className="form-control" placeholder="Password" readOnly /></div>
+                            <label className="mb-0" style={{color:'#808080'}}>Deadline</label>
+                    <div className="input-group mb-2">
+                        <div className="input-group-prepend">
+                            <label className="input-group-text"><i className="far fa-calendar-alt" /></label>
+                        </div>
 
-                            <input type="text"
-                                value={this.state.user.email} className="form-control" placeholder="Designation" readOnly /></div>
+                        <input type="text" style={{color:'black'}}
+                            value={moment(this.state.popup.endDate).format("DD-MM-YYYY")} className="form-control" placeholder="Email" readOnly /> </div>
+                            <label className="mb-0" style={{color:'#808080'}}>Priority</label>
+                    <div className="input-group mb-2">
+                        <div className="input-group-prepend">
+                            <label className="input-group-text"><i class="fas fa-tasks"></i></label>
+
+                        </div>
+                        {console.log("prio", this.state.popup.priority)}
+                        <input type="text" style={{color:'black'}}
+                            value={this.state.popup.priority} className="form-control" readOnly /> </div>
 
 
-                        <div className="input-group mb-3">
-                            <div className="input-group-prepend">
-                                <span style={{ width: '100% ' }} className="input-group-text" id="basic-addon1">Assign Date</span>
-                            </div>
-
-                            <input type="text"
-                                value={moment(this.state.popup.assignDate).format("DD-MM-YYYY")} className="form-control" placeholder="Password" readOnly /></div>
-                        <div className="input-group mb-3">
-                            <div className="input-group-prepend">
-                                <span style={{ width: '100% ' }} className="input-group-text" id="basic-addon1">End Date</span>
-                            </div>
-
-                            <input type="text"
-                                value={moment(this.state.popup.endDate).format("DD-MM-YYYY")} className="form-control" placeholder="Email" readOnly /> </div>
-                        <div className="input-group mb-3">
-                            <div className="input-group-prepend">
-                                <span style={{ width: '100% ' }} className="input-group-text" id="basic-addon1">Priority</span>
-                            </div>
-                            <input type="text"
-                                value={this.state.popup.priority} className="form-control" readOnly /> </div>
-
-
-                    </Modal.Body>
-                    <Modal.Footer style={{ color: 'red' }} >
-                        Number of days {moment(this.state.popup.endDate).diff(moment(this.state.popup.assignDate), 'days')}
-                    </Modal.Footer>
-                </Modal>
-
+                </Modal.Body>
+                <Modal.Footer style={{ color: 'red' }} className=" justify-content-center" >
+                    Number of days: {moment(this.state.popup.endDate).diff(moment(this.state.popup.assignDate), 'days')}
+                </Modal.Footer>
+            </Modal>
                 <div className="container-fluid">
                     <center>
                         <div className="row container">
@@ -220,7 +222,7 @@ export class HomePage extends Component {
 
                                 <div id="card bg-default head" >
                                     <h5 id="card-header" className="card-header header">
-                                        <center className="letter" >To Do</center>
+                                        <center className="letter" >TODO</center>
                                     </h5>
                                 </div>
                                 <div className=" card-body cards">
@@ -283,7 +285,7 @@ export class HomePage extends Component {
                                 <div className="col-auto">
                                     <div id="card bg-default head" >
                                         <h5 id="card-header" className="card-header header">
-                                            <center className="letter" > In Progress </center>
+                                            <center className="letter" > INPROGRESS </center>
                                         </h5>
                                     </div>
                                     <div className="card-body cards">
@@ -363,7 +365,7 @@ export class HomePage extends Component {
                                 <div className="col-auto">
                                     <div id="card bg-default head" >
                                         <h5 id="card-header" className="card-header header">
-                                            <center className="letter"> Blocked </center>
+                                            <center className="letter"> BLOCKED </center>
                                         </h5>
                                     </div>
                                     <div className=" card-body cards">
