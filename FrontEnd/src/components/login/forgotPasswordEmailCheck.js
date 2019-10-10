@@ -5,62 +5,67 @@ import SimpleNavBarCreate from '../navBar/simplenavbarcreate'
 import Footer from '../navBar/footer'
 import $ from 'jquery'
 import './ConfirmPassword.css'
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { PropagateLoader } from 'react-spinners';
 
 export default class forgotPasswordEmailCheck extends Component {
 
+    
     constructor(props) {
         super(props)
         this.state = {
             email: '',
-            showNoEmail: false,
-            showServer: false,
             showEmail: false,
-            showEmailInvalid: false
+            showEmailInvalid: false,
+            loading:false,
         }
+        
 
     }
 
-
     checkEmail = (event) => {
         event.preventDefault();
-
+        this.setState({loading:true});
         Axios.get('http://localhost:8080/check-email' + "?email" + "=" + this.state.email)
             .then((response) => {
                 console.log(response)
-
+                this.setState({loading:false});
                 if (response.data.statusCode == 201) {
                     console.log("Data Found ...");
 
                     this.props.history.push({
-                        pathname: '/confirmPassword',
+                        pathname: '/conform',
                         state: { email: this.state.email }
                     })
                     console.log("props" + this.props.history.location.state.email)
                 }
                 else {
+                    
                     console.log("Data Not Found ...");
-                    this.setState({ showNoEmail: true })
-                    setTimeout(() => {
-                        this.setState({
-                            showNoEmail: false
-                        })
-                    }, 3000);
+                    this.NotifyNoEmail();
                 }
 
             }).catch((error) => {
-
-                this.setState(
-                    {
-                        showServer: true
-                    }
-                )
-                setTimeout(() => {
-                    this.setState({
-                        showServer: false
-                    })
-                }, 3000);
+                this.setState({loading:false});
+                this.NotifyServerOffline();
+               
             })
     }
+    NotifyNoEmail=()=>{
+
+            if (! toast.isActive(this.toastId)) {
+                this.toastId= toast.error(<center>Email Not Found</center>, {
+                position: "top-center", autoClose: 5000,preventDuplicate:true});
+            }
+    }
+    
+	NotifyServerOffline = () => {
+		toast.error(<center>Server Not Responding</center>, {
+			position: "top-center", autoClose: 5000,});
+	}
+
+
     componentDidMount() {
         var that = this;
 
@@ -107,6 +112,7 @@ export default class forgotPasswordEmailCheck extends Component {
     }
 
     render() {
+       
         return (
             <div id="form-container">
                 <div id="content-wrap">
@@ -121,6 +127,13 @@ export default class forgotPasswordEmailCheck extends Component {
                                 <div id="cardHead" className="card-header text-center">
                                     <h3>Account Recovery</h3>
                                     <p>Enter your email</p>
+                                    <div className="w-100" style={{marginLeft: '50%',marginRight:'auto'}}>
+										<PropagateLoader 
+											size={10}
+											 color={'#123abc'}
+											loading={this.state.loading}
+										/>
+										</div>
                                 </div>
                                 <div className="card-body">
                                     <form role="form" onSubmit={this.checkEmail}>
@@ -139,14 +152,9 @@ export default class forgotPasswordEmailCheck extends Component {
                                             Please Enter Email**
                                         </div> : null}
                                         {this.state.showEmailInvalid ? <div id="errordiv" className="container-fluid">
-                                        Please enter a valid email address
+                                        Please enter a valid email address**
                                         </div> : null}
-                                        {this.state.showNoEmail ? <div id="alert" className="alert alert-danger">
-                                            <small className="text-center font-weight-bold d-block" >Email not found</small>
-                                        </div> : null}
-                                        {this.state.showServer ? <div id="alert" className="alert alert-danger">
-                                            <small className="text-center font-weight-bold d-block" >Server failed to respond</small>
-                                        </div> : null}
+                                       
                                         <div className="input-group container float-right clearfix" style={{ width: '30%', padding: '0%' }}>
                                             <button type="submit" title="submit" id="submit" className="form-control-plaintext btn btn-outline-primary btn-sm" >Submit</button>
                                         </div>
@@ -154,6 +162,7 @@ export default class forgotPasswordEmailCheck extends Component {
                                 </div>
                             </div>
                         </div>
+                        <ToastContainer />
                     </div>
                     <Footer />
                 </div>
