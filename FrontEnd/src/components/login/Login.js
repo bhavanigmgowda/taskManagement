@@ -381,8 +381,7 @@ export class Login extends Component {
 	}
 }
 
-
-	render() {
+render() {
 	
 		return (
 			<div id="form-container" >
@@ -398,7 +397,7 @@ export class Login extends Component {
 							</div>
 						</div>
 						<div className="row">
-							<div id="container" className="col-auto container mt-5">
+							<div id="container" className="col-auto container-fluid mt-5">
 								<div id="create" className="card shadow-lg ">
 									<div id="cardHead" className="card-header text-center">
 										<h3>Login</h3>
@@ -418,7 +417,7 @@ export class Login extends Component {
 												<div className="input-group-prepend">
 													<label className="input-group-text"><i className="fas fa-at" /></label>
 												</div>
-												<input className="form-control" autoComplete="off" type="email" name="email" onKeyPress={this.hideEmail} title="Enter Email" id="email" placeholder="Enter Email" onChange={(event) => {
+												<input className="form-control" autoComplete="off" type="email" name="email" onKeyPress={()=>{this.hideEmail();this.setState({showEmailInvalid:false})}} title="Enter Email" id="email" placeholder="Enter Email" onChange={(event) => {
 													this.setState({
 														email: event.target.value
 													})
@@ -431,7 +430,7 @@ export class Login extends Component {
 												<div className="input-group-prepend">
 													<label className="input-group-text"><i className="fas fa-key" /></label>
 												</div>
-												<input className="form-control border border-right-0" onKeyPress={this.hidePassword} autoComplete="off" type={this.state.type} name="password" title="Enter Password" id="password" placeholder="Enter Password" onChange={(event) => {
+												<input className="form-control border border-right-0" onKeyPress={()=>{this.hidePassword();this.setState({showPasswordCriteria:false})}} autoComplete="off" type={this.state.type} name="password" title="Enter Password" id="password" placeholder="Enter Password" onChange={(event) => {
 													this.setState({
 														password: event.target.value
 													})

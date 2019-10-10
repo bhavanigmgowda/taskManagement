@@ -265,7 +265,7 @@ export class CreateTask extends Component {
                 <div id="content-wrap">
                     <div className="container-fluid ">
                         <div className="row">
-                            <div id="container" className="col-auto container pb-5">
+                            <div id="container" className="col-auto container-fluid pb-5">
                                 <div id="create" className="card shadow-lg mt-5 " >
                                     <div id="cardHead" className="card-header" >
                                         <legend className="text-center">Task Form</legend>
