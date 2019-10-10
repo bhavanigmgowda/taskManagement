@@ -11,6 +11,7 @@ import createUser from './components/createUser/createUser'
 import myprofile from './components/createUser/MyProfile'
 
 import navBar from './components/navBar/NavBar'
+import byme from './components/homePage/Byme'
 
 import completedTask from './components/homePage/CompletedTask';
 
@@ -22,7 +23,7 @@ import ForgotPasswordEmailCheck from './components/login/forgotPasswordEmailChec
 import forgotPasswordEmailCheck from './components/login/forgotPasswordEmailCheck'
 import confirmPassword from './components/login/confirmpassword'
 
-import SearchNavabar from './components/navBar/searchNavBar';
+import SearchNavabar from './components/navBar/SearchNavBar';
 import Byme from './components/homePage/Byme';
 
 
@@ -32,7 +33,6 @@ export class App extends Component {
   constructor(props) {
     let email=JSON.parse(window.localStorage.getItem('beans'))
 
-    debugger
     super(props);
     this.state = {
       search: false,
@@ -66,7 +66,6 @@ export class App extends Component {
       }}
   } 
   componentDidMount() {
-    debugger
     let email = ''
     let isValid;
     let page;
@@ -83,14 +82,12 @@ export class App extends Component {
 
   }
   clearSearch = () => {
-    debugger
     this.setState({
       search: false
     })
   }
   
   setVal=()=>{
-    debugger
     this.setState({
       isValid: localStorage.getItem("isValid") === 'true' ? true : false,
     })
@@ -112,7 +109,6 @@ byme=()=>{
 
 
   searchPage = (data) => {
-    debugger
     if (JSON.parse(window.localStorage.getItem('isValid'))) {
       if (localStorage.getItem("pages") === '"By Me"') {
         Axios.get('http://localhost:8080/search-task-by-me?searchTerm=' + data + "&&email=" + this.state.email).then((response) => {
@@ -170,23 +166,22 @@ byme=()=>{
   
 
   render() {
-    const isLoggedIn = this.state.isvalid;
+    const page =JSON.parse(window.localStorage.getItem('pages')) ;
     return (
       <div>
         {this.state.isValid ? <SearchNavabar
           setVal={this.setVal}
           clearSearch={this.clearSearch}
-          pushCreateTask={this.clearSearchFromCreateTask}
-          pushMyProfile={this.clearSearchFromMyProfile}
           sendToApp={this.searchPage}
           byme={this.byme} /> : null}
 
         {this.state.search ?
-          <Byme searchData={this.state.searchtask}           clearSearch={this.clearSearch}
-          />
-          : <div><Route exact path='/homePage' render={() => { return <HomePage value={this.state.email} /> }} ></Route>
+          <Byme searchData={this.state.searchtask} searchPage={page} byme={this.byme} 
+          clearSearch={this.clearSearch}  />
+          : <div><Route exact path='/homePage' render={() => { return <HomePage value={this.state.email} byme={this.byme}   /> }} ></Route>
             <Route exact path='/navBar' component={navBar}></Route>
-            <Route exact path='/byme' render={() => { return <Byme byme={this.byme} searchData={this.state.taskData} clearSearch={this.clearSearch}/> }}></Route>
+            <Route exact path='/byme' render={() => { return <Byme byme={this.byme} searchData={this.state.taskData}  clearSearch={this.clearSearch}
+ /> }}></Route>
             <Route exact path='/completedTask' component={completedTask}></Route>
             <Route exact path='/myprofile' component={myprofile}></Route>
             {(this.state.isValid && this.props.location.pathname === '/') ? <Redirect to='/homePage' /> : null}

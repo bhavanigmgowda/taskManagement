@@ -160,7 +160,7 @@ export default class MyProfile1 extends Component {
                         <div style={cardStyle}>
                             <div><b style={{ fontSize: '40px', color: 'gray' }}>Profile Details</b></div>
                             <hr></hr>
-                            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRi-I5E9Vn6dFsuJnrJfJVcpNp6KNQ74ZSjKoGn5t9-pGLddxDG" style={{ width: '40%' }} />
+                            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ3ub9pAdXyp3SunhYlBjGcqu82RL20pRSumjUnJ3e2tRiF_bS4" style={{ width: '40%' }} />
                             <div style={containerStyle}>
 
 
@@ -168,7 +168,7 @@ export default class MyProfile1 extends Component {
                                 <h4 ><b className="h4" >{this.state.employeeNameUpper}</b></h4>
 
                                 <h4 ><b className="h3">{this.state.userBean.email}</b></h4>
-                                <h4 ><b className="h3"> {this.state.userBean.designation}</b></h4>
+                                <h5 ><b className="h3"> {this.state.userBean.designation}</b></h5>
                             </div>
                             <hr></hr>
                             <button onClick={this.editUser.bind(this, this.state.beans)} className="btn btn-outline-success">Edit</button>

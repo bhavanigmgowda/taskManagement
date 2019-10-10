@@ -81,6 +81,7 @@ export class HomePage extends Component {
                         this.setState({
                             ...state
                         })
+                        localStorage.setItem("pages", JSON.stringify("To Me"))
 
                     }
                 }).catch((error) => {
@@ -161,8 +162,8 @@ export class HomePage extends Component {
         this.setState({
             page:data
         })
+        this.props.byme()
         localStorage.setItem("pages", JSON.stringify("By Me"))
-
     }else{
         localStorage.setItem("pages", JSON.stringify("To Me"))
 
@@ -175,18 +176,17 @@ export class HomePage extends Component {
     }
    
     render() {
-            debugger
             console.log(' this.state.onProgress', this.state.onProgress)
         return (
             <div id="page-container" >
                 <Nav >
                     <NavDropdown   title={this.state.page} id="basic-nav-dropdown">
                         <NavLink onClick={this.props.clearSearch}   className="nav-link" onClick={(event) => { this.pageName("To Me") }}  to="/homePage"  >To Me</NavLink>
-                        <NavLink  onClick={this.props.clearSearch} className="nav-link" onClick={(event) => { this.pageName("By Me") }}  to="/byme" onClick={this.props.byme} >By Me</NavLink>
+                        <NavLink  onClick={this.props.clearSearch} className="nav-link" onClick={(event) => { this.pageName("By Me") }}  to="/byme" >By Me</NavLink>
                     </NavDropdown>
                 
 
-                    <Button type="button" variant="outline-primary" onClick={(e)=>{this.completedTask(e)}} className="com" style={{ marginLeft: '88%', marginTop: '-21px' }}>Completed Task</Button>
+                    <Button type="button" variant="outline-primary" onClick={(e)=>{this.completedTask(e)}} className="com" style={{ marginLeft: '88%' }}>Completed Task</Button>
                   
                 </Nav> 
                 <div id="content-wrap" >

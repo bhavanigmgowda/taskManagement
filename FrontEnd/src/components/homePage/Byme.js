@@ -21,7 +21,6 @@ class Byme extends Component {
     }
 
     componentDidMount() {
-        debugger
         if (!this.props.searchData) {
             this.props.byme()
         }
@@ -38,10 +37,10 @@ class Byme extends Component {
 
         })
         localStorage.setItem("pages", JSON.stringify("To Me"))
-
+        this.props.history.push('/homePage')
     }else{
         localStorage.setItem("pages", JSON.stringify("By Me"))
-
+        this.props.history.push('/byme')
     }
     this.props.clearSearch()
 
@@ -65,9 +64,9 @@ class Byme extends Component {
             return (
                 <div>
                      <Nav >
-                    <NavDropdown   title={this.state.page} id="basic-nav-dropdown">
-                        <NavLink onClick={this.props.clearSearch}   className="nav-link" onClick={(event) => { this.pageName("To Me") }}  to="/homePage"  >To Me</NavLink>
-                        <NavLink  onClick={this.props.clearSearch} className="nav-link" onClick={(event) => { this.pageName("By Me") }}  to="/byme" onClick={this.props.byme} >By Me</NavLink>
+                    <NavDropdown   title={this.props.searchPage?this.props.searchPage:"By Me"} id="basic-nav-dropdown">
+                        <NavLink onClick={this.props.clearSearch}   className="nav-link" onClick={(event) => { this.pageName("To Me") }}  >To Me</NavLink>
+                        <NavLink  onClick={this.props.clearSearch} className="nav-link" onClick={(event) => { this.pageName("By Me") }}   onClick={this.props.byme} >By Me</NavLink>
                     </NavDropdown>
                     <Button type="button" variant="outline-primary" onClick={(e)=>{this.completedTask(e)}} className="com" style={{ marginLeft: '88%', marginTop: '-21px' }}>Completed Task</Button>
                 </Nav> 

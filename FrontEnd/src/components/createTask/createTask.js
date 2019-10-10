@@ -6,16 +6,11 @@ import Axios from 'axios'
 import $ from 'jquery'
 import Footer from '../navBar/footer'
 import NavBarForTask from '../navBar/NavBarForTask'
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import { PropagateLoader } from 'react-spinners';
 
 
 export class CreateTask extends Component {
     constructor(props) {
         super(props)
-
-
         this.state = {
             taskId: '',
             description: '',
@@ -27,21 +22,17 @@ export class CreateTask extends Component {
             status: 'todo',
             endDate: '',
             userBeans: JSON.parse(window.localStorage.getItem('beans')),
+            showEmailDNE: false,
+            showSuccess: false,
             showSubject: false,
             showDescription: false,
             showAssignTo: false,
             showPriority: false,
             showEnddate: false,
             showDateInvalid: false,
-            showEmailInvalid: false,
-            loading: false,
+            showServerError: false,
             userBean: ''
         }
-
-
-
-
-
     }
     cancel(e) {
         e.preventDefault();
@@ -51,7 +42,7 @@ export class CreateTask extends Component {
     textarea = () => {
         this.setState({ showChar: true })
         $("#description").keyup(function () {
-            $("#info").text((180 - $(this).val().length) + "/180");
+            $("#info").text("Characters left: " + (180 - $(this).val().length));
         });
     }
 
@@ -65,8 +56,10 @@ export class CreateTask extends Component {
         this.hideDescription();
         this.hidePriority();
         this.hideSubject();
-        this.setState({ showEmailInvalid: false });
     }
+
+
+
 
     getProfile() {
         console.log('inside get profile')
@@ -88,12 +81,7 @@ export class CreateTask extends Component {
     } //End of getProfile
 
     create(e) {
-        debugger
 
-        console.log("description ===", this.state.description);
-
-
-        this.setState({ loading: true })
         e.preventDefault();
         this.setState({
             email: this.state.userBeans,
@@ -101,7 +89,7 @@ export class CreateTask extends Component {
             console.log("==========", this.state.userBean)
         })
         console.log(" details" + this.state.taskId)
-        console.log(this.state.userBean);
+        console.log(this.state.userBeans);
         Axios.post('http://localhost:8080/create-task', this.state,
             {
                 params: {
@@ -109,25 +97,35 @@ export class CreateTask extends Component {
                 }
             }
         ).then((response) => {
-            this.setState({ loading: false })
             console.log(response)
+            console.log("book details" + this.state.taskId)
 
             console.log(response.data.message)
             if (response.data.statusCode === 201) {
-                this.NotifyTaskCreationSuccess();
+                this.setState({ showSuccess: true })
                 setTimeout(() => {
                     this.props.history.push('/homePage');
                 }, 3000)
+
             } else if (response.data.statusCode === 401) {
-                this.NotifyEmailDoesntExists();
+                this.setState({ showEmailDNE: true })
+                setTimeout(() => {
+                    this.setState(this.setState({ showEmailDNE: false }))
+                }, 10000);
             }
 
         }).catch((error) => {
-            this.setState({ loading: false })
-            this.NotifyServerOffline();
+            this.setState({ showServerError: true })
+            setTimeout(() => {
+                this.setState(this.setState({ showServerError: false }))
+            }, 10000);
             console.log(error)
         })
     }
+
+
+
+
     hideSubject = () => {
         this.setState({
             showSubject: false
@@ -155,17 +153,12 @@ export class CreateTask extends Component {
             showEnddate: false
         })
     }
-    hideInvalidDate = () => {
-        this.setState({ showDateInvalid: false })
-    }
 
 
 
     componentDidMount() {
-        this.getProfile();
-
         var that = this;
-
+        this.getProfile();
         $(document).ready(function () {
             $('#submit').click(function (e) {
 
@@ -178,6 +171,11 @@ export class CreateTask extends Component {
                 selectedDate.setHours(22);
                 var priority = (document.getElementById('Priority').value);
                 var now = new Date();
+
+                console.log("now date ", now)
+                console.log("some date", endDate)
+                console.log("selected date ", selectedDate)
+                console.log("proioe", priority)
 
                 if (endDate === "") {
                     that.setState({ showEnddate: true })
@@ -196,12 +194,20 @@ export class CreateTask extends Component {
                 }
 
                 if (subject === "" && description === "" && AssignTo === "" && endDate === "") {
-                    console.log("here")
-                    that.NotifyFieldMandatory();
+                    that.setState({ showFieldsMadatory: true })
+                    setTimeout(() => {
+                        that.setState({
+                            showFieldsMadatory: false
+                        })
+                    }, 3000);
                 }
                 if (selectedDate < now) {
                     that.setState({ showDateInvalid: true })
-
+                    setTimeout(() => {
+                        that.setState({
+                            showDateInvalid: false
+                        })
+                    }, 3000);
                 }
                 if (subject !== "" && priority !== "Choose Priority" && description !== "" && AssignTo !== "" && endDate !== "" && (selectedDate >= now) && that.handleEmail() == true) {
                     return true;
@@ -225,58 +231,25 @@ export class CreateTask extends Component {
             }
         }
         that.setState({ showEmailInvalid: false })
-        return true;
-    }
-
-    NotifyFieldMandatory = () => {
-        if (!toast.isActive(this.toastId)) {
-            this.toastId = toast.info(<center>All Fields Are Mandatory</center>, {
-                position: "top-center", autoClose: 5000
-            });
-        }
-    }
-
-    NotifyServerOffline = () => {
-        if (!toast.isActive(this.toastId)) {
-            this.toastId = toast.error(<center>Registration Failed Server Did Not Respond</center>, {
-                position: "top-center", autoClose: 7000,
-            });
-        }
-    }
-    NotifyEmailDoesntExists = () => {
-        if (!toast.isActive(this.toastId)) {
-            this.toastId = toast.warning(<center>Registration Failed Email Does Not Exist</center>, {
-                position: "top-center", autoClose: 7000,
-            });
-        }
-    }
-    NotifyTaskCreationSuccess = () => {
-        if (!toast.isActive(this.toastId)) {
-            this.toastId = toast.success(<center>Task Created Successfully</center>, {
-                position: "top-center", autoClose: 3000,
-            });
-        }
+        return true
     }
 
 
     render() {
         return (
-            <div id="form-container" >
+            <div id="page-container" >
                 <div id="content-wrap">
+
                     <div className="container-fluid ">
+                        {this.state.showServerError ? <div id="alertHead" className="alert alert-danger " role="alert" ><h6 className="font-weight-bold">Task Creation Failed Server Failed to Respond</h6> </div> : null}
+                        {this.state.showEmailDNE ? <div id="alertHead" className="alert alert-danger "><h6 className="font-weight-bold">Task Creation Failed Email does not Exist!!!</h6> </div> : null}
+                        {this.state.showSuccess ? <div id="alertHead" className="alert alert-success " ><h6 className="font-weight-bold">Task Created Successfully</h6> </div> : null}
                         <div className="row">
-                            <div id="container" className="col-auto container pb-5">
+
+                            <div id="container" className="col-auto container mt-5 pb-5">
                                 <div id="create" className="card shadow-lg mt-5 " >
                                     <div id="cardHead" className="card-header" >
                                         <legend className="text-center">Task Form</legend>
-                                        <div className="w-100" style={{ marginLeft: '50%', marginRight: 'auto' }}>
-                                            <PropagateLoader
-                                                size={10}
-                                                color={'#123abc'}
-                                                loading={this.state.loading}
-                                            />
-                                        </div>
-                                        <ToastContainer />
                                     </div>
                                     <div className="card-body">
                                         <form onSubmit={this.create.bind(this)}>
@@ -292,7 +265,7 @@ export class CreateTask extends Component {
                                             </div>
                                             {this.state.showSubject ? <div id="errordiv" className="container-fluid">Please set subject**</div> : null}
                                             <div className="input-group mb-3">
-                                                <textarea onBlur={this.hideCharacterCount} onKeyPress={this.hideDescription} type="text" className="form-control" id="description" name="description" title="Enter Description" maxLength={180} placeholder="Enter Description (character limit: 180)" rows={3} onChange={(event) => {
+                                                <textarea onBlur={this.hideCharacterCount} onKeyPress={this.hideDescription} onKeyPress={this.textarea} type="text" className="form-control" id="description" name="description" title="Enter Description" maxLength={180} placeholder="Enter Description (character limit: 180)" rows={3} onChange={(event) => {
                                                     this.setState({
                                                         description: event.target.value
                                                     })
@@ -320,7 +293,7 @@ export class CreateTask extends Component {
                                                 }}>
                                                     <option selected disabled hidden>Choose Priority</option>
                                                     <option value="low">Low</option>
-                                                    <option value="intermediate">Medium</option>
+                                                    <option value="medium">Medium</option>
                                                     <option value="high">High</option>
                                                     <option value="critical">Critical</option>
                                                 </select>
@@ -330,14 +303,19 @@ export class CreateTask extends Component {
                                                 <div className="input-group-prepend">
                                                     <label className="input-group-text"><i className="far fa-calendar-alt" /></label>
                                                 </div>
-                                                <input className="form-control" onClick={() => { this.hideDate(); this.hideInvalidDate() }} required="required" type="date" name="EndDate" title="Enter Deadline" id="EndDate" placeholder="Enter Deadline" onChange={(event) => {
+                                                <input className="form-control" onClick={this.hideDate} required="required" type="date" name="EndDate" title="Enter Deadline" id="EndDate" placeholder="Enter Deadline" onChange={(event) => {
                                                     this.setState({
                                                         endDate: event.target.value
                                                     })
                                                 }} />
                                             </div>
                                             {this.state.showEnddate ? <div id="errordiv" className="container-fluid">Please select Date**</div> : null}
-                                            {this.state.showDateInvalid ? <div id="errordiv" className="container-fluid">Assign Date must be greater than Current date**</div> : null}
+
+                                            {this.state.showFieldsMadatory ? <div id="alert" className="alert alert-danger "><small><b>All fileds are Mandatory</b></small></div> : null}
+                                            {this.state.showDateInvalid ? <div id="alert" className="alert alert-danger" ><small><b>Assign Date must be greater than Current date</b></small></div> : null}
+
+
+
                                             <div className="input-group container-fluid">
                                                 <button type="reset" id="reset" onClick={this.hideOnReset} title="reset" className="form-control-plaintext btn btn-outline-primary btn-sm">Reset</button>
                                                 <button type="submit" id="submit" title="submit" className="form-control-plaintext btn btn-outline-success btn-sm">Submit</button>
@@ -349,13 +327,13 @@ export class CreateTask extends Component {
                             </div>
                         </div>
                     </div>
-                    <Footer />
                 </div>
-
+                <Footer />
             </div>
 
         )
     }
+
 }
 
 export default CreateTask

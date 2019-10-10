@@ -12,20 +12,26 @@ class SearchNavabar extends Component {
             isValid: JSON.parse(window.localStorage.getItem('isValid')),
             userbean: JSON.parse(localStorage.getItem("beans")),
             show: false,
-            btnPage:"To Me"
+            btnPage: "To Me"
         }
-        this.search = this.search.bind(this);
     }
 
     search(e) {
         e.preventDefault();
         this.props.sendToApp(this.state.search)
+        this.clear(e);
     }
-
+    clear(e) {
+        e.preventDefault();
+        this.setState({
+            search: ''
+        })
+    }
     homepage(e) {
         e.preventDefault();
-        this.props.history.push('/homePage');
+        this.props.history.push('/homePage')
     }
+    
 
     logout(e) {
         e.preventDefault();
@@ -51,46 +57,51 @@ class SearchNavabar extends Component {
     pushHomePage = () => {
         this.props.clearSearch()
     }
+    searchByEnter(e){
+        if(e.key === 'Enter') {
+            this.search(e);
+        }
+    }
     render() {
-        let val="To Me"
+        let val = "To Me"
         return (
             <div>
-                <Navbar bg="dark" expand="lg sm xl md">
-
-                    <Link className="btnLog" onClick={this.props.clearSearch} to='/homePage' ><h3 style={{ cursor: 'pointer' }}>Task Manager</h3></Link>
+                  <Navbar style={{height:'60px'}} bg="dark" expand="lg">
+                   <Link className="navbar-brand" to="/homePage" onClick={this.props.clearSearch} style={{color:'white'}}>Task Manager</Link>
                     <Navbar.Toggle aria-controls="basic-navbar-nav" />
-                    <Navbar.Collapse style={{ marginLeft: '32%' }} id="basic-navbar-nav">
-                        <Form inline className="mr-auto ">
-
-                            <FormControl type="text" name="search"
+                    <Navbar.Collapse id="basic-navbar-nav">
+                        <div inline   inline className="row container-fluid ml-5  mr-n5 justify-content-center">
+                        <div class="col-sm-3- ">
+                            <FormControl type="text" name="search"  
                                 onChange={(event) => { this.setState({ search: event.target.value }) }}
+                                   value={this.state.search} onKeyDown={(event) => { this.searchByEnter(event) }}  placeholder="Search" className="w-55" />
+                            </div>
+                            <div class="col-sm-3">
 
-                                value={this.state.search} placeholder="Search" className="mr-sm-2" />
-                            <Button variant="outline-success" onClick={(event) => { this.search(event) }}  >Search</Button>
-                        </Form>
-                        <Nav style={{ marginRight: '5%' }} className="nav-link">
-                           
-                            <Link onClick={this.props.clearSearch} to="/CreateTask">
-                                <Button  variant="outline-primary" type="button" style={{ marginRight: 90 }}>
+                            <Button className="ml-1" variant="outline-success" onClick={(event) => { this.search(event) }}  >Search</Button>
+                        </div>
+                        </div>
+                        <Nav   className="nav-link">
+                            <Link to="/CreateTask"><div className="w-100 mt-1" style={{marginRight:'90px'}}>
+                                <Button variant="outline-primary" onClick={this.props.clearSearch} type="button" className="h-auto">
                                     Create Task
-                         </Button>
-                            </Link> 
-
-                          <NavDropdown style={{ color: 'white' }} title={<Image style={{ width: '29px' }} src="https://encrypted-tbn0.gstatic.com/                      images?q=tbn:ANd9GcQdPQGGJ6ovVg00Uma2J_nwYBCNd-WtChp-C7twldDylqqCajRIUA" roundedCircle />} id="basic-nav-dropdown">
-                                <div><NavLink className="nav-link" onClick={this.logout.bind(this)}>Logout</NavLink>
-                                    <Link className="nav-link" onClick={this.props.clearSearch} to='/myprofile' >MyProfile</Link></div>
-
+                         </Button></div>
+                            </Link>
+                            </Nav>
+                            <Nav className="nav-link">                            
+                            <NavDropdown style={{color:'white'}}   title={<Image style={{width:'29px'}} src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ3ub9pAdXyp3SunhYlBjGcqu82RL20pRSumjUnJ3e2tRiF_bS4" roundedCircle />}  alignRight
+  id="dropdown-menu-align-right">
+                                <NavLink className="nav-link" onClick={this.props.clearSearch} onClick={this.logout.bind(this)}>Logout</NavLink>
+                                <NavLink className="nav-link" onClick={this.props.clearSearch} to="/myprofile">MyProfile</NavLink>
                             </NavDropdown>
-
                         </Nav>
-
                     </Navbar.Collapse>
 
                 </Navbar>
-               
+                
+
             </div>
         )
     }
 }
 export default withRouter(SearchNavabar)
-
