@@ -16,13 +16,13 @@ public interface UserService {
 
 	public Response createUser(@RequestBody UserBean user);
 
-	public Response updateUser(@RequestBody UserBean user);
+	public Response updateUser(int employeeId,@RequestBody UserBean user);
 
 	public Response updatePassword(@RequestParam("password") String password, @RequestParam("email") String email,
 			HttpServletRequest req);
 
 	public Response logout(HttpSession session);
-
+	
 	public Response getProfile(String email);
 	
 	public Response checkEmail(@RequestParam("email") String email);

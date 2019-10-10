@@ -2,7 +2,6 @@ package com.taskmanagement.service;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 import java.util.TreeSet;
 
@@ -14,8 +13,8 @@ import org.springframework.stereotype.Service;
 import com.taskmanagement.dto.CreateTaskBean;
 import com.taskmanagement.dto.Response;
 import com.taskmanagement.dto.UserBean;
-import com.taskmanagement.repository.TaskRepository;
-import com.taskmanagement.repository.UserRepository;
+import com.taskmanagement.repo.TaskRepository;
+import com.taskmanagement.repo.UserRepository;
 
 @Service
 public class TaskServiceImpl implements TaskService {
@@ -238,9 +237,13 @@ public class TaskServiceImpl implements TaskService {
 		TreeSet<CreateTaskBean> set=new TreeSet<>();
 		List<String> endList = taskRepository.findEndDateByMe(email,from);
 		ArrayList<CreateTaskBean> arrayList=new ArrayList<>();
-
+		
+		
+		
 		for (String i : endList) {
-		set.addAll(taskRepository.findCompletedTaskBySet(email, i));
+			System.out.println("end date"+endList);
+		set.addAll(taskRepository.findCompletedTaskBySetByMe(email, i));
+		
 		arrayList.addAll(taskRepository.findCompletedTask(email, i));
 		System.out.println(set);
 		}
@@ -269,7 +272,7 @@ public class TaskServiceImpl implements TaskService {
 		ArrayList<CreateTaskBean> arrayList=new ArrayList<>();
 
 		for (String i : endList) {
-		set.addAll(taskRepository.findCompletedTaskBySet(email, i));
+		set.addAll(taskRepository.findCompletedTaskBySetToMe(email, i));
 		arrayList.addAll(taskRepository.findCompletedTask(email, i));
 		System.out.println(set);
 		}
