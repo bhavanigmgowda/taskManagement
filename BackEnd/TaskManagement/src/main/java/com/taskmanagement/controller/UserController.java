@@ -39,8 +39,8 @@ public class UserController {
 	}// End of createUser()
 
 	@PutMapping(value = "/update-user", produces = MediaType.APPLICATION_JSON_VALUE)
-	public Response updateUser(@RequestBody UserBean user) {
-		return service.updateUser(user);
+	public Response updateUser(@RequestParam("id")int id,@RequestBody UserBean user) {
+		return service.updateUser(id,user);
 	}// End of updateUser()
 
 	@PatchMapping(value = "/update-password", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -53,6 +53,7 @@ public class UserController {
 	public Response checkEmail(@RequestParam("email")String email) {
 		return service.checkEmail(email);
 	}//End of checkEmail()
+
 
 	@GetMapping("/get-profile")
 	public Response getProfile(@RequestParam("email")String email) {

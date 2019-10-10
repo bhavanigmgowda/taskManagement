@@ -7,10 +7,12 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.taskmanagement.dto.Response;
 import com.taskmanagement.dto.UserBean;
-import com.taskmanagement.repository.UserRepository;
+import com.taskmanagement.repo.UserRepository;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -66,7 +68,7 @@ public class UserServiceImpl implements UserService {
 
 	// service to update existing user
 	@Override
-	public Response updateUser(UserBean user) {
+	public Response updateUser(int employeeId,UserBean user) {
 		Response response = new Response();
 
 		if (repository.existsById(user.getEmployeeId())) {
@@ -128,6 +130,18 @@ public class UserServiceImpl implements UserService {
 		return response;
 	}// End of updatePassword()
 
+	// logout service for session invalidation
+	@Override
+	public Response logout(HttpSession session) {
+		Response response = new Response();
+		session.invalidate();
+		response.setStatusCode(201);
+		response.setMessage("Success");
+		response.setDescription("Logout successfully");
+		return response;
+	}// End of logout()
+
+	
 	
 	public Response getProfile(@RequestParam("email")String email) {
 		Response response=new Response();
@@ -141,24 +155,12 @@ public class UserServiceImpl implements UserService {
 			response.setDescription("profile not found ");
 			response.setMessage("failure");
 			response.setStatusCode(401);
-			
 		}
 		return response;
 		
-	} //End of getProfile()
+	}
 	
 	
-
-	// logout service for session invalidation
-	@Override
-	public Response logout(HttpSession session) {
-		Response response = new Response();
-		session.invalidate();
-		response.setStatusCode(201);
-		response.setMessage("Success");
-		response.setDescription("Logout successfully");
-		return response;
-	}// End of logout()
 
 	@Override
 	public Response checkEmail(String email) {
