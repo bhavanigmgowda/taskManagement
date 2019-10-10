@@ -1,4 +1,4 @@
-package com.taskmanagement.repo;
+package com.taskmanagement.repository;
 
 import java.util.List;
 import java.util.Optional;

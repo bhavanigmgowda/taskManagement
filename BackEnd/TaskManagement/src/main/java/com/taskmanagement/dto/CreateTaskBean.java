@@ -2,7 +2,6 @@ package com.taskmanagement.dto;
 
 import java.io.Serializable;
 import java.time.LocalDate;
-import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -45,7 +44,7 @@ public class CreateTaskBean implements Serializable,Comparable<CreateTaskBean> {
 	@Column(name = "status")
 	private String status;
 	@Column(name = "completed")
-	private Date completed;
+	private String completed;
 	@ManyToOne
 	@JoinColumn(name = "emp_id")
 	private UserBean userBean;

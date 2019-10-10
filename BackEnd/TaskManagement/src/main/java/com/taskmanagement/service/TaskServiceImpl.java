@@ -13,8 +13,8 @@ import org.springframework.stereotype.Service;
 import com.taskmanagement.dto.CreateTaskBean;
 import com.taskmanagement.dto.Response;
 import com.taskmanagement.dto.UserBean;
-import com.taskmanagement.repo.TaskRepository;
-import com.taskmanagement.repo.UserRepository;
+import com.taskmanagement.repository.TaskRepository;
+import com.taskmanagement.repository.UserRepository;
 
 @Service
 public class TaskServiceImpl implements TaskService {

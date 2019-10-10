@@ -7,12 +7,11 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.taskmanagement.dto.Response;
 import com.taskmanagement.dto.UserBean;
-import com.taskmanagement.repo.UserRepository;
+import com.taskmanagement.repository.UserRepository;
 
 @Service
 public class UserServiceImpl implements UserService {
