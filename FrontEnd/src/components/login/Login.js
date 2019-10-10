@@ -230,6 +230,8 @@ export class Login extends Component {
 			showEmail: false,
 			showPassword: false,
 			type: 'password',
+			showPasswordCriteria: false,
+            showEmailInvalid: false,
 			loading: false
 
 		}
@@ -300,8 +302,36 @@ export class Login extends Component {
 			this.setState({loading:false});
 		})
 	}
+	
+    handlePass = () => {
+        var pass = document.getElementById('password').value;
+        var that = this;
+        var reg = /(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}/;
+        var test = reg.test(pass);
+        if (test) {
+            that.setState({ showPasswordCriteria: false })
+            return true;
+        } else {
+            that.setState({ showPasswordCriteria: true })
+            return false;
+        }
+    }
+	
+    handleEmail = () => {
+        var that = this;
+        var email = document.getElementById('email').value.trim();
+        if (email !== "") {
+            let lastAtPos = (document.getElementById("email").value).lastIndexOf('@');
+            let lastDotPos = (document.getElementById("email").value).lastIndexOf('.');
 
-
+            if (!(lastAtPos < lastDotPos && lastAtPos > 0 && (document.getElementById("email").value).indexOf('@@') == -1 && lastDotPos > 2 && ((document.getElementById("email").value).length - lastDotPos) > 2)) {
+                that.setState({ showEmailInvalid: true })
+                return false;
+            }
+        }
+        that.setState({ showEmailInvalid: false })
+        return true;
+    }
 
 
 	forgot = () => {
@@ -320,12 +350,18 @@ export class Login extends Component {
 				if (email === "") {
 					that.setState({ showEmail: true })
 				}
-
-
-				if (email !== "" && password !== "") {
+				if( password!=="" && that.handlePass()===false){
+					that.setState({showPasswordCriteria:true})
+				}
+				if( email!=="" && that.handleEmail()===false){
+					that.setState({showEmailInvalid:true})
+				}
+				
+				if (email !== "" && password !== "" && (that.handleEmail()===true && that.handlePass()===true)) {
 					return true;
 				}
 				else {
+					
 					return false;
 				}
 			});
@@ -390,6 +426,7 @@ export class Login extends Component {
 
 											</div>
 											{this.state.showEmail ? <div id="errordiv" className="container-fluid">Please enter Email** </div> : null}
+											{this.state.showEmailInvalid ? <div id="errordiv" className="container-fluid" >Please enter a valid email address</div> : null}
 											<div className="input-group mb-3">
 												<div className="input-group-prepend">
 													<label className="input-group-text"><i className="fas fa-key" /></label>
@@ -404,7 +441,7 @@ export class Login extends Component {
 
 											</div>
 											{this.state.showPassword ? <div id="errordiv" className="container-fluid">Please enter password** </div> : null}
-											
+											{this.state.showPasswordCriteria ? <div id="errordiv" className="container-fluid "><span className="text-center">Password min. 6 characters containing atleast 1 uppercase, 1 lowecase alphabet and 1 digit</span></div> : null}
 											<div className="input-group mb-2 mt-2 container-fluid">
 											</div>
 											<div>
@@ -412,7 +449,7 @@ export class Login extends Component {
 											</div>
 										</form>
 										<div>
-											<Link to="/getEmail">Forgot Password </Link>
+											<Link to="/forgot">Forgot Password </Link>
 											<ToastContainer />
 										</div>
 									</div>
@@ -428,97 +465,3 @@ export class Login extends Component {
 	}
 }
 export default withRouter(Login)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
