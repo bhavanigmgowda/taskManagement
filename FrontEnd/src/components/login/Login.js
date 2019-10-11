@@ -230,7 +230,6 @@ export class Login extends Component {
 			showEmail: false,
 			showPassword: false,
 			type: 'password',
-			showPasswordCriteria: false,
             showEmailInvalid: false,
 			loading: false
 
@@ -303,20 +302,6 @@ export class Login extends Component {
 		})
 	}
 	
-    handlePass = () => {
-        var pass = document.getElementById('password').value;
-        var that = this;
-        var reg = /(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}/;
-        var test = reg.test(pass);
-        if (test) {
-            that.setState({ showPasswordCriteria: false })
-            return true;
-        } else {
-            that.setState({ showPasswordCriteria: true })
-            return false;
-        }
-    }
-	
     handleEmail = () => {
         var that = this;
         var email = document.getElementById('email').value.trim();
@@ -350,14 +335,12 @@ export class Login extends Component {
 				if (email === "") {
 					that.setState({ showEmail: true })
 				}
-				if( password!=="" && that.handlePass()===false){
-					that.setState({showPasswordCriteria:true})
-				}
+			
 				if( email!=="" && that.handleEmail()===false){
 					that.setState({showEmailInvalid:true})
 				}
 				
-				if (email !== "" && password !== "" && (that.handleEmail()===true && that.handlePass()===true)) {
+				if (email !== "" && password !== "" && that.handleEmail()===true) {
 					return true;
 				}
 				else {
@@ -381,7 +364,8 @@ export class Login extends Component {
 	}
 }
 
-render() {
+
+	render() {
 	
 		return (
 			<div id="form-container" >
@@ -430,7 +414,7 @@ render() {
 												<div className="input-group-prepend">
 													<label className="input-group-text"><i className="fas fa-key" /></label>
 												</div>
-												<input className="form-control border border-right-0" onKeyPress={()=>{this.hidePassword();this.setState({showPasswordCriteria:false})}} autoComplete="off" type={this.state.type} name="password" title="Enter Password" id="password" placeholder="Enter Password" onChange={(event) => {
+												<input className="form-control border border-right-0" onKeyPress={this.hidePassword} autoComplete="off" type={this.state.type} name="password" title="Enter Password" id="password" placeholder="Enter Password" onChange={(event) => {
 													this.setState({
 														password: event.target.value
 													})
@@ -440,7 +424,7 @@ render() {
 
 											</div>
 											{this.state.showPassword ? <div id="errordiv" className="container-fluid">Please enter password** </div> : null}
-											{this.state.showPasswordCriteria ? <div id="errordiv" className="container-fluid "><span className="text-center">Password min. 6 characters containing atleast 1 uppercase, 1 lowecase alphabet and 1 digit</span></div> : null}
+											
 											<div className="input-group mb-2 mt-2 container-fluid">
 											</div>
 											<div>
