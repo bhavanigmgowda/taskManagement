@@ -78,7 +78,7 @@ class SearchNavabar extends Component {
                             </div>
                             <div class="col-sm-3">
 
-                            <Button className="ml-1" variant="outline-success" onClick={(event) => { this.search(event) }}  >Search</Button>
+                            <Button className="ml-1" variant="outline-success" disabled={!this.state.search} onClick={(event) => { this.search(event) }}  >Search</Button>
                         </div>
                         </div>
                         <Nav   className="nav-link">
@@ -97,8 +97,9 @@ class SearchNavabar extends Component {
         <i class="fa fa-caret-down"></i>
     </button>
     <div class="dropdown-content-nav">
-    <NavLink className="nav-link linkbar-nav" onClick={this.props.clearSearch} onClick={this.logout.bind(this)}>Logout</NavLink>
       <NavLink className="nav-link linkbar-nav" onClick={this.props.clearSearch} to="/myprofile">MyProfile</NavLink>
+      <NavLink className="nav-link linkbar-nav" onClick={this.props.clearSearch} onClick={this.logout.bind(this)}>Logout</NavLink>
+
                                  </div>
 </div>
 
