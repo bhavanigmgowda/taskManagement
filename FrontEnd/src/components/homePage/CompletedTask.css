@@ -32,7 +32,7 @@
       height: 120px !important;
       width: 91%;
       box-shadow: 10px;
-      margin-left: -6px;
+      margin-left: 9px;
       margin-bottom: 25%; 
       margin-top: 10%;
 
@@ -88,7 +88,7 @@ and (-webkit-min-device-pixel-ratio: 1) {
     
     .iconSys{
       margin-left: 70%;
-      margin-bottom: -20%;
+      margin-bottom: -22%;
       position: relative;
       margin-top: 13%;
     }
@@ -102,7 +102,7 @@ and (-webkit-min-device-pixel-ratio: 1) {
     margin-left: 60%;
     margin-bottom: -22%;
     position: relative;
-    margin-top: 8%
+    margin-top: 13%
   }
   }
   @media screen 

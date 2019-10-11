@@ -101,13 +101,12 @@ byme=()=>{
             this.setState({
               taskData:response.data.taskBean
             })
+            this.clearSearch();
               localStorage.setItem("pages", JSON.stringify("By Me"));
             } 
       }).catch((error) => {
       })
 }
-
-
   searchPage = (data) => {
     if (JSON.parse(window.localStorage.getItem('isValid'))) {
       if (localStorage.getItem("pages") === '"By Me"') {
@@ -165,62 +164,54 @@ byme=()=>{
   }
   
 
-  render() {
-    const page =JSON.parse(window.localStorage.getItem('pages')) ;
-    return (
-      <div>
-        {this.state.isValid ? <SearchNavabar
-          setVal={this.setVal}
-          clearSearch={this.clearSearch}
-          sendToApp={this.searchPage}
-          byme={this.byme} /> : null}
-
-        {this.state.search ?
-          <Byme searchData={this.state.searchtask} searchPage={page} byme={this.byme} 
-          clearSearch={this.clearSearch}  />
-          : <div><Route exact path='/homePage' render={() => { return <HomePage value={this.state.email} byme={this.byme}   /> }} ></Route>
-            <Route exact path='/navBar' component={navBar}></Route>
-            <Route exact path='/byme' render={() => { return <Byme byme={this.byme} searchData={this.state.taskData}  clearSearch={this.clearSearch}
- /> }}></Route>
-            <Route exact path='/completedTask' component={completedTask}></Route>
-            <Route exact path='/myprofile' component={myprofile}></Route>
-            {(this.state.isValid && this.props.location.pathname === '/') ? <Redirect to='/homePage' /> : null}
-            <Route exact path='/createTask' component={createTask}></Route>
-          </div>
-        }
-
-        {this.state.isValid ? null :
-          <Route exact path='/' component={welcomePage}></Route>
-        }
-
-
-        <Route exact path='/confirmPassword' component={ConfirmPassword}></Route>
-        <Route exact path='/getEmail' component={forgotPasswordEmailCheck}></Route>
-        <Route exact path='/createUser' component={createUser}></Route>
-        <Route exact path='/Login' render={() => { return <Login clicked={this.getLoginData.bind(this)} /> }}></Route>
-
-        {/* 
-        <Route exact path='/Stiky' component={Stiky}></Route>
-        <Route exact path='/createUser' component={createUser}></Route>
-        <Route exact path='/SimpleNavBar' component={SimpleNavBar}></Route>
-        <Route exact path='/confirmPassword' component={}></Route>
-        <Route exact path='/TaskInfo' component={TaskInfo}></Route>
-      
   
-        <Route exact path='/homePage' component={HomePage}></Route>
-        <Route exact path='/Stiky' component={Stiky}></Route>
-        <Route exact path='/createTask' component={createTask}></Route>
-        <Route exact path='/createUser' component={createUser}></Route>
-        <Route exact path='/tome' component={tome}></Route>
-        <Route exact path='/allTask' component={AllTask}></Route>
-        <Route exact path='/completedTask' component={completedTask}></Route>
-        <Route exact path='/searchPage' component={searchPage}></Route>
-        <Route exact path='/navBar' component={navBar}></Route>
-        <Route exact path='/byme' component={byme}></Route> */}
-      </div>
 
-    )
-  } //End of render
+render() {
+  const page =JSON.parse(window.localStorage.getItem('pages')) ;
+  let isValid=JSON.parse(window.localStorage.getItem('isValid')) ;
+  return (
+    <div>
+      {isValid ? <SearchNavabar
+        setVal={this.setVal}
+        clearSearch={this.clearSearch}
+        sendToApp={this.searchPage}
+        byme={this.byme} /> : <div> {(this.props.location.pathname != '/'&&
+        this.props.location.pathname!='/Login'
+        &&this.props.location.pathname!='/getEmail'
+        &&this.props.location.pathname!='/createUser'
+        &&this.props.location.pathname!='/confirmPassword'&&!isValid )? this.props.history.push('/'):null }    </div>
+}
+
+
+      {this.state.search ?
+        <Byme searchData={this.state.searchtask} searchPage={page} byme={this.byme} 
+        clearSearch={this.clearSearch}  />
+        : <div><Route exact path='/homePage' render={() => { return <HomePage value={this.state.email}    clearSearch={this.clearSearch}byme={this.byme}   /> }} ></Route>
+          <Route exact path='/navBar' component={navBar}></Route>
+          <Route exact path='/byme' render={() => { return <Byme byme={this.byme} searchData={this.state.taskData}  clearSearch={this.clearSearch}
+/> }}></Route>
+          <Route exact path='/completedTask' component={completedTask}></Route>
+          <Route exact path='/myprofile' component={myprofile}></Route>
+          {(isValid && this.props.location.pathname === '/') ? <Redirect to='/homePage' /> : null}
+          <Route exact path='/createTask' component={createTask}></Route>
+        </div>
+      }
+
+      {isValid ? null :
+        <Route exact path='/' component={welcomePage}></Route>
+      }
+
+
+      <Route exact path='/confirmPassword' component={ConfirmPassword}></Route>
+      <Route exact path='/getEmail' component={forgotPasswordEmailCheck}></Route>
+      <Route exact path='/createUser' component={createUser}></Route>
+      <Route exact path='/Login' render={() => { return <Login clicked={this.getLoginData.bind(this)} /> }}></Route>
+
+      
+    </div>
+
+  )
+} //End of render
 }
 
 export default withRouter(App); 

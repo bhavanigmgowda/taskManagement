@@ -7,6 +7,9 @@ import { Modal } from 'react-bootstrap'
 import moment from 'moment';
 import Footer from '../navBar/footer';
 import '../login/welcom.css'
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { PropagateLoader } from 'react-spinners';
 export class HomePage extends Component {
 
     constructor(props) {
@@ -25,7 +28,9 @@ export class HomePage extends Component {
             datas: [],
             mail: JSON.parse(window.localStorage.getItem('beans')),
             email: null,
-            page: "To Me"
+            page: "To Me",
+            loading: false
+
         }
         {
             this.state.userEmail = this.props.value
@@ -64,10 +69,16 @@ export class HomePage extends Component {
             })
         }
     }
+    NotifyServerOffline = () => {
+		if (! toast.isActive(this.toastId)) {
+			this.toastId=toast.error(<center>Server Not Responding</center>, {
+			position: "top-center", autoClose: 7000,});
+	}
+}
 
     getTask() {
         debugger
-
+        this.setState({loading:true});
         if (JSON.parse(window.localStorage.getItem('isValid'))) {
             Axios.get('http://localhost:8080/get-assigned-task?email=' + this.state.email)
                 .then((response) => {
@@ -82,11 +93,16 @@ export class HomePage extends Component {
                         this.setState({
                             ...state
                         })
+                        this.setState({loading:false});
+
                         localStorage.setItem("pages", JSON.stringify("To Me"))
 
                     }
                 }).catch((error) => {
                     console.log(error)
+                    this.setState({loading:false});
+                    this.NotifyServerOffline();
+
                 })
         } else {
             this.props.history.push('/')
@@ -106,6 +122,8 @@ export class HomePage extends Component {
                 }
             }).catch((error) => {
                 console.log(error)
+                this.NotifyServerOffline();
+
             })
     }
 
@@ -134,6 +152,8 @@ export class HomePage extends Component {
                     }
                 }).catch((error) => {
                     console.log(error)
+                    this.NotifyServerOffline();
+
                 })
         }
     }
@@ -145,6 +165,7 @@ export class HomePage extends Component {
             page: "To Me"
 
         })
+        console.log("aaaaaaaaaaaaaa",userBean)
         this.setState({ show: !this.state.show })
     }
 
@@ -188,6 +209,7 @@ export class HomePage extends Component {
                         </button>
                         <div class="dropdown-content">
                             <NavLink onClick={this.props.clearSearch} className="nav-link linkbar" onClick={(event) => { this.pageName("To Me") }} to="/homePage"  >To Me</NavLink>
+                           
                             <NavLink onClick={this.props.clearSearch} className="nav-link linkbar" onClick={(event) => { this.pageName("By Me") }} to="/byme" >By Me</NavLink>
                         </div>
                     </div>
@@ -195,6 +217,15 @@ export class HomePage extends Component {
                     <Button  onClick={(e) => { this.completedTask(e) }} className="com" style={{ marginLeft: '88%' }}>Completed Task</Button>
                    
                 </Nav>
+                <div className="w-100" style={{marginLeft: '50%',marginRight:'auto', marginBottom: '1%'}}>
+										<PropagateLoader 
+											css={this.override}
+											size={10}
+											 color={'#123abc'}
+											loading={this.state.loading}
+										/>
+										</div>
+                                        <ToastContainer />
                 <div id="content-wrap" >
                     {console.log("============", this.props.value)}
 
@@ -218,7 +249,7 @@ export class HomePage extends Component {
                                 <div className="input-group-prepend ">
                                     <label className="input-group-text "><i className="fas fa-at" /></label>
                                 </div>
-                                <input type="text" value={this.state.email} style={{ color: 'black' }} className="form-control" placeholder="Designation" readOnly /></div>
+                                <input type="text" value={this.state.user.email} style={{ color: 'black' }} className="form-control" placeholder="Designation" readOnly /></div>
                             <label className="mb-0" style={{ color: '#808080' }}>Assigned On</label>
                             <div className="input-group mb-2">
                                 <div className="input-group-prepend">
@@ -263,7 +294,7 @@ export class HomePage extends Component {
                                         {/* ToDo */}
                                         <div id="card bg-default head" >
                                             <h5 id="card-header" className="card-header header">
-                                                <center className="letter" >To Do</center>
+                                                <center className="letter" >TO DO</center>
                                             </h5>
                                         </div>
                                         <div className=" card-body cards">

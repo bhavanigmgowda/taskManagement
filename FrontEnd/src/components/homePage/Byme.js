@@ -135,7 +135,7 @@ class Byme extends Component {
 
                                         <div id="card bg-default head" >
                                             <h5 id="card-header" className="card-header header">
-                                                <center className="letter" >To Do</center>
+                                                <center className="letter" >TO DO</center>
                                             </h5>
                                         </div>
                                         <div className=" card-body cards">
@@ -146,7 +146,7 @@ class Byme extends Component {
                                                             <i onClick={() => this.showvis(item, item.userBean)} class="fas fa-info-circle"></i>
                                                         </div>
                                                         <p id="drag1" className="prCri"  >
-                                                            < textarea id="d2" className="textarea" rows="5" readOnly></textarea> </p>
+                                                            < textarea id="d2" value={item.description} className="textarea" rows="5" readOnly></textarea> </p>
                                                     </div>
                                                 )
                                             }
@@ -195,7 +195,7 @@ class Byme extends Component {
                                     <div className="col-auto">
                                         <div id="card bg-default head" >
                                             <h5 id="card-header" className="card-header header">
-                                                <center className="letter" > In Progress </center>
+                                                <center className="letter" > IN PROGRESS </center>
                                             </h5>
                                         </div>
                                         <div className="  card-body cards">
@@ -265,7 +265,7 @@ class Byme extends Component {
                                     <div className="col-auto">
                                         <div id="card bg-default head" >
                                             <h5 id="card-header" className="card-header header">
-                                                <center className="letter"> Blocked </center>
+                                                <center className="letter"> BLOCKED </center>
                                             </h5>
                                         </div>
                                         <div className=" card-body cards">
