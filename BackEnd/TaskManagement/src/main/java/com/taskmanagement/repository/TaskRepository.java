@@ -12,9 +12,6 @@ import com.taskmanagement.dto.CreateTaskBean;
 
 public interface TaskRepository extends JpaRepository<CreateTaskBean, Integer> {
 
-	@Query("Select t from CreateTaskBean t where t.priority LIKE :name%")
-	List<CreateTaskBean> getTaskByPriority(String name);
-
 	@Query("Select  count(*) from CreateTaskBean t where t.priority LIKE %:name%")
 	int countTask(String name);
 
@@ -24,16 +21,8 @@ public interface TaskRepository extends JpaRepository<CreateTaskBean, Integer> {
 	@Query("Select t from CreateTaskBean t where t.assignedTo=:email")
 	List<CreateTaskBean> getAssignedTask(String email);
 
-	@Query("Select t from CreateTaskBean t where t.subject LIKE :subject%")
-	List<CreateTaskBean> getTaskBySubject(String subject);
-
 	@Query("Select  count(*) from CreateTaskBean t where t.subject LIKE :name%")
 	int countSubject(String name);
-
-	
-	@Query("SELECT t FROM CreateTaskBean t WHERE " + "LOWER(t.description) LIKE LOWER(CONCAT('%',:searchTerm, '%')) AND"
-			+ "(t.userBean.email=:email)")
-	List<CreateTaskBean> findBySearchTerm(@Param("searchTerm") String searchTerm, @Param("email") String email);
 
 	@Query("select t from CreateTaskBean t where "
 			+ " t.status='completed' and t.userBean.email=:email and t.completed=:completed")
@@ -42,22 +31,26 @@ public interface TaskRepository extends JpaRepository<CreateTaskBean, Integer> {
 	@Query("select t from CreateTaskBean t where "
 			+ " t.status='completed' and t.assignedTo=:email and t.completed=:completed")
 	Set<CreateTaskBean> findCompletedTaskBySetByMe(String email, String completed);
-	
+
 	@Query("select t from CreateTaskBean t where "
 			+ " t.status='completed' and t.userBean.email=:email and t.completed=:completed")
 	Set<CreateTaskBean> findCompletedTaskBySetToMe(String email, String completed);
 
-	@Query("select t from CreateTaskBean t where " + " t.status='completed' and t.assignedTo=:email and t.completed!=null")
+	@Query("select t from CreateTaskBean t where "
+			+ " t.status='completed' and t.assignedTo=:email and t.completed!=null")
 	List<CreateTaskBean> findCompletedByMe(String email);
 
-	@Query("select  t.completed " + " from CreateTaskBean t where " + "t.status='completed' and t.assignedTo=:email and  t.completed>=:from" )
-	List<String> findEndDateByMe(String email,String from);
-	
-	@Query("select t from CreateTaskBean t where " + " t.status='completed' and t.userBean.email=:email and t.completed!=null")
+	@Query("select  t.completed " + " from CreateTaskBean t where "
+			+ "t.status='completed' and t.assignedTo=:email and  t.completed>=:from")
+	List<String> findEndDateByMe(String email, String from);
+
+	@Query("select t from CreateTaskBean t where "
+			+ " t.status='completed' and t.userBean.email=:email and t.completed!=null")
 	List<CreateTaskBean> findCompletedToMe(String email);
 
-	@Query("select  t.completed " + " from CreateTaskBean t where " + "t.status='completed' and t.userBean.email=:email and t.completed>=:from" )
-	List<String> findEndDateToMe(String email,String from);
+	@Query("select  t.completed " + " from CreateTaskBean t where "
+			+ "t.status='completed' and t.userBean.email=:email and t.completed>=:from")
+	List<String> findEndDateToMe(String email, String from);
 
 	@Query("select  t " + " from CreateTaskBean t where "
 			+ " t.status='completed' and t.assignedTo=:email and t.completed between concat(:from ,'%') and concat(:to ,'%') ")
@@ -72,4 +65,4 @@ public interface TaskRepository extends JpaRepository<CreateTaskBean, Integer> {
 	@Query("Select  count(*) from CreateTaskBean t where t.description LIKE %:name%")
 	int countDescription(String name);
 
-}
+}//end of interface

@@ -1,29 +1,24 @@
 package com.taskmanagement.service;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import com.taskmanagement.dto.Response;
 import com.taskmanagement.dto.UserBean;
 
 public interface UserService {
 
-	public Response login(@RequestParam("email") String email, @RequestParam("password") String password,
-			HttpServletRequest req);
+	public Response login(String email, String password);
 
-	public Response createUser(@RequestBody UserBean user);
+	public Response createUser(UserBean user);
 
-	public Response updateUser(int employeeId,@RequestBody UserBean user);
+	public Response updateUser(int employeeId, UserBean user);
 
-	public Response updatePassword(@RequestParam("password") String password, @RequestParam("email") String email,
-			HttpServletRequest req);
+	public Response updatePassword(String password, String email);
 
 	public Response logout(HttpSession session);
-	
+
 	public Response getProfile(String email);
+
+	public Response checkEmail(String email);
 	
-	public Response checkEmail(@RequestParam("email") String email);
-}
+}//end of interface
