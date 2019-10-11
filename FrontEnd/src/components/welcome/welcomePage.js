@@ -7,12 +7,11 @@ import Footer from '../navBar/footer';
 export class WelcomePage extends Component {
 
   render() {
-    debugger
     return (
       <div id="page-container" >
         <div id="content-wrap" >
-          <nav className="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
-            <NavLink id="text" className="navbar-brand text-light">Task Manager</NavLink>
+          <nav className="navbar navbar-expand-lg navbar-dark bg-dark fixed-top" style={{height:'60px'}}>
+            <NavLink id="text" className="navbar-brand text-light"><h3>Task Manager</h3> </NavLink>
             <button className="navbar-toggler" data-target="#my-nav" data-toggle="collapse" aria-controls="my-nav" aria-expanded="false" aria-label="Toggle navigation">
               <span className="navbar-toggler-icon" />
             </button>
