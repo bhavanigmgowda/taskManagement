@@ -28,9 +28,7 @@ public class UserController {
 	@PostMapping(value = "/login", produces = MediaType.APPLICATION_JSON_VALUE)
 	public Response login(@RequestParam("email") String email, @RequestParam("password") String password,
 			HttpServletRequest req) {
-		
-		
-		return service.login(email, password, req);
+		return service.login(email, password);
 	}// End of login()
 
 	@PostMapping(value = "/create-user", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -39,32 +37,29 @@ public class UserController {
 	}// End of createUser()
 
 	@PutMapping(value = "/update-user", produces = MediaType.APPLICATION_JSON_VALUE)
-	public Response updateUser(@RequestParam("id")int id,@RequestBody UserBean user) {
-		return service.updateUser(id,user);
+	public Response updateUser(@RequestParam("id") int id, @RequestBody UserBean user) {
+		return service.updateUser(id, user);
 	}// End of updateUser()
 
 	@PatchMapping(value = "/update-password", produces = MediaType.APPLICATION_JSON_VALUE)
-	public Response updatePassword(@RequestParam(value = "password") String password, @RequestParam("email") String email,
-			HttpServletRequest req) {
-		return service.updatePassword(email, password, req);
+	public Response updatePassword(@RequestParam(value = "password") String password,
+			@RequestParam("email") String email, HttpServletRequest req) {
+		return service.updatePassword(email, password);
 	}// End of updatePassword()
 
-	@GetMapping("/check-email")
-	public Response checkEmail(@RequestParam("email")String email) {
+	@GetMapping(value = "/check-email", produces = MediaType.APPLICATION_JSON_VALUE)
+	public Response checkEmail(@RequestParam("email") String email) {
 		return service.checkEmail(email);
-	}//End of checkEmail()
+	}// End of checkEmail()
 
-
-	@GetMapping("/get-profile")
-	public Response getProfile(@RequestParam("email")String email) {
+	@GetMapping(value = "/get-profile", produces = MediaType.APPLICATION_JSON_VALUE)
+	public Response getProfile(@RequestParam("email") String email) {
 		return service.getProfile(email);
-	}
-	
+	}// End of get-profile()
+
 	@GetMapping("/logout")
 	public Response logout(HttpSession session) {
 		return service.logout(session);
 	}// End of logout()
-	
-	
-	
+
 }// End of class

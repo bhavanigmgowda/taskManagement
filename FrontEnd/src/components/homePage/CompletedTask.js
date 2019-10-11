@@ -12,7 +12,6 @@ let pro = [{}]
 
 const AccordionItem = ({ ...props }) => {
     const { item, ariaExpanded, collapsed, hidden, expand } = props;
-
     return (
         <span>
             <span className="toggle"
@@ -42,7 +41,6 @@ class completedTask extends Component {
             popup: '',
             user: '',
             show: false,
-
         };
         this.handleClick = this.handleClick.bind(this);
 
