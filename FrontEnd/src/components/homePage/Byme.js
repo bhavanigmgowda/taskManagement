@@ -135,7 +135,7 @@ class Byme extends Component {
 
                                         <div id="card bg-default head" >
                                             <h5 id="card-header" className="card-header header">
-                                                <center className="letter" >TO DO</center>
+                                                <center className="letter" >TODO</center>
                                             </h5>
                                         </div>
                                         <div className=" card-body cards">

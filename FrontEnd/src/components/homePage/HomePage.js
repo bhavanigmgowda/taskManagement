@@ -279,7 +279,7 @@ export class HomePage extends Component {
 
                         </Modal.Body>
                         <Modal.Footer style={{ color: 'red' }} className=" justify-content-center" >
-                            Number of days: {moment(this.state.popup.endDate).diff(moment(this.state.popup.assignDate), 'days')}
+                            Number of days : {moment(this.state.popup.endDate).diff(moment(this.state.popup.assignDate), 'days')}
                         </Modal.Footer>
                     </Modal>
                     {/* end of popup */}
@@ -294,7 +294,7 @@ export class HomePage extends Component {
                                         {/* ToDo */}
                                         <div id="card bg-default head" >
                                             <h5 id="card-header" className="card-header header">
-                                                <center className="letter" >TO DO</center>
+                                                <center className="letter" >TODO</center>
                                             </h5>
                                         </div>
                                         <div className=" card-body cards">

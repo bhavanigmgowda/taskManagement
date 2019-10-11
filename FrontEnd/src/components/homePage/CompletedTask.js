@@ -12,6 +12,7 @@ let pro = [{}]
 
 const AccordionItem = ({ ...props }) => {
     const { item, ariaExpanded, collapsed, hidden, expand } = props;
+
     return (
         <span>
             <span className="toggle"
@@ -41,6 +42,7 @@ class completedTask extends Component {
             popup: '',
             user: '',
             show: false,
+
         };
         this.handleClick = this.handleClick.bind(this);
 
@@ -271,7 +273,7 @@ class completedTask extends Component {
 
 </Modal.Body>
 <Modal.Footer style={{ color: 'red' }} className=" justify-content-center" >
-    Number of days: {moment(this.state.popup.endDate).diff(moment(this.state.popup.assignDate), 'days')}
+    Number of days : {moment(this.state.popup.endDate).diff(moment(this.state.popup.assignDate), 'days')}
 </Modal.Footer>
 </Modal>
 {/* end of popup */}
@@ -318,11 +320,9 @@ class completedTask extends Component {
                         <div className="mb-0" >&nbsp;</div>
                         <div className="input-group mb-2">
 
-                            {this.state.from&&this.state.to?<button className="btn btn-outline-success w-500 h-100 " type="submit"
-                                onClick={this.fromTo.bind(this)} >
-                                Search</button>:<button className="btn btn-outline-success w-500 h-100 " type="submit"
-                                onClick={this.fromTo.bind(this)} disabled>
-                                Search</button>}
+                           <button className="btn btn-outline-success w-500 h-100 " type="submit"
+                                onClick={this.fromTo.bind(this)} disabled={!this.state.from&&!this.state.to}>
+                                Search</button>
                         </div>
 
                     </div>
