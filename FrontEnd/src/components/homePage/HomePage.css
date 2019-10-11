@@ -106,8 +106,13 @@ html,body{
       margin-bottom: -92%;
     }
    .com{
-    align-content:flex-end
+    color: rgb(32, 155, 236) !important;
+    border: 1px outset darkgray !important;
+    background-color: white !important;
+    margin-top: -30px !important;
    }
+
+
     textarea{
       height: 83px !important;
 
@@ -146,9 +151,60 @@ html,body{
         margin-left: 87%
     }
    
- 
+    
+    .dropdown .dropbtn {
+      font-size: 16px;
+      border: 1px outset darkgray !important;
+      background-color: white;
+      outline: none;
+      color: rgb(32, 155, 236);
+      padding: 8px 16px;
+      background-color: inherit;
+      font-family: inherit;
+      margin: 0;
+      position: relative;
+      margin-left: 14%;
+      margin-bottom: -41%;
+      margin-top: 15%;
+      width: 130%;
+    }
+    
+    .linkbar{
 
+      color: rgb(32, 155, 236);
+    }
+   
+    
+    .dropdown-content {
+      display: none;
+      position: absolute;
+      background-color: #f9f9f9;
+      min-width: 160px;
+      box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+      z-index: 1;
+      margin-top: 10px;
+      margin-left: 14px;
+    border: 1px solid lightgray;
+    }
+    
 
+    
+    .dropdown-content .linkbar:hover  {
+      background-color: rgba(90, 86, 86, 0.966);
+      color: aliceblue
+    }
+   
+    .dropbtn:hover {
+      background-color: rgba(90, 86, 86, 0.966);
+      color: aliceblue
+    }
+    .com:hover {
+      background-color: rgba(90, 86, 86, 0.966) !important;
+      color: aliceblue !important
+    }
+    
+    .dropdown:hover .dropdown-content {
+      display: block;
+    }
 
-
- 
+   

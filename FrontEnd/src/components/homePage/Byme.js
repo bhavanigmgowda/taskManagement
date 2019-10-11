@@ -29,6 +29,7 @@ class Byme extends Component {
     completedTask(e) {
         e.preventDefault();
         this.props.history.push('/completedTask')
+        this.props.clearSearch()
     }
     pageName(data){
         if(data==="To Me"){
@@ -62,14 +63,23 @@ class Byme extends Component {
         if (this.props.searchData) {
             console.log("searchData", this.props.searchData)
             return (
-                <div>
-                     <Nav >
-                    <NavDropdown   title={this.props.searchPage?this.props.searchPage:"By Me"} id="basic-nav-dropdown">
-                        <NavLink onClick={this.props.clearSearch}   className="nav-link" onClick={(event) => { this.pageName("To Me") }}  >To Me</NavLink>
-                        <NavLink  onClick={this.props.clearSearch} className="nav-link" onClick={(event) => { this.pageName("By Me") }}   onClick={this.props.byme} >By Me</NavLink>
-                    </NavDropdown>
-                    <Button type="button" variant="outline-primary" onClick={(e)=>{this.completedTask(e)}} className="com" style={{ marginLeft: '88%', marginTop: '-21px' }}>Completed Task</Button>
-                </Nav> 
+                <div>               
+                <Nav >
+
+<div class="dropdown">
+    <button class="dropbtn">{this.props.searchPage?this.props.searchPage:"By Me"} &nbsp;
+        <i class="fa fa-caret-down"></i>
+    </button>
+    <div class="dropdown-content">
+        <NavLink onClick={this.props.clearSearch} className="nav-link linkbar" onClick={(event) => { this.pageName("To Me") }} to="/homePage"  >To Me</NavLink>
+        <NavLink onClick={this.props.clearSearch} className="nav-link linkbar" onClick={(event) => { this.pageName("By Me") }} to="/byme" >By Me</NavLink>
+    </div>
+</div>
+
+<Button  onClick={(e) => { this.completedTask(e) }} className="com" style={{ marginLeft: '88%' }}>Completed Task</Button>
+
+</Nav>
+
                     <Modal centered size="md" show={this.state.show} onHide={this.handleClose.bind(this)}  >
                         <Modal.Header closeButton>
                             <Modal.Title>
@@ -79,12 +89,12 @@ class Byme extends Component {
                             <label className="mb-0" style={{ color: '#808080' }}>Description</label>
                             <div className="input-group mb-2">
                                 <textarea style={{ color: 'black' }} value={this.state.popup.description} type="text" className="form-control" placeholder="Designation" readOnly />  </div>
-                            <label className="mb-0" style={{ color: '#808080' }}>Assigned By</label>
+                            <label className="mb-0" style={{ color: '#808080' }}>Assigned To</label>
                             <div className="input-group mb-2">
                                 <div className="input-group-prepend ">
                                     <label className="input-group-text "><i className="fas fa-at" /></label>
                                 </div>
-                                <input type="text" value={this.state.email} style={{ color: 'black' }} className="form-control" placeholder="Designation" readOnly /></div>
+                                <input type="text" value={this.state.popup.assignedTo} style={{ color: 'black' }} className="form-control" placeholder="Designation" readOnly /></div>
                             <label className="mb-0" style={{ color: '#808080' }}>Assigned On</label>
                             <div className="input-group mb-2">
                                 <div className="input-group-prepend">
@@ -153,7 +163,7 @@ class Byme extends Component {
                                                 )
                                             }
                                             )}
-                                            {this.props.searchData.filter(item => (item.priority === 'intermediate') && (item.status === 'todo')).map(item => {
+                                            {this.props.searchData.filter(item => (item.priority === 'medium') && (item.status === 'todo')).map(item => {
                                                 return (
                                                     <div className="col-auto">
                                                         <div id="i7" className="col-lg-4 col-md-4 col-sm-4 a" >
@@ -219,7 +229,7 @@ class Byme extends Component {
                                                 )
                                             }
                                             )}
-                                            {this.props.searchData.filter(item => (item.priority === 'intermediate') && (item.status === 'onProgress')).map(item => {
+                                            {this.props.searchData.filter(item => (item.priority === 'medium') && (item.status === 'onProgress')).map(item => {
                                                 return (
                                                     <div className="col-auto container">
 
@@ -283,7 +293,7 @@ class Byme extends Component {
                                                 )
                                             }
                                             )}
-                                            {this.props.searchData.filter(item => (item.priority === 'intermediate') && (item.status === 'blocked')).map(item => {
+                                            {this.props.searchData.filter(item => (item.priority === 'medium') && (item.status === 'blocked')).map(item => {
                                                 return (
                                                     <div className="col-auto">
                                                         <div id="i7" className="col-lg-4 col-md-4 col-sm-4 a" >
