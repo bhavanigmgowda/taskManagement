@@ -337,7 +337,7 @@ export default class ConfirmPassword extends Component {
                     <div className="container-fluid">
                         
                         <div className="row pb-2">
-                            <div id="container" className="col-auto container mt-5 pb-5">
+                            <div id="container" className="col-auto container-fluid mt-5 pb-5">
                                 <div id="create" className="card shadow-lg mt-5">
                                     <div id="cardHead" className="card-header text-center">
                                         <h3>Change Password</h3>

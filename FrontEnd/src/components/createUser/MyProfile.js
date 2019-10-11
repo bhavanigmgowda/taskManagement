@@ -8,6 +8,11 @@ import Footer from '../navBar/footer'
 
 import './myprofile.css'
 
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { PropagateLoader } from 'react-spinners';
+
+
 export default class MyProfile1 extends Component {
 
     constructor(props) {
@@ -17,13 +22,13 @@ export default class MyProfile1 extends Component {
             userBean: '',
 
             show: false,
-            showMessage: false,
-            showServer: false,
+            
             showSorry: false,
 
             employeeId: '',
             employeeName: '',
             designation: '',
+            loading:false
 
 
 
@@ -53,6 +58,7 @@ export default class MyProfile1 extends Component {
                 }
             }).catch((error) => {
                 console.log('Error', error);
+                this.NotifyServerOffline();
             })
         }// end of if
     } //End of getProfile
@@ -66,18 +72,10 @@ export default class MyProfile1 extends Component {
     editUser(bean) {
         let obj = this.state.userBean;
         this.setState({
-            //     employeeName:  '',
-            //     email:'',
-            //     designation:'',
             show: !this.state.show,
-            //     employeeId: '',
-            //     password: ''
+       
         })
-        // obj.employeeName = bean.employeeName;
-        // obj.employeeId = bean.employeeId;
-        // obj.email = bean.email;
-        // obj.designation = bean.designation;
-        // console.log("updatedata", this.state.beans)
+
     }   //end of edit user
 
     handleClose() {
@@ -86,15 +84,18 @@ export default class MyProfile1 extends Component {
     }
 
 
-
+    NotifyServerOffline = () => {
+      
+            this.toastId = toast.error(<center>Update Failed Server Did Not Respond</center>, {
+                position: "top-center", autoClose: 7000,
+            });
+        
+    }
 
     updateUserData() {
+
         debugger
-        // var obj = {
-        //     employeeName: 'this.state.employeeName',
-        //     designation: 'this.state.designation',
-        //     email: 'this.state.email'
-        // }
+        this.setState({loading:true})
         const beans = this.state;
         const userData = beans;
         console.log('AccountData', userData);
@@ -104,33 +105,32 @@ export default class MyProfile1 extends Component {
                 this.handleClose();
 
                 if (response.data.statusCode === 201) {
+                    this.setState({loading:false})
                     console.log('Updated Successfully');
 
                     console.log("       ", this.state.userBean)
-
-                    this.setState({ showMessage: true })
-                    setTimeout(() => {
-                        this.setState({
-                            showMessage: false
-                        })
-                    }, 10000);
+                    this.NotifyUpdateSuccess();
+                    
                 } else if (response.data.StatusCode === 401) {
-
+                    this.setState({loading:false})
 
                 } 
 
             }).catch((error) => {
                 console.log('Error', error);
-
-                this.setState({ showServer: true })
-                setTimeout(() => {
-                    this.setState({
-                        showServer: false
-                    })
-                }, 10000);
+                this.setState({loading:false})
+               
             })
         }
     }  // end of update-User-Data
+
+
+	NotifyUpdateSuccess = () => {
+		if (! toast.isActive(this.toastId)) {
+			this.toastId=toast.success(<center>Profile updated Successfully</center>, {
+			position: "top-center", autoClose: 7000,});
+	}
+}
 
     render() {
         let cardStyle = {
@@ -154,37 +154,49 @@ export default class MyProfile1 extends Component {
 
                     <div style={{ textAlign: 'center' }}>
 
-                    {this.state.showMessage ? <div id="alertHead" className="alert alert-success " ><h6 className="font-weight-bold">Profile updated Successfully</h6> </div> : null}
+                   
 
                         {this.state.showSorry ? <div id="alertHead" className="alert alert-danger " ><h6 className="font-weight-bold">sorry, you haven't done any changes to update the profile!!</h6> </div> : null}
                         <div style={cardStyle}>
-                            <div><b style={{ fontSize: '40px', color: 'gray' }}>Profile Details</b></div>
+                            <div><b style={{ fontSize: '40px', color: 'gray' }}>Profile Details</b>
+                            </div>
+                            <div className="w-100" style={{ marginLeft: '50%', marginRight: 'auto' }}>
+                                            <PropagateLoader
+                                                size={10}
+                                                color={'#123abc'}
+                                                loading={this.state.loading}
+                                            />
+                                        </div>
+                                        <ToastContainer />
+
                             <hr></hr>
-                            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ3ub9pAdXyp3SunhYlBjGcqu82RL20pRSumjUnJ3e2tRiF_bS4" style={{ width: '40%' }} />
+                            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRi-I5E9Vn6dFsuJnrJfJVcpNp6KNQ74ZSjKoGn5t9-pGLddxDG" style={{ width: '40%' }} />
                             <div style={containerStyle}>
-
-
                                 <h4  ><b className="h4">{this.state.userBean.employeeId}</b></h4>
                                 <h4 ><b className="h4" >{this.state.employeeNameUpper}</b></h4>
-
                                 <h4 ><b className="h3">{this.state.userBean.email}</b></h4>
-                                <h5 ><b className="h3"> {this.state.userBean.designation}</b></h5>
+                                <h4 ><b className="h3"> {this.state.userBean.designation}</b></h4>
                             </div>
                             <hr></hr>
                             <button onClick={this.editUser.bind(this, this.state.beans)} className="btn btn-outline-success">Edit</button>
                             <hr></hr>
                         </div>
                     </div>
-
-
-
                     <Modal centered show={this.state.show} onHide={this.handleClose.bind(this)}>
                         <Modal.Header closeButton>
-
-                            <Modal.Title style={{ width: '100%', textAlign: 'center' }}>Update User Details </Modal.Title><br />
-                            {this.state.showServer ? <div id="alertHead" className="alert alert-danger " role="alert" ><h6 className="font-weight-bold">update Failed Server Failed to Respond</h6> </div> : null}
-
+                            <Modal.Title style={{ width: '100%', textAlign: 'center' }}>Update User Details </Modal.Title> 
+                                    <br />
+                                    
+                            
                         </Modal.Header>
+                        <div className="w-100" style={{ marginLeft: '50%', marginRight: 'auto' }}>
+                                            <PropagateLoader
+                                                size={10}
+                                                color={'#123abc'}
+                                                loading={this.state.loading}
+                                            />
+                                        </div>
+                        
                         <Modal.Body>
                             <div className="row ">
                                 <div className="col-10" style={{ width: '100%', margin: 'auto' }}>
@@ -195,7 +207,6 @@ export default class MyProfile1 extends Component {
                                         </div>
                                         <input type="text" title="Change Name" onChange={(event) => { this.setState({ employeeName: event.target.value }) }}
                                             value={this.state.employeeName} className="form-control" placeholder="Employee Name" />
-
                                     </div>
                                     <label>Email:</label>
                                     <div className="input-group mb-3">
@@ -204,7 +215,6 @@ export default class MyProfile1 extends Component {
                                         </div>
                                         <input type="text" title="Change Email" onChange={(event) => { this.setState({ email: event.target.value }) }}
                                             value={this.state.email} className="form-control" placeholder="Email" />
-
                                     </div>
                                     <label>Designation:</label>
                                     <div className="input-group mb-3">
@@ -213,7 +223,6 @@ export default class MyProfile1 extends Component {
                                         </div>
                                         <input type="text" title="Change Designation" onChange={(event) => { this.setState({ designation: event.target.value }) }}
                                             value={this.state.designation} className="form-control" placeholder="Designation" />
-
                                     </div>
                                 </div>
                             </div>
@@ -224,12 +233,6 @@ export default class MyProfile1 extends Component {
 </button>
                         </Modal.Footer>
                     </Modal>
-
-
-
-
-
-
                     {/* 
                     <Modal show={this.state.show} onHide={this.handleClose.bind(this)}>
                         <Modal.Header closeButton>
@@ -242,7 +245,6 @@ export default class MyProfile1 extends Component {
                                     <input type="text" onChange={(event) => { this.setState.userBean({ employeeName: event.target.value }) }}
                                         value={this.state.userBean.employeeName} className="form-control" placeholder="Employee Name" />
                                 </div>
-
                                 <div className="col">
                                     <label style={{ color: "gray" }}>Enter Email</label>
                                     <input type="text" onChange={(event) => { this.setState.userBean({ email: event.target.value }) }}
@@ -256,8 +258,6 @@ export default class MyProfile1 extends Component {
                                     <input type="text" onChange={(event) => { this.setState.userBean({ designation: event.target.value }) }}
                                         value={this.state.userBean.designation} className="form-control" placeholder="Designation" />
                                 </div>
-
-
                             </div>
                         </Modal.Body>
                         <Modal.Footer>
@@ -275,6 +275,4 @@ export default class MyProfile1 extends Component {
         )
     } // End of render()
 }
-
-
 
