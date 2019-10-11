@@ -20,8 +20,7 @@
     font-weight: 600;
     background-color: #314A77;
     position: absolute;
-    
- 
+
 } 
 .log{
     margin-left: 284px !important;
@@ -44,9 +43,56 @@ margin-left: 223px;
     margin-left: 23%;
 
 }
-.pic{
-    
-}
+
 .btnLog{
     color: white
 }
+
+
+.dropdown-nav .dropbtn-nav {
+    font-size: 16px;
+    border: none;
+    outline: none;
+    padding: 8px 16px;
+    background-color: inherit;
+    margin: 0;
+    position: relative;
+    margin-left: -44%;
+    margin-bottom: 2%;
+    width: 130%;
+
+  }
+  
+  .linkbar-nav{
+
+    color: rgb(32, 155, 236);
+  }
+ 
+  
+  .dropdown-content-nav {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 136px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+    margin-top: -6px;
+    margin-left: -55px;
+    border: 1px solid lightgray;
+  }
+  
+
+  
+  .dropdown-content-nav .linkbar-nav:hover  {
+    background-color: rgba(90, 86, 86, 0.966);
+    color: aliceblue
+  }
+
+  .com-nav:hover {
+    background-color: rgba(90, 86, 86, 0.966) !important;
+    color: aliceblue !important
+  }
+  
+  .dropdown-nav:hover .dropdown-content-nav {
+    display: block;
+  }
