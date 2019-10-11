@@ -295,7 +295,7 @@ export class CreateTask extends Component {
                                                 <textarea onBlur={this.hideCharacterCount} onKeyPress={this.hideDescription} type="text" className="form-control" id="description" name="description" title="Enter Description" maxLength={180} placeholder="Enter Description (character limit: 180)" rows={3} onChange={(event) => {
                                                     this.setState({
                                                         description: event.target.value
-                                                    })
+                                                    });this.textarea()
                                                 }} />
                                             </div>
                                             {this.state.showChar ? <div id="errordiv" className="container-fluid text-right font-weight-normal"><span id="info"></span> </div> : null}
