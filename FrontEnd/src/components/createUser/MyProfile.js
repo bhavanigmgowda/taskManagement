@@ -144,9 +144,9 @@ export default class MyProfile1 extends Component {
         console.log("==================", this.state.userBean)
 
         return (
-            <div>
+            <div id="form-container">
              
-                <div class="container-fluid ">
+                <div id="content-wrap" class="container-fluid ">
                     <div style={{ textAlign: 'center' }}>
 
                         
