@@ -1,18 +1,18 @@
-
 import React, { Component } from 'react';
 import Axios from 'axios';
-import './CompletedTask.css'
-import { Form } from 'react-bootstrap'
 import moment from 'moment';
-import { Modal } from 'react-bootstrap'
+import { Modal } from 'react-bootstrap';
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { PropagateLoader } from 'react-spinners';
 
-import { BrowserRouter as Router, Route, Link } from 'react-router-dom'
+import './CompletedTask.css'
+
 let uniqueArr = [];
 let pro = [{}]
 
 const AccordionItem = ({ ...props }) => {
-    const { item, ariaExpanded, collapsed, hidden, expand } = props;
-
+    const { item,  collapsed, expand } = props;
     return (
         <span>
             <span className="toggle"
@@ -20,7 +20,6 @@ const AccordionItem = ({ ...props }) => {
                 onClick={(e) => expand(e, item.taskId)}>
                 <span>{collapsed ? <i class="fas fa-chevron-up"></i>  : <i class="fas fa-chevron-down"></i>}</span>
             </span>
-
         </span>
     );
 }
@@ -29,9 +28,7 @@ class completedTask extends Component {
     constructor() {
         super();
         this.state = {
-            data: [
-
-            ],
+            data: [   ],
             doneTask: [],
             from: '',
             to: '',
@@ -42,38 +39,41 @@ class completedTask extends Component {
             popup: '',
             user: '',
             show: false,
-
+            loading: false
         };
         this.handleClick = this.handleClick.bind(this);
-
     } //End of constructor
+
+    NotifyServerOffline = () => {
+		if (! toast.isActive(this.toastId)) {
+			this.toastId=toast.error(<center>Server Not Responding</center>, {
+			position: "top-center", autoClose: 7000,});
+    }
+}
 
     handleClick(e, id) {
         const itemIndex = this.state.items.findIndex(i => i.id === id);
         const item = { ...this.state.items[itemIndex] };
         const items = [...this.state.items];
-
         item.isCollapsed = !this.state.items[itemIndex].isCollapsed;
-
         items[itemIndex] = item;
         // Need to manage state based on which 'elem' triggered event?
         this.setState({ items: items });
     }
+    
     componentDidMount() {
-        debugger
-        var myobj = {}
-        console.log('componentDidMount');
+          var myobj = {}
         var moment = require('moment');
-        var dateTo = moment().format('YYYY-MM-DD');
+        this.setState({loading:true});
         var dateFrom = moment().subtract(7, 'd').format('YYYY-MM-DD');
-        console.log("datefrom ===========", dateFrom)
         Axios.get('http://localhost:8080/completed-task-by-me?email=' + this.state.mail + '&from=' + dateFrom)
             .then((response) => {
                 console.log('Response Object', response.data);
                 if (response.data.message === "Success") {
                     this.setState({
                         data: response.data.end,
-                        datas: response.data.taskBean
+                        datas: response.data.taskBean,
+                        loading:false
                     }, () => {
                         console.log("response.data.completedTask", response.data.end, response.data.taskBean)
                         uniqueArr = response.data.taskBean;
@@ -82,18 +82,19 @@ class completedTask extends Component {
                         for (var i = 0; i < this.state.data.length; i++) {
                             this.state.data[i].isCollapsed = false;
                         }
-                        console.log("response.data.completedTask", this.state.data)
                     })
-
                 }
             }).catch((error) => {
                 console.log('Error', error);
+                this.setState({loading:false});
+                this.NotifyServerOffline();
             })
     } //End of component-did-mount
 
     fromTo(e) {
         e.preventDefault();
         const { from, to } = this.state;
+        this.setState({loading:true});
         console.log("===from date====", from, to)
         Axios.get('http://localhost:8080/completed-task-from-to?email=' + this.state.mail + '&from=' + from + '&to=' + to)
             .then((response) => {
@@ -102,13 +103,15 @@ class completedTask extends Component {
                     console.log('Response Object', response.data.end);
                     this.setState({
                         data: response.data.end,
-                        datas: response.data.taskBean
+                        datas: response.data.taskBean,
+                        loading:false
                     })
                 } else if (response.data.statusCode === 401) {
-
                 }
             }).catch((error) => {
                 console.log('Error', error);
+                this.setState({loading:false});
+                this.NotifyServerOffline();
             })
     } //End of from-me
 
@@ -124,7 +127,6 @@ class completedTask extends Component {
     handleRowClick(rowId) {
         const currentExpandedRows = this.state.expandedRows;
         const isRowCurrentlyExpanded = currentExpandedRows.includes(rowId);
-
         const newExpandedRows = isRowCurrentlyExpanded ?
             currentExpandedRows.filter(id => id !== rowId) :
             currentExpandedRows.concat(rowId)
@@ -139,8 +141,7 @@ class completedTask extends Component {
     handleChange = (activeStatus, itemId) => {
         const productIndex = this.state.data.findIndex(function (
             item,
-            index
-        ) {
+            ) {
             return item.taskId === itemId;
         });
 
@@ -148,7 +149,6 @@ class completedTask extends Component {
         let product = { ...products[productIndex] };
         product.isActive = activeStatus;
         products[productIndex] = product;
-
         //fire a redux action if data is stored in redux state
         this.setState({ data: products });
     };
@@ -158,9 +158,7 @@ class completedTask extends Component {
         const itemIndex = this.state.data.findIndex(i => i.taskId === id);
         const item = { ...this.state.data[itemIndex] };
         const items = [...this.state.data];
-
         item.isCollapsed = !this.state.data[itemIndex].isCollapsed;
-
         items[itemIndex] = item;
         // Need to manage state based on which 'elem' triggered event?
         this.setState({ data: items });
@@ -176,9 +174,7 @@ class completedTask extends Component {
         };
         const itemRows = [
             <div className="colCss" onClick={clickCallback} >
-
                 <div key={"row-data-" + item.taskId} >
-
                     {
                         moment(item.completed).format('DD-MMMM-YYYY')
                     }
@@ -211,25 +207,18 @@ class completedTask extends Component {
                 </div>
             );
         }
-
         return itemRows;
     }
 
     render() {
         let allItemRows = [];
-
         this.state.data.forEach(item => {
             const perItemRows = this.renderItem(item);
-            console.log("renderItem")
-
             allItemRows = allItemRows.concat(perItemRows);
         });
-
         return (
             <div className="card-body completed">
                 <Modal centered size="md" show={this.state.show} onHide={this.handleClose.bind(this)}  >
-
-
 <Modal.Header closeButton>
     <Modal.Title>
         <div className="" style={{ color: '#808080' }}>Subject - <span style={{ color: 'black' }}> {this.state.popup.subject} </span></div></Modal.Title>
@@ -277,9 +266,15 @@ class completedTask extends Component {
 </Modal.Footer>
 </Modal>
 {/* end of popup */}
-
-
-
+<div className="w-100" style={{marginLeft: '50%',marginRight:'auto', marginBottom: '1%'}}>
+										<PropagateLoader 
+											css={this.override}
+											size={10}
+											 color={'#123abc'}
+											loading={this.state.loading}
+										/>
+										</div>
+                                        <ToastContainer />
 
                 <div class="form-group row offset-4">
                     <div class="col-sm- my-1">
@@ -298,7 +293,6 @@ class completedTask extends Component {
                     </div>
 
                     <div class="col-sm- my-1">
-
                         <label className="mb-0" style={{ color: '#808080' }}>To</label>
                         <div className="input-group mb-2">
                             <div className="input-group-prepend">
@@ -311,27 +305,19 @@ class completedTask extends Component {
                                     })
                                 }} className="form-control" /></div>
 
-
-
-
                     </div>
                     <div class="col-sm- my-1">
-
                         <div className="mb-0" >&nbsp;</div>
                         <div className="input-group mb-2">
-
                            <button className="btn btn-outline-success w-500 h-100 " type="submit"
                                 onClick={this.fromTo.bind(this)} disabled={!this.state.from&&!this.state.to}>
                                 Search</button>
                         </div>
-
                     </div>
                 </div>
                 <div className=" card-body">
                     <table className="tableClass font-weight-bold">{allItemRows}</table>
                 </div>
-
-
 
             </div>
         );

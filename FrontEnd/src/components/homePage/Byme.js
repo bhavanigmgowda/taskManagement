@@ -1,9 +1,12 @@
 import React, { Component } from 'react'
 import './HomePage.css';
 import { Nav, NavDropdown, Button } from 'react-bootstrap'
-import { NavLink,withRouter,Link } from 'react-router-dom';
+import { NavLink, withRouter, Link } from 'react-router-dom';
 import { Modal } from 'react-bootstrap'
 import moment from 'moment';
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { PropagateLoader } from 'react-spinners';
 class Byme extends Component {
     constructor(props) {
         super(props)
@@ -16,38 +19,46 @@ class Byme extends Component {
             show: false,
             popup: [],
             user: '',
-            page:'By Me',
+            page: 'By Me',
+            loading: false
+
         }
     }
-
+    NotifyServerOffline = () => {
+        if (!toast.isActive(this.toastId)) {
+            this.toastId = toast.error(<center>Server Not Responding</center>, {
+                position: "top-center", autoClose: 7000,
+            });
+        }
+    }
     componentDidMount() {
         if (!this.props.searchData) {
             this.props.byme()
         }
     }
-      
+
     completedTask(e) {
         e.preventDefault();
         this.props.history.push('/completedTask')
         this.props.clearSearch()
     }
-    pageName(data){
-        if(data==="To Me"){
-        this.setState({
-            page:data
+    pageName(data) {
+        if (data === "To Me") {
+            this.setState({
+                page: data
 
-        })
-        localStorage.setItem("pages", JSON.stringify("To Me"))
-        this.props.history.push('/homePage')
-    }else{
-        localStorage.setItem("pages", JSON.stringify("By Me"))
-        this.props.history.push('/byme')
+            })
+            localStorage.setItem("pages", JSON.stringify("To Me"))
+            this.props.history.push('/homePage')
+        } else {
+            localStorage.setItem("pages", JSON.stringify("By Me"))
+            this.props.history.push('/byme')
+        }
+        this.props.clearSearch()
+
+
+
     }
-    this.props.clearSearch()
-
-
-
-    } 
     handleClose() {
         this.setState({ show: !this.state.show })
     }
@@ -63,27 +74,36 @@ class Byme extends Component {
         if (this.props.searchData) {
             console.log("searchData", this.props.searchData)
             return (
-                <div>               
-                <Nav >
+                <div>
+                    <Nav >
 
-<div class="dropdown">
-    <button class="dropbtn">{this.props.searchPage?this.props.searchPage:"By Me"} &nbsp;
+                        <div class="dropdown">
+                            <button class="dropbtn">{this.props.searchPage ? this.props.searchPage : "By Me"} &nbsp;
         <i class="fa fa-caret-down"></i>
-    </button>
-    <div class="dropdown-content">
-        <NavLink onClick={this.props.clearSearch} className="nav-link linkbar" onClick={(event) => { this.pageName("To Me") }} to="/homePage"  >To Me</NavLink>
-        <NavLink onClick={this.props.clearSearch} className="nav-link linkbar" onClick={(event) => { this.pageName("By Me") }} to="/byme" >By Me</NavLink>
-    </div>
-</div>
+                            </button>
+                            <div class="dropdown-content">
+                                <NavLink onClick={this.props.clearSearch} className="nav-link linkbar" onClick={(event) => { this.pageName("To Me") }} to="/homePage"  >To Me</NavLink>
+                                <NavLink onClick={this.props.clearSearch} className="nav-link linkbar" onClick={(event) => { this.pageName("By Me") }} to="/byme" >By Me</NavLink>
+                            </div>
+                        </div>
 
-<Button  onClick={(e) => { this.completedTask(e) }} className="com" style={{ marginLeft: '88%' }}>Completed Task</Button>
+                        <Button onClick={(e) => { this.completedTask(e) }} className="com" style={{ marginLeft: '88%' }}>Completed Task</Button>
 
-</Nav>
+                    </Nav>
+                    <div className="w-100" style={{ marginLeft: '50%', marginRight: 'auto', marginBottom: '1%' }}>
+                        <PropagateLoader
+                            css={this.override}
+                            size={10}
+                            color={'#123abc'}
+                            loading={this.state.loading}
+                        />
+                    </div>
+                    <ToastContainer />
 
                     <Modal centered size="md" show={this.state.show} onHide={this.handleClose.bind(this)}  >
                         <Modal.Header closeButton>
                             <Modal.Title>
-                                <div className="" style={{ color: '#808080' }}>Subject - <span style={{ color: 'black' }}> {this.state.popup.subject} </span></div></Modal.Title>
+                                <div className="" style={{ color: '#808080' }}>Subject -   <textarea style={{ color: 'black' }} value={this.state.popup.subject} type="text" className="form-control" placeholder="Designation" readOnly />  </div></Modal.Title>
                         </Modal.Header>
                         <Modal.Body>
                             <label className="mb-0" style={{ color: '#808080' }}>Description</label>
@@ -124,7 +144,7 @@ class Byme extends Component {
 
                         </Modal.Body>
                         <Modal.Footer style={{ color: 'red' }} className=" justify-content-center" >
-                            Number of days: {moment(this.state.popup.endDate).diff(moment(this.state.popup.assignDate), 'days')}
+                            Number of days : {moment(this.state.popup.endDate).diff(moment(this.state.popup.assignDate), 'days')}
                         </Modal.Footer>
                     </Modal>
                     <div className="container-fluid">
@@ -207,7 +227,7 @@ class Byme extends Component {
                                                             <i onClick={() => this.showvis(item, item.userBean)} class="fas fa-info-circle"></i>
                                                         </div>
                                                         <p id="drag6" class="prCri ">
-                                                            < textarea id="d2" value={item.description} className="textarea" rows="5" cols="5"  readOnly></textarea> </p>
+                                                            < textarea id="d2" value={item.description} className="textarea" rows="5" cols="5" readOnly></textarea> </p>
                                                         <div class="container-fluid">
                                                         </div>
 

@@ -1,15 +1,17 @@
 import React, { Component } from 'react';
 import Axios from 'axios';
-import './HomePage.css';
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { PropagateLoader } from 'react-spinners';
 import { NavDropdown, Navbar, Nav, Button } from 'react-bootstrap'
 import { NavLink, withRouter, Link } from 'react-router-dom';
 import { Modal } from 'react-bootstrap'
 import moment from 'moment';
+
+import './HomePage.css';
 import Footer from '../navBar/footer';
 import '../login/welcom.css'
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import { PropagateLoader } from 'react-spinners';
+
 export class HomePage extends Component {
 
     constructor(props) {
@@ -70,15 +72,16 @@ export class HomePage extends Component {
         }
     }
     NotifyServerOffline = () => {
-		if (! toast.isActive(this.toastId)) {
-			this.toastId=toast.error(<center>Server Not Responding</center>, {
-			position: "top-center", autoClose: 7000,});
-	}
-}
+        if (!toast.isActive(this.toastId)) {
+            this.toastId = toast.error(<center>Server Not Responding</center>, {
+                position: "top-center", autoClose: 7000,
+            });
+        }
+    }
 
     getTask() {
         debugger
-        this.setState({loading:true});
+        this.setState({ loading: true });
         if (JSON.parse(window.localStorage.getItem('isValid'))) {
             Axios.get('http://localhost:8080/get-assigned-task?email=' + this.state.email)
                 .then((response) => {
@@ -93,23 +96,19 @@ export class HomePage extends Component {
                         this.setState({
                             ...state
                         })
-                        this.setState({loading:false});
-
+                        this.setState({ loading: false });
                         localStorage.setItem("pages", JSON.stringify("To Me"))
-
                     }
                 }).catch((error) => {
                     console.log(error)
-                    this.setState({loading:false});
+                    this.setState({ loading: false });
                     this.NotifyServerOffline();
-
                 })
         } else {
             this.props.history.push('/')
         }
     }
     updateCompleted(a, b) {
-
         var moment = require('moment');
         var moment = moment().format('YYYY-MM-DD');
         Axios.put('http://localhost:8080/update-task-completed-Date?taskId=' + a + '&status=' + b + '&completedDate=' + moment)
@@ -118,24 +117,15 @@ export class HomePage extends Component {
                     this.getTask();
                     this.props.history.push('/homePage')
                     this.getTask();
-
                 }
             }).catch((error) => {
                 console.log(error)
                 this.NotifyServerOffline();
-
             })
     }
-
-    componentDidUpdate(prevProps, prevState) {
-        console.log("===============****")
-        console.log(prevState);
-        console.log(this.state)
-        console.log("=================*****")
-    }
-
     update(a, b) {
-        var c = this.state.containerName
+        var c = this.state.containerName;
+        this.setState({ loading: true });
         if (b === "todo") {
             b = "onProgress"
         } else if (b === "onProgress") {
@@ -149,11 +139,11 @@ export class HomePage extends Component {
                 .then((response) => {
                     if (response.data.statusCode === 201) {
                         this.getTask();
+                        this.setState({ loading: false });
                     }
                 }).catch((error) => {
                     console.log(error)
                     this.NotifyServerOffline();
-
                 })
         }
     }
@@ -163,16 +153,14 @@ export class HomePage extends Component {
             popup: item,
             user: userBean,
             page: "To Me"
-
         })
-        console.log("aaaaaaaaaaaaaa",userBean)
+        console.log("aaaaaaaaaaaaaa", userBean)
         this.setState({ show: !this.state.show })
     }
 
     handleClose() {
         this.setState({ show: !this.state.show })
     }
-
 
     completedTask(e) {
         e.preventDefault();
@@ -191,14 +179,8 @@ export class HomePage extends Component {
 
         }
     }
-    showMenu() {
-        this.setState({
-            showButton: this.state.showButton ? false : true
-        })
-    }
 
     render() {
-        console.log(' this.state.onProgress', this.state.onProgress)
         return (
             <div id="page-container" >
                 <Nav >
@@ -209,33 +191,21 @@ export class HomePage extends Component {
                         </button>
                         <div class="dropdown-content">
                             <NavLink onClick={this.props.clearSearch} className="nav-link linkbar" onClick={(event) => { this.pageName("To Me") }} to="/homePage"  >To Me</NavLink>
-                           
+
                             <NavLink onClick={this.props.clearSearch} className="nav-link linkbar" onClick={(event) => { this.pageName("By Me") }} to="/byme" >By Me</NavLink>
                         </div>
                     </div>
 
-                    <Button  onClick={(e) => { this.completedTask(e) }} className="com" style={{ marginLeft: '88%' }}>Completed Task</Button>
-                   
+                    <Button onClick={(e) => { this.completedTask(e) }} className="com" style={{ marginLeft: '88%' }}>Completed Task</Button>
+
                 </Nav>
-                <div className="w-100" style={{marginLeft: '50%',marginRight:'auto', marginBottom: '1%'}}>
-										<PropagateLoader 
-											css={this.override}
-											size={10}
-											 color={'#123abc'}
-											loading={this.state.loading}
-										/>
-										</div>
-                                        <ToastContainer />
+                <div className="w-100" style={{ marginLeft: '50%', marginRight: 'auto', marginBottom: '1%' }}>
+                    <PropagateLoader css={this.override} size={10} color={'#123abc'} loading={this.state.loading} />
+                </div>
+                <ToastContainer />
                 <div id="content-wrap" >
-                    {console.log("============", this.props.value)}
-
-
                     {/*  popUp */}
-
-
                     <Modal centered size="md" show={this.state.show} onHide={this.handleClose.bind(this)}  >
-
-
                         <Modal.Header closeButton>
                             <Modal.Title>
                                 <div className="" style={{ color: '#808080' }}>Subject - <span style={{ color: 'black' }}> {this.state.popup.subject} </span></div></Modal.Title>
@@ -275,8 +245,6 @@ export class HomePage extends Component {
                                 {console.log("prio", this.state.popup.priority)}
                                 <input type="text" style={{ color: 'black' }}
                                     value={this.state.popup.priority} className="form-control" readOnly /> </div>
-
-
                         </Modal.Body>
                         <Modal.Footer style={{ color: 'red' }} className=" justify-content-center" >
                             Number of days : {moment(this.state.popup.endDate).diff(moment(this.state.popup.assignDate), 'days')}
@@ -435,10 +403,7 @@ export class HomePage extends Component {
                                         </div>
                                     </div>
                                 </div>
-
                                 {/* End onProgress */}
-
-
                                 {/* blocked */}
 
                                 <div className="col-lg-4 col-md-3 col-sm-3" id="blocked" onDragOver={(e) => this.onDragOver(e, "blocked")}>
@@ -509,7 +474,6 @@ export class HomePage extends Component {
                                 </div>
 
                             </div>
-
                             {/*End Of blocked */}
                         </center>
 
