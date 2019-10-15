@@ -144,14 +144,13 @@ export default class MyProfile1 extends Component {
         console.log("==================", this.state.userBean)
 
         return (
-            <div id="form-container">
+            <div id="profile-container">
              
                 <div id="content-wrap" class="container-fluid ">
                     <div style={{ textAlign: 'center' }}>
 
-                        
                         <div style={cardStyle}>
-                            <div><b style={{ fontSize: '40px', color: 'gray' }}>Profile Details</b>
+                            <div><b style={{ fontSize: '40px', color: 'black' }}>Profile Details</b>
                             </div>
                             <ToastContainer />
                             <hr></hr>
