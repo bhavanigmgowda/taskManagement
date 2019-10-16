@@ -18,8 +18,8 @@ public class FilterController {
 			@RequestParam("checkThree") String checkThree, @RequestParam("checkFour") String checkFour) {
 		
 		Response res=new Response();
-		res.setBeans(filter.findAll(checkOne, checkTwo, checkThree, checkFour));
-		return res;
+		//res.setBeans(filter.findAll(checkOne, checkTwo, checkThree, checkFour));
+		return null;
 		
 	}
 }
