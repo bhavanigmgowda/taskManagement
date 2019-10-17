@@ -1,5 +1,8 @@
 package com.taskmanagement.dto;
 
+/**
+ * @role response bean for sending response object 
+ */
 import java.util.List;
 import java.util.TreeSet;
 

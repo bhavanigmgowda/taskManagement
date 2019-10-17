@@ -40,7 +40,7 @@ public class UserServiceImpl implements UserService {
 			}
 		} catch (Exception e) {
 			response.setDescription("Exception occured :-" + e.getMessage());
-			response.setMessage("Exception");
+			response.setMessage("Exception"); 
 			response.setStatusCode(501);
 		}
 		return response;

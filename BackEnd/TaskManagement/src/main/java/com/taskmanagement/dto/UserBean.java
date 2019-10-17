@@ -1,5 +1,10 @@
 package com.taskmanagement.dto;
 
+
+/**
+ * @role UserBean class containing data fields ,getters, setters ,default constructor... 
+ */
+
 import java.io.Serializable;
 
 import javax.persistence.Column;

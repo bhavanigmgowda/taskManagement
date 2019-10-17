@@ -1,5 +1,9 @@
 package com.taskmanagement.controller;
 
+/**
+ *@role class for creating, managing, updating task in task management application
+ */
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -17,66 +21,118 @@ import com.taskmanagement.service.TaskService;
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController
 public class TaskController {
-
+	/**
+	 * @role service is autowired for creating object for Task service and inject the bean
+	 */
 	@Autowired
 	private TaskService service;
-
-	// Controller for creating tasks
+	/**
+	 * @role handler for creating tasks
+	 * @param email: takes email value of task creator from request
+	 * @param task: takes task object form request
+	 * @return response object service.createTask(email,task)
+	 */
 	@PostMapping(value = "/create-task", produces = MediaType.APPLICATION_JSON_VALUE)
 	public Response createTask(@RequestParam("email") String email, @RequestBody CreateTaskBean task) {
 		return service.createTask(email, task);
 	}// End of createTask()
 
-	// controller for updating the task status
+	/**
+	 * @role  handler for updating the task status
+	 * @param taskId: takes task id from request
+	 * @param status: takes value of status from request for updation
+	 * @return response object from service.updateStatus(taskId, status) 
+	 */
 	@PutMapping(value = "/update-task-status", produces = MediaType.APPLICATION_JSON_VALUE)
 	public Response updateStatus(@RequestParam("taskId") int taskId, @RequestParam("status") String status) {
 		return service.updateStatus(taskId, status);
 	}// End of updateStatus()
-
-	// controller for setting completed date for task
+	
+	/**
+	 * @role handler for setting completed date for task
+	 * @param taskId: takes task id from request 
+	 * @param status: takes status value from request 
+	 * @param completedDate takes completed date value from request
+	 * @return response object from service.updateCompletedDate(taskId, status, completedDate)
+	 */
 	@PutMapping(value = "/update-task-completed-Date", produces = MediaType.APPLICATION_JSON_VALUE)
 	public Response updateCompletedDate(@RequestParam("taskId") int taskId, @RequestParam("status") String status,
 			@RequestParam("completedDate") String completedDate) {
 		return service.updateCompletedDate(taskId, status, completedDate);
 	}// End ofupdateCompleteDate()
-
-	// controller to get task based on task assigned to others
+	
+	/**
+	 * @role handler to get task based on task assigned to others
+	 * @param email: takes email from request
+	 * @return response object from service.getAssignToTask(email)
+	 */
 	@GetMapping(path = "/get-assign-to-task", produces = MediaType.APPLICATION_JSON_VALUE)
 	public Response getAssignToTask(@RequestParam("email") String email) {
 		return service.getAssignToTask(email);
 	}// End of getAssignToTask()
-
-	// controller for getting task based on task given to self
+	
+	/**
+	 * @role handler for getting task based on task given to self
+	 * @param email: takes email value from request
+	 * @return response object from service.getAssignedTask(email)
+	 */
 	@GetMapping(path = "/get-assigned-task", produces = MediaType.APPLICATION_JSON_VALUE)
 	public Response getAssignedTask(@RequestParam("email") String email) {
 		return service.getAssignedTask(email);
 	}// End of getAssignedTask()
-
-	// controller for getting completed task per endpdate
+	
+	/**
+	 * @role handler for getting completed task assigned by current user
+	 * @param email: takes email value from request
+	 * @param from: takes date value from request
+	 * @return response object from service.get
+	 */
 	@GetMapping(value = "/completed-task-by-me", produces = MediaType.APPLICATION_JSON_VALUE)
 	public Response getCompletedTaskByMe(@RequestParam("email") String email, @RequestParam("from") String from) {
 		return service.getCompletedTaskByMe(email, from);
 	}// End of getCompletedTask()
-
-	// controller for getting completed task per endpdate
+	
+	/**
+	 * @role handler for getting completed task assigned by other user
+	 * @param email: takes email value from request
+	 * @param from: takes date value from request
+	 * @return response object from service.getCompletedTaskToMe(email,from)
+	 */
 	@GetMapping(value = "/completed-task-to-me", produces = MediaType.APPLICATION_JSON_VALUE)
 	public Response getCompletedTaskToMe(@RequestParam("email") String email, @RequestParam("from") String from) {
 		return service.getCompletedTaskByMe(email, from);
 	}// End of getCompletedTask()
-
+	
+	/**
+	 * @role handler for getting completed task based on date(from and to) range
+	 * @param from: takes from date value from request 
+	 * @param to: takes to date value from request
+	 * @param email: takes email value from request
+	 * @return response object from service.getCompletefTaskByDate(from,to,email)
+	 */
 	@GetMapping(value = "/completed-task-from-to", produces = MediaType.APPLICATION_JSON_VALUE)
 	public Response getCompletedTaskByDate(@RequestParam("from") String from, @RequestParam("to") String to,
 			@RequestParam("email") String email) {
 		return service.getCompletedTaskByDate(from, to, email);
 	}// End of getCompletedTask()
-
-	// controller for searching task which are assigned to me
+	
+	/**
+	 * @role  handler for searching task which are assigned to me
+	 * @param email: takes email value from request
+	 * @param data: takes search data value from request
+	 * @return response object from service.searchTaskToMe(data,email)
+	 */
 	@GetMapping(value = "/search-task-to-me", produces = MediaType.APPLICATION_JSON_VALUE)
 	public Response getTaskToMe(@RequestParam("email") String email, @RequestParam("searchTerm") String data) {
 		return service.searchTaskToMe(data, email);
 	}// End of getTaskToMe()
-
-	// controller for searching task which are assigned by me to others
+	
+	/**
+	 * @role handler for searching task which are assigned by me to others
+	 * @param email: takes email value from request
+	 * @param data: takes search data value from request
+	 * @return response object from service.serachTaskByMe(data,email)
+	 */
 	@GetMapping(value = "/search-task-by-me", produces = MediaType.APPLICATION_JSON_VALUE)
 	public Response getTaskByMe(@RequestParam("email") String email, @RequestParam("searchTerm") String data) {
 		return service.searchTaskByMe(data, email);
