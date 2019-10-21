@@ -20,9 +20,17 @@ import com.taskmanagement.repository.UserRepository;
 @Service
 public class TaskServiceImpl implements TaskService {
 
+	/**
+	 * @role taskRepository is autowired for creating bean for Task Repository and
+	 *       inject the bean
+	 */
 	@Autowired
 	TaskRepository taskRepository;
 	@Autowired
+	/**
+	 * @role userRepository is autowired for creating bean for UserRepository and
+	 *       inject the bean
+	 */
 	UserRepository userRepository;
 
 	/**
