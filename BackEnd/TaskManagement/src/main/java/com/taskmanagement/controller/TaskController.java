@@ -7,6 +7,7 @@ package com.taskmanagement.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -137,5 +138,15 @@ public class TaskController {
 	public Response getTaskByMe(@RequestParam("email") String email, @RequestParam("searchTerm") String data) {
 		return service.searchTaskByMe(data, email);
 	}// End of getTaskToMe()
+	
+	/**
+	 * @role handler for deleting task
+	 * @param taskId: takes taskId from request
+	 * @return response object from service.removeTask(taskId)
+	 */
+	@DeleteMapping(value = "/remove-task", produces = MediaType.APPLICATION_JSON_VALUE)
+	public Response removeTask(@RequestParam("taskId")int taskId) {
+		return service.removeTask(taskId);
+	}
 
 }//End of class

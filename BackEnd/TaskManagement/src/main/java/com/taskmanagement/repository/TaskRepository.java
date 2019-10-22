@@ -17,9 +17,9 @@ import com.taskmanagement.dto.CreateTaskBean;
 public interface TaskRepository extends JpaRepository<CreateTaskBean, Integer> {
 
 	/**
-	 * @role abstract method for retrieving task assigned to user email 
+	 * @role abstract method for retrieving task assigned to user email
 	 * @param email: takes email value from request
-	 * @return list of TaskBean object 
+	 * @return list of TaskBean object
 	 */
 	@Query("Select t from CreateTaskBean t where t.userBean.email=:email")
 	List<CreateTaskBean> getAssignTo(String email);
@@ -27,16 +27,16 @@ public interface TaskRepository extends JpaRepository<CreateTaskBean, Integer> {
 	/**
 	 * @role abstract method for retrieving assigned task
 	 * @param email: takes email value of user
-	 * @return list of CreateTaskBean object 
+	 * @return list of CreateTaskBean object
 	 */
 	@Query("Select t from CreateTaskBean t where t.assignedTo=:email")
 	List<CreateTaskBean> getAssignedTask(String email);
 
 	/**
 	 * @role abstract method for retrieving completed tasks
-	 * @param email: takes email value
+	 * @param email:     takes email value
 	 * @param completed: takes completed value
-	 * @return list of CreateTaskBean object  
+	 * @return list of CreateTaskBean object
 	 */
 	@Query("select t from CreateTaskBean t where "
 			+ " t.status='completed' and t.userBean.email=:email and t.completed=:completed")
@@ -44,9 +44,9 @@ public interface TaskRepository extends JpaRepository<CreateTaskBean, Integer> {
 
 	/**
 	 * @role abstract method for retrieving completed task set by user
-	 * @param email: takes email value
+	 * @param email:      takes email value
 	 * @param completed:: takes completed value
-	 * @return list of CreateTaskBean object 
+	 * @return list of CreateTaskBean object
 	 */
 	@Query("select t from CreateTaskBean t where "
 			+ " t.status='completed' and t.assignedTo=:email and t.completed=:completed")
@@ -57,15 +57,15 @@ public interface TaskRepository extends JpaRepository<CreateTaskBean, Integer> {
 	 * @param name: takes subject value
 	 * @return int value
 	 */
-	
+
 	@Query("Select  count(*) from CreateTaskBean t where t.subject LIKE :name%")
 	int countSubject(String name);
-	
+
 	/**
 	 * @role abstract method for retrieving completed task sent by user
-	 * @param email: takes email value
+	 * @param email:      takes email value
 	 * @param completed:: takes completed value
-	 * @return list of CreateTaskBean object 
+	 * @return list of CreateTaskBean object
 	 */
 	@Query("select t from CreateTaskBean t where "
 			+ " t.status='completed' and t.userBean.email=:email and t.completed=:completed")
@@ -74,7 +74,7 @@ public interface TaskRepository extends JpaRepository<CreateTaskBean, Integer> {
 	/**
 	 * @role abstract method for finding completed task
 	 * @param email: takes email value
-	 * @return list of CreateTaskBean object 
+	 * @return list of CreateTaskBean object
 	 */
 	@Query("select t from CreateTaskBean t where "
 			+ " t.status='completed' and t.assignedTo=:email and t.completed!=null")
@@ -83,26 +83,27 @@ public interface TaskRepository extends JpaRepository<CreateTaskBean, Integer> {
 	/**
 	 * @role abstract method for finding end date of completed task
 	 * @param email: takes email value
-	 * @param from: takes from date value
-	 * @return list of string object 
+	 * @param from:  takes from date value
+	 * @return list of string object
 	 */
 	@Query("select  t.completed " + " from CreateTaskBean t where "
 			+ "t.status='completed' and t.assignedTo=:email and  t.completed>=:from")
 	List<String> findEndDateByMe(String email, String from);
 
 	/**
-	 * @role abstract method for finding completed task send to user 
-	 * @param email:takes email value 
-	 * @return list of CreateTaskBean object 
+	 * @role abstract method for finding completed task send to user
+	 * @param email:takes email value
+	 * @return list of CreateTaskBean object
 	 */
 	@Query("select t from CreateTaskBean t where "
 			+ " t.status='completed' and t.userBean.email=:email and t.completed!=null")
 	List<CreateTaskBean> findCompletedToMe(String email);
 
 	/**
-	 * @role abstract method for finding completed date which is greater than end date
+	 * @role abstract method for finding completed date which is greater than end
+	 *       date
 	 * @param email: take email value
-	 * @param from: from date value
+	 * @param from:  from date value
 	 * @return list of string object
 	 */
 	@Query("select  t.completed " + " from CreateTaskBean t where "
@@ -112,8 +113,8 @@ public interface TaskRepository extends JpaRepository<CreateTaskBean, Integer> {
 	/**
 	 * @role abstract method for retrieving task from to till date
 	 * @param email: takes email value
-	 * @param from: takes from date from request
-	 * @param to: takes to date from request
+	 * @param from:  takes from date from request
+	 * @param to:    takes to date from request
 	 * @return set of createTaskBean object
 	 */
 	@Query("select  t " + " from CreateTaskBean t where "
@@ -123,7 +124,7 @@ public interface TaskRepository extends JpaRepository<CreateTaskBean, Integer> {
 	/**
 	 * @role abstract method for finding assigned task by user based on search
 	 * @param searchTerm: takes search value
-	 * @param email: take email value 
+	 * @param email:      take email value
 	 * @return list of CreateTaskBean object
 	 */
 	@Query(value = "select t from CreateTaskBean t where t.userBean.email=:email and ( t.description LIKE %:searchTerm% ) ")
@@ -137,13 +138,13 @@ public interface TaskRepository extends JpaRepository<CreateTaskBean, Integer> {
 	 */
 	@Query(value = "select t from CreateTaskBean t where t.assignedTo=:email and ( t.description LIKE %:searchTerm% )")
 	List<CreateTaskBean> findToMe(@Param("searchTerm") String searchTerm, @Param("email") String email);
-	
+
 	/**
 	 * @role abstract method for counting matching word present in descriptions
-	 * @param name: 
+	 * @param name:
 	 * @return count of description
 	 */
-	
+
 	@Query("Select  count(*) from CreateTaskBean t where t.description LIKE %:name%")
 	int countDescription(String name);
 

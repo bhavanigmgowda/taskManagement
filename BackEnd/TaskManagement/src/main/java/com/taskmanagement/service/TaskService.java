@@ -83,4 +83,9 @@ public interface TaskService {
 	public Response getCompletedTaskByDate(@RequestParam("from") String from, @RequestParam("to") String to,
 			@RequestParam("email") String email);
 
+	/**
+	 * @role abstract method for removing unnecessary task 
+	 * @param taskId: takes taskid from request
+	 */
+	public Response removeTask(@RequestParam("taskId")int taskId);
 }// end of interface

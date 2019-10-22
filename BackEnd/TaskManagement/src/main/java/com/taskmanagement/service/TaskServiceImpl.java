@@ -60,7 +60,6 @@ public class TaskServiceImpl implements TaskService {
 				response.setDescription("user id does not exist ");
 			}
 		} catch (Exception e) {
-
 			response.setDescription("Exception occured :-" + e.getMessage());
 			response.setMessage("Exception");
 			response.setStatusCode(501);
@@ -125,20 +124,18 @@ public class TaskServiceImpl implements TaskService {
 				response.setMessage("Success");
 				response.setDescription("All Task data assigned Found ");
 				response.setTaskBean(taskRepository.getAssignTo(email));
-
 			} else {
 				response.setStatusCode(401);
 				response.setMessage("Failure");
 				response.setDescription("Task data not found");
 			}
 		} catch (Exception e) {
-
 			response.setDescription("Exception occured :-" + e.getMessage());
 			response.setMessage("Exception");
 			response.setStatusCode(501);
 		}
 		return response;
-	}
+	}// End of
 
 	/**
 	 * This method check whether email exists in database if exist then returns all
@@ -154,25 +151,22 @@ public class TaskServiceImpl implements TaskService {
 		Response response = new Response();
 		try {
 			if (userRepository.existsByEmail(email)) {
-
 				response.setStatusCode(201);
 				response.setMessage("Success");
 				response.setDescription("All Task Assigned Found Successfully");
 				response.setTaskBean(taskRepository.getAssignedTask(email));
-
 			} else {
 				response.setStatusCode(401);
 				response.setMessage("Failure");
 				response.setDescription("Task data not found");
 			}
 		} catch (Exception e) {
-
 			response.setDescription("Exception occured :-" + e.getMessage());
 			response.setMessage("Exception");
 			response.setStatusCode(501);
 		}
 		return response;
-	}
+	}// End of getAssignedTask()
 
 	/**
 	 * Service method takes email and from and return completed task which were
@@ -198,13 +192,10 @@ public class TaskServiceImpl implements TaskService {
 				for (String i : endList) {
 					System.out.println("end date" + endList);
 					set.addAll(taskRepository.findCompletedTaskBySetByMe(email, i));
-
 					arrayList.addAll(taskRepository.findCompletedTask(email, i));
 					System.out.println(set);
 				}
-
 				response.setTaskBean(taskRepository.findCompletedByMe(email));
-
 				response.setEnd(set);
 			} else {
 				response.setStatusCode(401);
@@ -212,15 +203,18 @@ public class TaskServiceImpl implements TaskService {
 				response.setDescription("Task data not found");
 			}
 		} catch (Exception e) {
-
 			response.setDescription("Exception occured :-" + e.getMessage());
 			response.setMessage("Exception");
 			response.setStatusCode(501);
 		}
 		return response;
-	}
+	}// End of getCompletedTaskByMe()
 
 	/**
+	 * This method takes email value and from date value from request and returns
+	 * all completed task that are completed by current user
+	 * 
+	 * 
 	 * @role method for getting completed task assigned by other user
 	 * @param email: takes email value from request
 	 * @param from:  takes date value from request
@@ -243,9 +237,7 @@ public class TaskServiceImpl implements TaskService {
 					arrayList.addAll(taskRepository.findCompletedTask(email, i));
 					System.out.println(set);
 				}
-
 				response.setTaskBean(taskRepository.findCompletedToMe(email));
-
 				response.setEnd(set);
 			} else {
 				response.setStatusCode(401);
@@ -253,13 +245,12 @@ public class TaskServiceImpl implements TaskService {
 				response.setDescription("Task data not found");
 			}
 		} catch (Exception e) {
-
 			response.setDescription("Exception occured :-" + e.getMessage());
 			response.setMessage("Exception");
 			response.setStatusCode(501);
 		}
 		return response;
-	}
+	}// End of getCompletedTaskToMe()
 
 	/**
 	 * @role handler for searching task which are assigned to me
@@ -282,19 +273,18 @@ public class TaskServiceImpl implements TaskService {
 				response.setDescription("Task data not found");
 			}
 		} catch (Exception e) {
-
 			response.setDescription("Exception occured :-" + e.getMessage());
 			response.setMessage("Exception");
 			response.setStatusCode(501);
 		}
 		return response;
-	}
+	}// End of searchTaskToMe()
 
 	/**
-	 * @role
-	 * @param data
-	 * @param email
-	 * @return Response : bean that contains the response information
+	 * @role handler for searching task which are assigned by me to others
+	 * @param email: takes email value from request
+	 * @param data:  takes search data value from request
+	 * @return response object from service.serachTaskByMe(data,email)
 	 */
 	@Override
 	public Response searchTaskByMe(String data, String email) {
@@ -311,13 +301,12 @@ public class TaskServiceImpl implements TaskService {
 				response.setDescription("Task data not found");
 			}
 		} catch (Exception e) {
-
 			response.setDescription("Exception occured :-" + e.getMessage());
 			response.setMessage("Exception");
 			response.setStatusCode(501);
 		}
 		return response;
-	}
+	}// End of searchTaskByMe()
 
 	/**
 	 * @role handler for getting completed task based on date(from and to) range
@@ -331,25 +320,22 @@ public class TaskServiceImpl implements TaskService {
 		Response response = new Response();
 		try {
 			if (userRepository.existsByEmail(email)) {
-
 				response.setEnd(taskRepository.fromTo(email, from, to));
 				response.setStatusCode(201);
 				response.setMessage("Success");
 				response.setDescription("All Task data Assigned Found Successfully");
-
 			} else {
 				response.setStatusCode(401);
 				response.setMessage("Failure");
 				response.setDescription("Task data not found");
 			}
 		} catch (Exception e) {
-
 			response.setDescription("Exception occured :-" + e.getMessage());
 			response.setMessage("Exception");
 			response.setStatusCode(501);
 		}
 		return response;
-	}
+	}// End of getCompletedTaskByDate()
 
 	/**
 	 * @role method for setting completed date for task
@@ -377,11 +363,35 @@ public class TaskServiceImpl implements TaskService {
 				response.setDescription("Status not Changed");
 			}
 		} catch (Exception e) {
-
 			response.setDescription("Exception occured :-" + e.getMessage());
 			response.setMessage("Exception");
 			response.setStatusCode(501);
 		}
 		return response;
-	}
-}
+	}// End of updateCompletedDate()
+
+	@Override
+	public Response removeTask(int taskId) {
+		Response response = new Response();
+		try {
+			CreateTaskBean taskbean = taskRepository.findById(taskId).get();
+			if (taskbean.getTaskId().equals(taskId) && taskId != 0) {
+					taskRepository.deleteById(taskId);
+					response.setStatusCode(201);
+					response.setMessage("Success");
+					response.setDescription("Task Removed successfully");
+				}
+			 else {
+				response.setStatusCode(401);
+				response.setMessage("Failure");
+				response.setDescription("taskId not Found");
+			}
+		} catch (Exception e) {
+			response.setStatusCode(501);
+			response.setMessage("Exception");
+			response.setDescription("Exception occured :-" + e.getMessage());
+		}
+		return response;
+	}//End of removeTask()
+
+}// End of TaskServiceImpl()
