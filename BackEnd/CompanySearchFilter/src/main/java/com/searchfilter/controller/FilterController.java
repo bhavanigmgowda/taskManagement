@@ -3,7 +3,6 @@ package com.searchfilter.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -23,7 +22,7 @@ public class FilterController {
 			@RequestParam("skill") String skill, @RequestParam("experience") String experience) {
 		
 		Response res=new Response();
-		res.setBeans(filter.findAll(cname, desc, skill, experience));
+		res.setBeans(filter.findAll(cname,desc,experience,skill));
 		return res;
 		
 	}
