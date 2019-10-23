@@ -26,6 +26,8 @@ import confirmPassword from './components/login/confirmpassword'
 import SearchNavabar from './components/navBar/SearchNavBar';
 import Byme from './components/homePage/Byme';
 import { ArchitectHomePage } from './components/Architect/ArchitectHomePage';
+import { EmployeeHomePage } from './components/Emp/EmployeeHomePage';
+import { LeadHomePage } from './components/Lead/LeadHome';
 
 
 let search=false
@@ -189,6 +191,8 @@ render() {
         : <div><Route exact path='/homePage' render={() => { return <HomePage value={this.state.email}    clearSearch={this.clearSearch}byme={this.byme}   /> }} ></Route>
           <Route exact path='/navBar' component={navBar}></Route>
           <Route exact path='/architectHomePage' component={ArchitectHomePage}></Route>
+          <Route exact path='/employeeHomePage' component={EmployeeHomePage}></Route>
+          <Route exact path='/leadHomePage' component={LeadHomePage}></Route>
 
           <Route exact path='/byme' render={() => { return <Byme byme={this.byme} searchData={this.state.taskData}  clearSearch={this.clearSearch}
 /> }}></Route>

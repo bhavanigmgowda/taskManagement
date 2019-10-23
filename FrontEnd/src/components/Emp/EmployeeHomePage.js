@@ -3,12 +3,12 @@ import { BrowserRouter as Router, Route, Link, withRouter } from 'react-router-d
 import Axios from 'axios'
 import "react-toastify/dist/ReactToastify.css";
 import { CardBody } from 'react-bootstrap/Card';
-import './homepage.css';
+import '../Architect/homepage.css';
 import { Button } from 'react-bootstrap';
-import { Architect } from './SideData';
+import { Employee } from '../Architect/SideData';
 
 
-export class ArchitectHomePage extends Component {
+export class EmployeeHomePage extends Component {
 	constructor(props) {
 		super(props)
 		this.state = {
@@ -28,7 +28,7 @@ export class ArchitectHomePage extends Component {
 							<div className="col-md-2 cssCard" >
 								<div class=" card-body  h-75">
 								<div className="input-group mb-3 option">
-								{Architect()}	
+								{Employee()}	
                                                   </div>
 								</div>
 							</div>
@@ -46,8 +46,7 @@ export class ArchitectHomePage extends Component {
 				</div>
 			</div>
 
-
 		)
 	}
 }
-export default withRouter(ArchitectHomePage)
+export default withRouter(EmployeeHomePage)
