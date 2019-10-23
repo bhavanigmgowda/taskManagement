@@ -7,6 +7,8 @@ import moment from 'moment';
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { PropagateLoader } from 'react-spinners';
+import Axios from 'axios';
+import { stickyLow, stickyMedium, stickyCri, stickyHigh } from './Sticky';
 class Byme extends Component {
     constructor(props) {
         super(props)
@@ -36,6 +38,19 @@ class Byme extends Component {
             this.props.byme()
         }
     }
+
+    delete(a) {
+     
+            Axios.delete('http://localhost:8080/remove-task?taskId=' + a )
+                .then((response) => {
+                    if (response.data.statusCode === 201) {
+                        this.props.byme()
+                    }
+                }).catch((error) => {
+                    console.log(error)
+                })
+        }
+    
 
     completedTask(e) {
         e.preventDefault();
@@ -103,12 +118,14 @@ class Byme extends Component {
                     <Modal centered size="md" show={this.state.show} onHide={this.handleClose.bind(this)}  >
                         <Modal.Header closeButton>
                             <Modal.Title>
-                                <div className="" style={{ color: '#808080' }}>Subject -   <textarea style={{ color: 'black' }} value={this.state.popup.subject} type="text" className="form-control" placeholder="Designation" readOnly />  </div></Modal.Title>
+                                <div className="" style={{ color: '#808080' }}>Subject -                             
+                                      <textarea style={{ color: 'black', resize: "none",   width:"209%" }}  class="form-control"  value={this.state.popup.subject} id="exampleFormControlTextarea1" rows="1" readOnly/>
+  </div></Modal.Title>
                         </Modal.Header>
                         <Modal.Body>
                             <label className="mb-0" style={{ color: '#808080' }}>Description</label>
                             <div className="input-group mb-2">
-                                <textarea style={{ color: 'black' }} value={this.state.popup.description} type="text" className="form-control" placeholder="Designation" readOnly />  </div>
+                                <textarea style={{ color: 'black' }} value={this.state.popup.description} type="text" className="form-control textarea" placeholder="Designation" readOnly />  </div>
                             <label className="mb-0" style={{ color: '#808080' }}>Assigned To</label>
                             <div className="input-group mb-2">
                                 <div className="input-group-prepend ">
@@ -162,11 +179,13 @@ class Byme extends Component {
                                             {this.props.searchData.filter(item => (item.priority === 'critical') && (item.status === 'todo')).map(item => {
                                                 return (
                                                     <div className="col-auto" >
+                                                           <div className="cor" >
+                                                           <i class="fas fa-times-circle" onClick={() => this.delete(item.taskId, "completed")}></i>
+                                                     </div>
                                                         <div id="i7" className="col-lg-4 col-md-4 col-sm-4 a" >
                                                             <i onClick={() => this.showvis(item, item.userBean)} class="fas fa-info-circle"></i>
                                                         </div>
-                                                        <p id="drag1" className="prCri"  >
-                                                            < textarea id="d2" value={item.description} className="textarea" rows="5" readOnly></textarea> </p>
+                                                       {stickyCri(item)}
                                                     </div>
                                                 )
                                             }
@@ -174,24 +193,28 @@ class Byme extends Component {
                                             {this.props.searchData.filter(item => (item.priority === 'high') && (item.status === 'todo')).map(item => {
                                                 return (
                                                     <div className="col-auto">
+                                                          <div className="cor" >
+                                                          <i class="fas fa-times-circle" onClick={() => this.delete(item.taskId, "completed")}></i>
+                                                     </div>
                                                         <div id="i7" className="col-lg-4 col-md-4 col-sm-4 a" >
                                                             <i onClick={() => this.showvis(item, item.userBean)} class="fas fa-info-circle"></i>
                                                         </div>
-                                                        <p id="drag1" className="prHigh"  >
-                                                            < textarea id="d2" value={item.description} className="textarea" rows="5" readOnly></textarea> </p>
-                                                    </div>
+                                                        {stickyHigh(item)}
+                                                </div>
                                                 )
                                             }
                                             )}
                                             {this.props.searchData.filter(item => (item.priority === 'medium') && (item.status === 'todo')).map(item => {
                                                 return (
                                                     <div className="col-auto">
+                                                    <div className="cor" >
+                                                    <i class="fas fa-times-circle" onClick={() => this.delete(item.taskId, "completed")}></i>
+                                                     </div>
                                                         <div id="i7" className="col-lg-4 col-md-4 col-sm-4 a" >
                                                             <i onClick={() => this.showvis(item, item.userBean)} class="fas fa-info-circle"></i>
                                                         </div>
-                                                        <p div id="drag2" className="prInit"   >
-                                                            < textarea id="d2" value={item.description} className="textarea" rows="5" readOnly></textarea>
-                                                        </p>
+                                                        {stickyMedium(item)}
+
                                                     </div>
                                                 )
                                             }
@@ -199,11 +222,13 @@ class Byme extends Component {
                                             {this.props.searchData.filter(item => (item.priority === 'low') && (item.status === 'todo')).map(item => {
                                                 return (
                                                     <div className="col-auto">
+                                                          <div className="cor" >
+                                                          <i class="fas fa-times-circle" onClick={() => this.delete(item.taskId, "completed")}></i>
+                                                     </div>
                                                         <div id="i7" className="col-lg-4 col-md-4 col-sm-4 a" >
                                                             <i onClick={() => this.showvis(item, item.userBean)} class="fas fa-info-circle"></i>
-                                                        </div> <p id="drag3" className="prLow"   >
-                                                            < textarea id="d2" value={item.description} className="textarea" rows="5" readOnly></textarea>
-                                                        </p>
+                                                        </div> 
+                                                        {stickyLow(item)}
                                                     </div>
                                                 )
                                             }
@@ -226,8 +251,8 @@ class Byme extends Component {
                                                         <div id="i7" className="col-lg-4 col-md-4 col-sm-4 a" >
                                                             <i onClick={() => this.showvis(item, item.userBean)} class="fas fa-info-circle"></i>
                                                         </div>
-                                                        <p id="drag6" class="prCri ">
-                                                            < textarea id="d2" value={item.description} className="textarea" rows="5" cols="5" readOnly></textarea> </p>
+                                                        {stickyCri(item)}
+
                                                         <div class="container-fluid">
                                                         </div>
 
@@ -241,8 +266,8 @@ class Byme extends Component {
                                                         <div id="i7" className="col-lg-4 col-md-4 col-sm-4 a" >
                                                             <i onClick={() => this.showvis(item, item.userBean)} class="fas fa-info-circle"></i>
                                                         </div>
-                                                        <p id="drag6" class="prHigh ">
-                                                            < textarea id="d2" value={item.description} className="textarea" rows="5" cols="5" readOnly></textarea> </p>
+                                                        {stickyHigh(item)}
+
                                                         <div class="container-fluid">
                                                         </div>
                                                     </div>
@@ -257,8 +282,8 @@ class Byme extends Component {
                                                         <div id="i7" className="col-lg-4 col-md-4 col-sm-4 a" >
                                                             <i onClick={() => this.showvis(item, item.userBean)} class="fas fa-info-circle"></i>
                                                         </div>
-                                                        <p id="drag6" class="prInit ">
-                                                            < textarea id="d2" value={item.description} className="textarea" rows="5" cols="5" readOnly></textarea> </p>
+                                                        {stickyMedium(item)}
+
                                                         <div class="container-fluid">
                                                         </div>
                                                     </div>
@@ -272,8 +297,8 @@ class Byme extends Component {
                                                         <div id="i7" className="col-lg-4 col-md-4 col-sm-4 a" >
                                                             <i onClick={() => this.showvis(item, item.userBean)} class="fas fa-info-circle"></i>
                                                         </div>
-                                                        <p id="drag6" class="prLow ">
-                                                            < textarea id="d2" value={item.description} className="textarea" rows="5" cols="5" readOnly></textarea> </p>
+                                                        {stickyLow(item)}
+
                                                     </div>
                                                 )
                                             }
@@ -295,8 +320,8 @@ class Byme extends Component {
                                                         <div id="i7" className="col-lg-4 col-md-4 col-sm-4 a" >
                                                             <i onClick={() => this.showvis(item, item.userBean)} class="fas fa-info-circle"></i>
                                                         </div>
-                                                        <p id="drag6" class="prCri ">
-                                                            < textarea id="d2" value={item.description} className="textarea" rows="5" cols="5" readOnly></textarea> </p>
+                                                        {stickyCri(item)}
+
                                                     </div>
                                                 )
                                             }
@@ -307,8 +332,7 @@ class Byme extends Component {
                                                         <div id="i7" className="col-lg-4 col-md-4 col-sm-4 a" >
                                                             <i onClick={() => this.showvis(item, item.userBean)} class="fas fa-info-circle"></i>
                                                         </div>
-                                                        <p id="drag6" class="prHigh ">
-                                                            < textarea id="d2" value={item.description} className="textarea" rows="5" cols="5" readOnly></textarea> </p>
+                                                      {stickyHigh(item)}
                                                     </div>
                                                 )
                                             }
@@ -319,8 +343,8 @@ class Byme extends Component {
                                                         <div id="i7" className="col-lg-4 col-md-4 col-sm-4 a" >
                                                             <i onClick={() => this.showvis(item, item.userBean)} class="fas fa-info-circle"></i>
                                                         </div>
-                                                        <p id="drag6" class="prInit ">
-                                                            < textarea id="d2" value={item.description} className="textarea" rows="5" cols="5" readOnly></textarea> </p>
+                                                        
+                                                        {stickyMedium(item)}
                                                     </div>
                                                 )
                                             }
@@ -332,8 +356,8 @@ class Byme extends Component {
                                                         <div id="i7" className="col-lg-4 col-md-4 col-sm-4 a" >
                                                             <i onClick={() => this.showvis(item, item.userBean)} class="fas fa-info-circle"></i>
                                                         </div>
-                                                        <p id="drag6" class="prLow ">
-                                                            < textarea id="d2" value={item.description} className="textarea" rows="5" cols="5" readOnly></textarea> </p>
+                                                        {stickyLow(item)}
+
                                                     </div>
                                                 )
                                             }

@@ -10,15 +10,15 @@ import './CompletedTask.css'
 
 let uniqueArr = [];
 let pro = [{}]
-
+let checked=false
 const AccordionItem = ({ ...props }) => {
-    const { item,  collapsed, expand } = props;
+    const { item, collapsed, expand } = props;
     return (
         <span>
             <span className="toggle"
                 id={item.taskId}
                 onClick={(e) => expand(e, item.taskId)}>
-                <span>{collapsed ? <i class="fas fa-chevron-up"></i>  : <i class="fas fa-chevron-down"></i>}</span>
+                <span>{collapsed ? <i class="fas fa-chevron-up"></i> : <i class="fas fa-chevron-down"></i>}</span>
             </span>
         </span>
     );
@@ -28,7 +28,7 @@ class completedTask extends Component {
     constructor() {
         super();
         this.state = {
-            data: [   ],
+            data: [],
             doneTask: [],
             from: '',
             to: '',
@@ -39,17 +39,19 @@ class completedTask extends Component {
             popup: '',
             user: '',
             show: false,
-            loading: false
+            loading: false,
+            checked:false
         };
         this.handleClick = this.handleClick.bind(this);
     } //End of constructor
 
     NotifyServerOffline = () => {
-		if (! toast.isActive(this.toastId)) {
-			this.toastId=toast.error(<center>Server Not Responding</center>, {
-			position: "top-center", autoClose: 7000,});
+        if (!toast.isActive(this.toastId)) {
+            this.toastId = toast.error(<center>Server Not Responding</center>, {
+                position: "top-center", autoClose: 7000,
+            });
+        }
     }
-}
 
     handleClick(e, id) {
         const itemIndex = this.state.items.findIndex(i => i.id === id);
@@ -60,12 +62,21 @@ class completedTask extends Component {
         // Need to manage state based on which 'elem' triggered event?
         this.setState({ items: items });
     }
-    
+
     componentDidMount() {
-          var myobj = {}
+       this.collectDate(moment().subtract(7, 'd').format('YYYY-MM-DD'))
+    } //End of component-did-mount
+
+    collectDate(dateFrom){
+     
+            checked=!checked
+        
+        var myobj = {}
         var moment = require('moment');
-        this.setState({loading:true});
-        var dateFrom = moment().subtract(7, 'd').format('YYYY-MM-DD');
+        this.setState({ loading: true });
+       console.log("---------------",moment().subtract(3, 'month').format('YYYY-MM-DD')) 
+       console.log("---------------",moment().subtract(6, 'm').format('YYYY-MM-DD')) 
+
         Axios.get('http://localhost:8080/completed-task-by-me?email=' + this.state.mail + '&from=' + dateFrom)
             .then((response) => {
                 console.log('Response Object', response.data);
@@ -73,7 +84,7 @@ class completedTask extends Component {
                     this.setState({
                         data: response.data.end,
                         datas: response.data.taskBean,
-                        loading:false
+                        loading: false
                     }, () => {
                         console.log("response.data.completedTask", response.data.end, response.data.taskBean)
                         uniqueArr = response.data.taskBean;
@@ -86,15 +97,16 @@ class completedTask extends Component {
                 }
             }).catch((error) => {
                 console.log('Error', error);
-                this.setState({loading:false});
+                this.setState({ loading: false });
                 this.NotifyServerOffline();
             })
-    } //End of component-did-mount
+    }
 
     fromTo(e) {
+      
         e.preventDefault();
         const { from, to } = this.state;
-        this.setState({loading:true});
+        this.setState({ loading: true });
         console.log("===from date====", from, to)
         Axios.get('http://localhost:8080/completed-task-from-to?email=' + this.state.mail + '&from=' + from + '&to=' + to)
             .then((response) => {
@@ -104,13 +116,13 @@ class completedTask extends Component {
                     this.setState({
                         data: response.data.end,
                         datas: response.data.taskBean,
-                        loading:false
+                        loading: false
                     })
                 } else if (response.data.statusCode === 401) {
                 }
             }).catch((error) => {
                 console.log('Error', error);
-                this.setState({loading:false});
+                this.setState({ loading: false });
                 this.NotifyServerOffline();
             })
     } //End of from-me
@@ -141,7 +153,7 @@ class completedTask extends Component {
     handleChange = (activeStatus, itemId) => {
         const productIndex = this.state.data.findIndex(function (
             item,
-            ) {
+        ) {
             return item.taskId === itemId;
         });
 
@@ -216,65 +228,66 @@ class completedTask extends Component {
             const perItemRows = this.renderItem(item);
             allItemRows = allItemRows.concat(perItemRows);
         });
+    
         return (
             <div className="card-body completed">
                 <Modal centered size="md" show={this.state.show} onHide={this.handleClose.bind(this)}  >
-<Modal.Header closeButton>
-    <Modal.Title>
-        <div className="" style={{ color: '#808080' }}>Subject - <span style={{ color: 'black' }}> {this.state.popup.subject} </span></div></Modal.Title>
-</Modal.Header>
-<Modal.Body>
-    <label className="mb-0" style={{ color: '#808080' }}>Description</label>
-    <div className="input-group mb-2">
-        <textarea style={{ color: 'black' }} value={this.state.popup.description} type="text" className="form-control" placeholder="Designation" readOnly />  </div>
-    <label className="mb-0" style={{ color: '#808080' }}>Assigned By</label>
-    <div className="input-group mb-2">
-        <div className="input-group-prepend ">
-            <label className="input-group-text "><i className="fas fa-at" /></label>
-        </div>
-        <input type="text" value={this.state.user.email} style={{ color: 'black' }} className="form-control" placeholder="Designation" readOnly /></div>
-    <label className="mb-0" style={{ color: '#808080' }}>Assigned On</label>
-    <div className="input-group mb-2">
-        <div className="input-group-prepend">
-            <label className="input-group-text"><i className="far fa-calendar-alt" /></label>
-        </div>
+                    <Modal.Header closeButton>
+                        <Modal.Title>
+                            <div className="" style={{ color: '#808080' }}>Subject - <span style={{ color: 'black' }}> {this.state.popup.subject} </span></div></Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <label className="mb-0" style={{ color: '#808080' }}>Description</label>
+                        <div className="input-group mb-2">
+                            <textarea style={{ color: 'black' }} value={this.state.popup.description} type="text" className="form-control" placeholder="Designation" readOnly />  </div>
+                        <label className="mb-0" style={{ color: '#808080' }}>Assigned By</label>
+                        <div className="input-group mb-2">
+                            <div className="input-group-prepend ">
+                                <label className="input-group-text "><i className="fas fa-at" /></label>
+                            </div>
+                            <input type="text" value={this.state.user.email} style={{ color: 'black' }} className="form-control" placeholder="Designation" readOnly /></div>
+                        <label className="mb-0" style={{ color: '#808080' }}>Assigned On</label>
+                        <div className="input-group mb-2">
+                            <div className="input-group-prepend">
+                                <label className="input-group-text"><i className="far fa-calendar-alt" /></label>
+                            </div>
 
-        <input type="text" style={{ color: 'black' }}
-            value={moment(this.state.popup.assignDate).format("DD-MM-YYYY")} className="form-control" placeholder="Password" readOnly /></div>
-    <label className="mb-0" style={{ color: '#808080' }}>Deadline</label>
-    <div className="input-group mb-2">
-        <div className="input-group-prepend">
-            <label className="input-group-text"><i className="far fa-calendar-alt" /></label>
-        </div>
+                            <input type="text" style={{ color: 'black' }}
+                                value={moment(this.state.popup.assignDate).format("DD-MM-YYYY")} className="form-control" placeholder="Password" readOnly /></div>
+                        <label className="mb-0" style={{ color: '#808080' }}>Deadline</label>
+                        <div className="input-group mb-2">
+                            <div className="input-group-prepend">
+                                <label className="input-group-text"><i className="far fa-calendar-alt" /></label>
+                            </div>
 
-        <input type="text" style={{ color: 'black' }}
-            value={moment(this.state.popup.endDate).format("DD-MM-YYYY")} className="form-control" placeholder="Email" readOnly /> </div>
-    <label className="mb-0" style={{ color: '#808080' }}>Priority</label>
-    <div className="input-group mb-2">
-        <div className="input-group-prepend">
-            <label className="input-group-text"><i class="fas fa-tasks"></i></label>
+                            <input type="text" style={{ color: 'black' }}
+                                value={moment(this.state.popup.endDate).format("DD-MM-YYYY")} className="form-control" placeholder="Email" readOnly /> </div>
+                        <label className="mb-0" style={{ color: '#808080' }}>Priority</label>
+                        <div className="input-group mb-2">
+                            <div className="input-group-prepend">
+                                <label className="input-group-text"><i class="fas fa-tasks"></i></label>
 
-        </div>
-        {console.log("prio", this.state.popup.priority)}
-        <input type="text" style={{ color: 'black' }}
-            value={this.state.popup.priority} className="form-control" readOnly /> </div>
+                            </div>
+                            {console.log("prio", this.state.popup.priority)}
+                            <input type="text" style={{ color: 'black' }}
+                                value={this.state.popup.priority} className="form-control" readOnly /> </div>
 
 
-</Modal.Body>
-<Modal.Footer style={{ color: 'red' }} className=" justify-content-center" >
-    Number of days : {moment(this.state.popup.endDate).diff(moment(this.state.popup.assignDate), 'days')}
-</Modal.Footer>
-</Modal>
-{/* end of popup */}
-<div className="w-100" style={{marginLeft: '50%',marginRight:'auto', marginBottom: '1%'}}>
-										<PropagateLoader 
-											css={this.override}
-											size={10}
-											 color={'#123abc'}
-											loading={this.state.loading}
-										/>
-										</div>
-                                        <ToastContainer />
+                    </Modal.Body>
+                    <Modal.Footer style={{ color: 'red' }} className=" justify-content-center" >
+                        Number of days : {moment(this.state.popup.endDate).diff(moment(this.state.popup.assignDate), 'days')}
+                    </Modal.Footer>
+                </Modal>
+                {/* end of popup */}
+                <div className="w-100" style={{ marginLeft: '50%', marginRight: 'auto', marginBottom: '1%' }}>
+                    <PropagateLoader
+                        css={this.override}
+                        size={10}
+                        color={'#123abc'}
+                        loading={this.state.loading}
+                    />
+                </div>
+                <ToastContainer />
 
                 <div class="form-group row offset-4">
                     <div class="col-sm- my-1">
@@ -289,7 +302,6 @@ class completedTask extends Component {
                                         from: event.target.value
                                     })
                                 }} className="form-control" /></div>
-
                     </div>
 
                     <div class="col-sm- my-1">
@@ -309,16 +321,22 @@ class completedTask extends Component {
                     <div class="col-sm- my-1">
                         <div className="mb-0" >&nbsp;</div>
                         <div className="input-group mb-2">
-                           <button className="btn btn-outline-success w-500 h-100 " type="submit"
-                                onClick={this.fromTo.bind(this)} disabled={!this.state.from&&!this.state.to}>
+                            <button className="btn btn-outline-success w-500 h-100 " type="submit"
+                                onClick={this.fromTo.bind(this)} disabled={!this.state.from && !this.state.to}>
                                 Search</button>
                         </div>
                     </div>
                 </div>
-                <div className=" card-body">
-                    <table className="tableClass font-weight-bold">{allItemRows}</table>
+                <div className="offset-4 dataButton">
+               <input type="radio" name="radio" checked={!checked} onClick={()=>{this.collectDate(moment().subtract(1, 'month').format('YYYY-MM-DD')) }} value="Last 1 month" /> Last 1 month &nbsp; &nbsp;&nbsp;
+                <input type="radio" name="radio"  checked={!checked} onClick={()=>{this.collectDate(moment().subtract(3, 'month').format('YYYY-MM-DD')) }} value="Last 3 month" /> Last 3 month &nbsp; &nbsp;&nbsp;
+                <input type="radio" name="radio"   checked={!checked} onClick={()=>{this.collectDate(moment().subtract(6, 'month').format('YYYY-MM-DD')) }} value="Last 6 month" /> Last 6 month &nbsp; &nbsp;&nbsp;
                 </div>
-
+                {this.state.data? <div className=" card-body">
+                    <table className="tableClass font-weight-bold">{allItemRows}</table>
+                </div>:<h3>NO record found </h3>}
+               
+                               
             </div>
         );
     }

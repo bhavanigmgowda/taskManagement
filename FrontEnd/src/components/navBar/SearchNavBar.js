@@ -78,7 +78,7 @@ class SearchNavabar extends Component {
                             </div>
                             <div class="col-sm-3">
 
-                            <Button className="ml-1" variant="outline-success" disabled={!this.state.search} onClick={(event) => { this.search(event) }}  >Search</Button>
+                            <Button className="ml-1" variant="outline-success"  disabled={!this.state.search}  onClick={(event) => { this.search(event) }}  >Search</Button>
                         </div>
                         </div>
                         <Nav   className="nav-link">

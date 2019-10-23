@@ -25,6 +25,7 @@ import confirmPassword from './components/login/confirmpassword'
 
 import SearchNavabar from './components/navBar/SearchNavBar';
 import Byme from './components/homePage/Byme';
+import { ArchitectHomePage } from './components/Architect/ArchitectHomePage';
 
 
 let search=false
@@ -101,7 +102,6 @@ byme=()=>{
             this.setState({
               taskData:response.data.taskBean
             })
-            this.clearSearch();
               localStorage.setItem("pages", JSON.stringify("By Me"));
             } 
       }).catch((error) => {
@@ -175,7 +175,7 @@ render() {
         setVal={this.setVal}
         clearSearch={this.clearSearch}
         sendToApp={this.searchPage}
-        byme={this.byme} /> : <div> {(this.props.location.pathname != '/'&&
+        byme={this.byme} /> : <div>  {(this.props.location.pathname != '/'&&
         this.props.location.pathname!='/Login'
         &&this.props.location.pathname!='/getEmail'
         &&this.props.location.pathname!='/createUser'
@@ -188,6 +188,8 @@ render() {
         clearSearch={this.clearSearch}  />
         : <div><Route exact path='/homePage' render={() => { return <HomePage value={this.state.email}    clearSearch={this.clearSearch}byme={this.byme}   /> }} ></Route>
           <Route exact path='/navBar' component={navBar}></Route>
+          <Route exact path='/architectHomePage' component={ArchitectHomePage}></Route>
+
           <Route exact path='/byme' render={() => { return <Byme byme={this.byme} searchData={this.state.taskData}  clearSearch={this.clearSearch}
 /> }}></Route>
           <Route exact path='/completedTask' component={completedTask}></Route>

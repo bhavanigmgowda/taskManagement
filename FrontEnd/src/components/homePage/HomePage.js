@@ -11,6 +11,7 @@ import moment from 'moment';
 import './HomePage.css';
 import Footer from '../navBar/footer';
 import '../login/welcom.css'
+import { stickyHigh, stickyMedium, stickyLow, stickyCri } from './Sticky';
 
 export class HomePage extends Component {
 
@@ -125,7 +126,6 @@ export class HomePage extends Component {
     }
     update(a, b) {
         var c = this.state.containerName;
-        this.setState({ loading: true });
         if (b === "todo") {
             b = "onProgress"
         } else if (b === "onProgress") {
@@ -135,6 +135,8 @@ export class HomePage extends Component {
             b = "onProgress"
         }
         if (b === "onProgress" && c == "onProgress" || b === "blocked" && c == "blocked" || b === "completed") {
+            this.setState({ loading: true });
+
             Axios.put('http://localhost:8080/update-task-status?taskId=' + a + '&status=' + b)
                 .then((response) => {
                     if (response.data.statusCode === 201) {
@@ -184,7 +186,6 @@ export class HomePage extends Component {
         return (
             <div id="page-container" >
                 <Nav >
-
                     <div class="dropdown">
                         <button class="dropbtn">{this.state.page} &nbsp;
                             <i class="fa fa-caret-down"></i>
@@ -273,8 +274,7 @@ export class HomePage extends Component {
                                                         <div id="i7" className="col-lg-4 col-md-4 col-sm-4 a" >
                                                             <i onClick={() => this.showvis(item, item.userBean)} class="fas fa-info-circle"></i>
                                                         </div>
-                                                        <p id="drag1" draggable="true" className="prCri" >
-                                                            < textarea id="d2" className="textarea" value={item.description} rows="5" readOnly></textarea> </p>
+                                                        {stickyCri(item)}
                                                     </div>
                                                 )
                                             }
@@ -286,8 +286,7 @@ export class HomePage extends Component {
                                                         <div id="i7" className="col-lg-4 col-md-4 col-sm-4 a" >
                                                             <i onClick={() => this.showvis(item, item.userBean)} class="fas fa-info-circle"></i>
                                                         </div>
-                                                        <p id="drag1" draggable="true" className="prHigh" >
-                                                            < textarea id="d2" className="textarea" value={item.description} rows="5" readOnly></textarea> </p>
+                                                        {stickyHigh(item)}
                                                     </div>
                                                 )
                                             }
@@ -299,9 +298,7 @@ export class HomePage extends Component {
                                                         <div id="i7" className="col-lg-4 col-md-4 col-sm-4 a" >
                                                             <i onClick={() => this.showvis(item, item.userBean)} class="fas fa-info-circle"></i>
                                                         </div>
-                                                        <p div id="drag2" draggable="true" className="prInit" >
-                                                            < textarea id="d2" className="textarea" value={item.description} rows="5" readOnly></textarea>
-                                                        </p>
+                                                        {stickyMedium(item)}
                                                     </div>
                                                 )
                                             }
@@ -311,9 +308,8 @@ export class HomePage extends Component {
                                                     <div className="col-auto" onDragEnd={() => this.update(item.taskId, item.status)}>
                                                         <div id="i7" className="col-lg-4 col-md-4 col-sm-4 a" >
                                                             <i onClick={() => this.showvis(item, item.userBean)} class="fas fa-info-circle"></i>
-                                                        </div> <p id="drag3" draggable="true" className="prLow" >
-                                                            < textarea id="d2" className="textarea" rows="5" value={item.description} readOnly></textarea>
-                                                        </p>
+                                                        </div>
+                                                        {stickyLow(item)}
                                                     </div>
                                                 )
                                             }
@@ -341,8 +337,7 @@ export class HomePage extends Component {
                                                         <div id="i7" className="col-lg-4 col-md-4 col-sm-4 a" >
                                                             <i onClick={() => this.showvis(item, item.userBean)} class="fas fa-info-circle"></i>
                                                         </div>
-                                                        <p id="drag6" draggable="true" class="prCri ">
-                                                            < textarea id="d2" className="textarea" rows="5" cols="5" value={item.description} readOnly></textarea> </p>
+                                                        {stickyCri(item)}
                                                         <div class="container-fluid">
                                                         </div>
                                                     </div>
@@ -358,8 +353,7 @@ export class HomePage extends Component {
                                                         <div id="i7" className="col-lg-4 col-md-4 col-sm-4 a" >
                                                             <i onClick={() => this.showvis(item, item.userBean)} class="fas fa-info-circle"></i>
                                                         </div>
-                                                        <p id="drag6" draggable="true" class="prHigh ">
-                                                            < textarea id="d2" className="textarea" rows="5" cols="5" value={item.description} readOnly></textarea> </p>
+                                                        {stickyHigh(item)}
                                                         <div class="container-fluid">
                                                         </div>
                                                     </div>
@@ -376,8 +370,7 @@ export class HomePage extends Component {
                                                         <div id="i7" className="col-lg-4 col-md-4 col-sm-4 a" >
                                                             <i onClick={() => this.showvis(item, item.userBean)} class="fas fa-info-circle"></i>
                                                         </div>
-                                                        <p id="drag6" draggable="true" class="prInit ">
-                                                            <textarea id="d2" className="textarea" rows="5" cols="5" value={item.description} readOnly></textarea> </p>
+                                                        {stickyMedium(item)}
                                                         <div class="container-fluid">
                                                         </div>
                                                     </div>
@@ -394,8 +387,7 @@ export class HomePage extends Component {
                                                         <div id="i7" className="col-lg-4 col-md-4 col-sm-4 a" >
                                                             <i onClick={() => this.showvis(item, item.userBean)} class="fas fa-info-circle"></i>
                                                         </div>
-                                                        <p id="drag6" draggable="true" class="prLow ">
-                                                            < textarea id="d2" className="textarea" rows="5" cols="5" value={item.description} readOnly></textarea> </p>
+                                                        {stickyLow(item)}
                                                     </div>
                                                 )
                                             }
@@ -421,8 +413,7 @@ export class HomePage extends Component {
                                                         <div id="i7" className="col-lg-4 col-md-4 col-sm-4 a" >
                                                             <i onClick={() => this.showvis(item, item.userBean)} class="fas fa-info-circle"></i>
                                                         </div>
-                                                        <p id="drag6" draggable="true" class="prCri ">
-                                                            < textarea id="d2" className="textarea" rows="5" value={item.description} cols="5" readOnly></textarea> </p>
+                                                        {stickyCri(item)}
                                                     </div>
                                                 )
                                             }
@@ -435,8 +426,7 @@ export class HomePage extends Component {
                                                         <div id="i7" className="col-lg-4 col-md-4 col-sm-4 a" >
                                                             <i onClick={() => this.showvis(item, item.userBean)} class="fas fa-info-circle"></i>
                                                         </div>
-                                                        <p id="drag6" draggable="true" class="prHigh ">
-                                                            < textarea id="d2" className="textarea" rows="5" value={item.description} cols="5" readOnly></textarea> </p>
+                                                        {stickyHigh(item)}
                                                     </div>
                                                 )
                                             }
@@ -448,8 +438,7 @@ export class HomePage extends Component {
                                                         <div id="i7" className="col-lg-4 col-md-4 col-sm-4 a" >
                                                             <i onClick={() => this.showvis(item, item.userBean)} class="fas fa-info-circle"></i>
                                                         </div>
-                                                        <p id="drag6" draggable="true" class="prInit ">
-                                                            < textarea id="d2" className="textarea" value={item.description} rows="5" cols="5" readOnly></textarea> </p>
+                                                        {stickyMedium(item)}
                                                     </div>
                                                 )
                                             }
@@ -463,8 +452,7 @@ export class HomePage extends Component {
                                                         <div id="i7" className="col-lg-4 col-md-4 col-sm-4 a" >
                                                             <i onClick={() => this.showvis(item, item.userBean)} class="fas fa-info-circle"></i>
                                                         </div>
-                                                        <p id="drag6" draggable="true" class="prLow ">
-                                                            < textarea id="d2" className="textarea" value={item.description} rows="5" cols="5" readOnly></textarea> </p>
+                                                        {stickyLow(item)}
                                                     </div>
                                                 )
                                             }
@@ -479,13 +467,12 @@ export class HomePage extends Component {
 
                         <Footer />
                     </div>
-
                 </div>
                 <div> </div>
             </div>
-
-
         )
     }
 }
 export default withRouter(HomePage)
+
+

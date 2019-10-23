@@ -18,11 +18,10 @@ export class Login extends Component {
 			showEmail: false,
 			showPassword: false,
 			type: 'password',
-			showEmailInvalid: false,
 			loading: false
 
 		}
-
+		
 	}
 
 	hideEmail = () => {
@@ -43,7 +42,7 @@ export class Login extends Component {
 
 	login(event) {
 		event.preventDefault();
-		this.setState({ loading: true });
+		this.setState({loading:true});
 
 		Axios.post('http://localhost:8080/login', null,
 			{
@@ -54,7 +53,7 @@ export class Login extends Component {
 				credentials: 'same-origin'
 			}
 		).then((response) => {
-			this.setState({ loading: false });
+			this.setState({loading:false});
 
 			console.log('RESPONSE DATA', response)
 			console.log(response.data.message)
@@ -86,46 +85,16 @@ export class Login extends Component {
 			}
 		}).catch((error) => {
 			this.NotifyServerOffline();
-			this.setState({ loading: false });
+			this.setState({loading:false});
 		})
 	}
 
-	handleEmail = () => {
-		var that = this;
-		var email = document.getElementById('email').value.trim();
-		if (email !== "") {
-			let lastAtPos = (document.getElementById("email").value).lastIndexOf('@');
-			let lastDotPos = (document.getElementById("email").value).lastIndexOf('.');
 
-			if (!(lastAtPos < lastDotPos && lastAtPos > 0 && (document.getElementById("email").value).indexOf('@@') == -1 && lastDotPos > 2 && ((document.getElementById("email").value).length - lastDotPos) > 2)) {
-				that.setState({ showEmailInvalid: true })
-				return false;
-			}
-		}
-		that.setState({ showEmailInvalid: false })
-		return true;
-	}
 
 
 	forgot = () => {
 		this.props.history.push("/getEmail")
 	}
-	handlePassword = () => {
-        var pass = document.getElementById('password').value;
-        var that = this;
-        var reg = /(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}/;
-		var test = reg.test(pass);
-        if (test) {
-            return true;
-        } else {
-            that.NotifyInvalidCrediatial();
-            return false;
-        }
-    }
-
-
-
-
 	componentDidMount() {
 		var that = this;
 		$(document).ready(function () {
@@ -140,44 +109,38 @@ export class Login extends Component {
 					that.setState({ showEmail: true })
 				}
 
-				if (email !== "" && that.handleEmail() === false) {
-					that.setState({ showEmailInvalid: true })
-				}
-				
 
-				if (email !== "" && password !== "" && that.handleEmail() === true && that.handlePassword()===true) {
+				if (email !== "" && password !== "") {
 					return true;
 				}
 				else {
-
 					return false;
 				}
 			});
 		});
 	}
 	NotifyInvalidCrediatial = () => {
-		if (!toast.isActive(this.toastId)) {
-			this.toastId = toast.error(<center>Invalid Username and/or Password</center>, {
-				position: "top-center", autoClose: 7000,
-			});
-		}
+		if (! toast.isActive(this.toastId)) {
+		this.toastId=toast.error(<center>Invalid Username and/or Password</center>, {
+			position: "top-center", autoClose: 7000,});
 	}
+}
 
 	NotifyServerOffline = () => {
-		if (!toast.isActive(this.toastId)) {
-			this.toastId = toast.error(<center>Server Not Responding</center>, {
-				position: "top-center", autoClose: 7000,
-			});
-		}
+		if (! toast.isActive(this.toastId)) {
+			this.toastId=toast.error(<center>Server Not Responding</center>, {
+			position: "top-center", autoClose: 7000,});
 	}
+}
 
 
 	render() {
-
+	
 		return (
 			<div id="form-container" >
 				<div id="content-wrap">
 					<SimpleNavBarCreate />
+
 					<div className="container-fluid mt-5 pb-3 ">
 
 
@@ -187,18 +150,18 @@ export class Login extends Component {
 							</div>
 						</div>
 						<div className="row">
-							<div id="container" className="col-auto container-fluid mt-5">
+							<div id="container" className="col-auto container mt-5">
 								<div id="create" className="card shadow-lg ">
 									<div id="cardHead" className="card-header text-center">
 										<h3>Login</h3>
 										<p>Enter your email and password</p>
-										<div className="w-100" style={{ marginLeft: '50%', marginRight: 'auto' }}>
-											<PropagateLoader
-												css={this.override}
-												size={10}
-												color={'#123abc'}
-												loading={this.state.loading}
-											/>
+										<div className="w-100" style={{marginLeft: '50%',marginRight:'auto'}}>
+										<PropagateLoader 
+											css={this.override}
+											size={10}
+											 color={'#123abc'}
+											loading={this.state.loading}
+										/>
 										</div>
 									</div>
 									<div className="card-body">
@@ -207,7 +170,7 @@ export class Login extends Component {
 												<div className="input-group-prepend">
 													<label className="input-group-text"><i className="fas fa-at" /></label>
 												</div>
-												<input className="form-control" autoComplete="off" type="email" name="email" onKeyPress={() => { this.hideEmail(); this.setState({ showEmailInvalid: false }) }} title="Enter Email" id="email" placeholder="Enter Email" onChange={(event) => {
+												<input className="form-control" autoComplete="off" type="email" name="email" onKeyPress={this.hideEmail} title="Enter Email" id="email" placeholder="Enter Email" onChange={(event) => {
 													this.setState({
 														email: event.target.value
 													})
@@ -215,7 +178,6 @@ export class Login extends Component {
 
 											</div>
 											{this.state.showEmail ? <div id="errordiv" className="container-fluid">Please enter Email** </div> : null}
-											{this.state.showEmailInvalid ? <div id="errordiv" className="container-fluid" >Please enter a valid email address</div> : null}
 											<div className="input-group mb-3">
 												<div className="input-group-prepend">
 													<label className="input-group-text"><i className="fas fa-key" /></label>
@@ -230,7 +192,7 @@ export class Login extends Component {
 
 											</div>
 											{this.state.showPassword ? <div id="errordiv" className="container-fluid">Please enter password** </div> : null}
-
+											
 											<div className="input-group mb-2 mt-2 container-fluid">
 											</div>
 											<div>
@@ -254,3 +216,97 @@ export class Login extends Component {
 	}
 }
 export default withRouter(Login)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

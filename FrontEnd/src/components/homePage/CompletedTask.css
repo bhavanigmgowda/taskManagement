@@ -26,6 +26,10 @@
   cursor: pointer;
 
 }
+.dataButton{
+  margin-left: 37% !important;
+
+}
 .stickys{
   background-color: white !important	 ;
       border-top: 25px solid rgb(188, 241, 144) !important;

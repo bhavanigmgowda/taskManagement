@@ -1,3 +1,20 @@
+/* #myprofile {
+    margin-top: 20px; 
+    background-color:#ebebeb;
+     border-radius: 24px;
+     margin-bottom: 20px
+}
+
+
+.input-group-prepend {
+    margin-right: -1px;
+    display : flex;
+}
+
+.h5{
+    margin-top: 5px;
+    margin-left: 20px;
+} */
 
 #myprofile {
     margin-top: 20px; 
@@ -16,20 +33,9 @@
     margin-top: 5px;
     margin-left: 20px;
 }
-.h44{
+.h4{
     color:black;
-    font-style:  'Courier New', Courier, monospace;
 }
-.h33{
+.h3{
     color:gray;
-    font-family:  'Courier New', Courier, monospace;
 }
-
-#content-wrap {
-    padding-bottom: 2.5rem;    /* Footer height */
-  }
-  
-  #profile-container {
-    position: relative;
-    min-height: 85vh;
-  }
