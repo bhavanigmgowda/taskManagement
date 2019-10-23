@@ -50,9 +50,11 @@ public class CreateTaskBean implements Serializable,Comparable<CreateTaskBean> {
 	private String status;
 	@Column(name = "completed")
 	private String completed;
+	
 	@ManyToOne
 	@JoinColumn(name = "emp_id")
 	private UserBean userBean;
+	
 	
 	@Override
 	public int compareTo(CreateTaskBean o) {

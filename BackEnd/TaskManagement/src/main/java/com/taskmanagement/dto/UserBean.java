@@ -38,5 +38,7 @@ public class UserBean implements Serializable {
 	private String password;
 	@Column(name = "designation")
 	private String designation;
+	@Column(name = "role")
+	private String role;
 
 }
