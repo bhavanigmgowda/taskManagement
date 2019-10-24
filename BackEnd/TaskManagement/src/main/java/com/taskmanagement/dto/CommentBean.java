@@ -11,6 +11,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonRootName;
 
 import lombok.Data;
@@ -19,11 +20,12 @@ import lombok.Data;
 @Entity
 @Table(name = "comment")
 @JsonRootName("Comment")
-
+@Data
 public class CommentBean implements Serializable {
 
 	@Id
 	@GeneratedValue
+	@JsonProperty(value = "commentId")
 	@Column(name = "comment_id")
 	private int commentId;
 	@Column(name = "comment")
