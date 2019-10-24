@@ -49,7 +49,6 @@ public class TaskServiceImpl implements TaskService {
 		Response response = new Response();
 		try {
 			if (userRepository.existsById(task.getUserBean().getEmployeeId()) && userRepository.existsByEmail(email)) {
-
 				taskRepository.save(task);
 				response.setStatusCode(201);
 				response.setMessage("Success");

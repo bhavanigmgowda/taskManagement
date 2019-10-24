@@ -2,12 +2,10 @@ package com.taskmanagement.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.taskmanagement.dto.CreateTaskBean;
 import com.taskmanagement.dto.ProjectBean;
 import com.taskmanagement.dto.Response;
 import com.taskmanagement.repository.ProjectRepository;
 
-import javassist.bytecode.stackmap.BasicBlock.Catch;
 
 public class ProjectServiceImpl implements ProjectService {
 
@@ -19,7 +17,7 @@ public class ProjectServiceImpl implements ProjectService {
 		Response response = new Response();
 
 		try {
-			if (repository.findUserById(bean.getProjectPkBean())) {
+			if (!repository.findUserById(bean.getProjectPkBean())) {
 				repository.save(bean);
 				response.setStatusCode(201);
 				response.setMessage("Success");
@@ -28,7 +26,7 @@ public class ProjectServiceImpl implements ProjectService {
 				response.setStatusCode(401);
 				response.setMessage("Failure");
 				response.setDescription("project id already exist ");
-			}
+			} 
 
 		} catch (Exception e) {
 			response.setDescription("Exception occured :-" + e.getMessage());
