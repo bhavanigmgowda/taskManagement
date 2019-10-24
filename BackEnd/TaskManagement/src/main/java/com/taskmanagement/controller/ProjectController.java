@@ -27,4 +27,9 @@ public class ProjectController {
 	public Response removeComment(@RequestParam("commentId") int projectId) {
 		return service.getProject(projectId);
 	}
+        
+        @GetMapping(value = "/get-members", produces = MediaType.APPLICATION_JSON_VALUE)
+	public Response getAllMembers(@RequestParam("groupId") int groupId) {
+		return service.getAllMembers(groupId);
+	}
 }
