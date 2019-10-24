@@ -16,6 +16,14 @@ public interface ProjectRepository extends JpaRepository<ProjectBean,ProjectPKBe
 	  
 	  @Query("select c from ProjectBean c where c.projectPkBean.groupId=:projectId")
 	  List<ProjectBean> getAll( int projectId);
+
+            @Query("select c from ProjectBean c where c.projectPkBean.groupId=:projectId")
+	  List<ProjectBean> getAllMembers(int  projectId);
+	  
+	  @Query("select count(*) from ProjectBean c where c.projectPkBean.groupId=:projectId")
+	  int findProjectById(int projectId);
+	  
+
 	  
 	 
 }
