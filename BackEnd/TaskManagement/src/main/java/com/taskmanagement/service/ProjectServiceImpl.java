@@ -86,4 +86,27 @@ public class ProjectServiceImpl implements ProjectService {
 
 	}
 
+
+	@Override
+	public Response getAllMembers(int groupId) {
+		Response response = new Response();
+		try {
+			if (repository.findProjectById(groupId)>=1) {
+				List<ProjectBean> projectBean = repository.getAllMembers(groupId);
+				response.setMessage("members found successfully");
+				response.setStatusCode(201);
+				response.setProjectBeans(projectBean);
+				
+			} else {
+				response.setStatusCode(401);
+				response.setMessage("members not found");
+			}
+		} catch (Exception e) {
+			response.setDescription("Exception occured :-" + e.getMessage());
+			response.setMessage("Exception");
+			response.setStatusCode(501);
+		}
+		return response;
+	}
+
 }
