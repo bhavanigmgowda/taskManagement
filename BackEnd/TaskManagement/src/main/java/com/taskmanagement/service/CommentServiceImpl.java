@@ -1,7 +1,5 @@
 package com.taskmanagement.service;
 
-import java.util.Arrays;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,9 +16,8 @@ public class CommentServiceImpl implements CommentService {
 	@Override
 	public Response addComment(CommentBean bean) {
 		Response response = new Response();
-		
 		try {
-			if (bean.getComment().trim()!="") {
+			if (commentRepository.findUserById(bean.getUserBean().getEmployeeId())) {
 
 				commentRepository.save(bean);
 				response.setStatusCode(201);
@@ -49,7 +46,7 @@ public class CommentServiceImpl implements CommentService {
 
 				if (commentBean.getComment().trim() != "") {
 					commentBean.setComment(bean.getComment());
-					commentRepository.save(commentBean);
+					commentRepository.save(bean);
 					response.setStatusCode(201);
 					response.setMessage("Success");
 					response.setDescription("Comment updated successfully");
@@ -61,7 +58,7 @@ public class CommentServiceImpl implements CommentService {
 			} else {
 				response.setStatusCode(402);
 				response.setMessage("Failure");
-				response.setDescription("comment id doesnt exists "+bean.getCommentId());
+				response.setDescription("comment id doesnt exists ");
 			}
 		}
 		catch (Exception e) {
@@ -94,21 +91,5 @@ public class CommentServiceImpl implements CommentService {
 		}
 		return response;
 
-	}
-	
-	public Response getComment() {
-		Response response = new Response();
-		try {
-			CommentBean bean=commentRepository.findById(1).get();
-				response.setCommentBean(Arrays.asList(bean));
-				response.setStatusCode(201);
-				response.setMessage("Success");
-				response.setDescription("comment retrieved successfully");
-		} catch (Exception e) {
-			response.setDescription("Exception occured :-" + e.getMessage());
-			response.setMessage("Exception");
-			response.setStatusCode(501);
-		}
-		return response;
 	}
 }

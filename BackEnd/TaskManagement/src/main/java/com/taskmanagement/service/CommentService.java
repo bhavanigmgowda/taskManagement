@@ -11,6 +11,4 @@ public interface CommentService {
 	
 	public Response updateComment(CommentBean bean);
 	
-	public Response getComment();
-	
 }

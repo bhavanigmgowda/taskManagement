@@ -4,6 +4,8 @@ import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
@@ -13,6 +15,8 @@ import lombok.Data;
 @Embeddable
 @SuppressWarnings("serial")
 public class ProjectPKBean implements Serializable {
+	
+	@GeneratedValue
 	@Column(name = "group_id")
 	private int groupId;
 

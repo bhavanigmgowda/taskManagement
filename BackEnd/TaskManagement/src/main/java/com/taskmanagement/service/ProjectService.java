@@ -7,7 +7,7 @@ public interface ProjectService {
 	public Response createProject(ProjectBean bean) ;
 	public Response updateProject(ProjectBean bean);
 	public Response getProject(int projectId);
-        public Response getAllMembers(int groupId);
+    public Response getAllMembers(int groupId);
 
 	
 }

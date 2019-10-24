@@ -1,12 +1,16 @@
 package com.taskmanagement.service;
 
+
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.taskmanagement.dto.ProjectBean;
 import com.taskmanagement.dto.Response;
 import com.taskmanagement.repository.ProjectRepository;
 
-
+@Service
 public class ProjectServiceImpl implements ProjectService {
 
 	@Autowired
@@ -15,9 +19,8 @@ public class ProjectServiceImpl implements ProjectService {
 	@Override
 	public Response createProject(ProjectBean bean) {
 		Response response = new Response();
-
-		try {
-			if (!repository.findUserById(bean.getProjectPkBean())) {
+		System.out.println("=============================================="+bean);
+			if (repository.findById(bean.getProjectPkBean()) != null ) {
 				repository.save(bean);
 				response.setStatusCode(201);
 				response.setMessage("Success");
@@ -27,12 +30,7 @@ public class ProjectServiceImpl implements ProjectService {
 				response.setMessage("Failure");
 				response.setDescription("project id already exist ");
 			} 
-
-		} catch (Exception e) {
-			response.setDescription("Exception occured :-" + e.getMessage());
-			response.setMessage("Exception");
-			response.setStatusCode(501);
-		}
+					
 		return response;
 	}
 
@@ -85,8 +83,6 @@ public class ProjectServiceImpl implements ProjectService {
 		return response;
 
 	}
-
-
 	@Override
 	public Response getAllMembers(int groupId) {
 		Response response = new Response();

@@ -25,7 +25,7 @@ import lombok.Data;
 public class ProjectBean implements Serializable {
 
 	@EmbeddedId
-	@Column(name="projectId")
+	@Column(name="project_id")
 	private  ProjectPKBean projectPkBean;
 	
 	@Column(name = "project_name")
@@ -39,11 +39,8 @@ public class ProjectBean implements Serializable {
 	private LocalDate createdDate;
 	
 	@Column(name = "deadline")
-	private LocalDate deadline;
+	private String deadline;
 	
-	@JoinColumn(name = "taskid")
-	@ManyToOne(cascade = CascadeType.ALL)
-	private CreateTaskBean createTaskBean;
 
 	public ProjectPKBean getProjectPkBean() {
 		return projectPkBean;
@@ -77,21 +74,20 @@ public class ProjectBean implements Serializable {
 		this.createdDate = createdDate;
 	}
 
-	public LocalDate getDeadline() {
+	public String getDeadline() {
 		return deadline;
 	}
 
-	public void setDeadline(LocalDate deadline) {
+	public void setDeadline(String deadline) {
 		this.deadline = deadline;
 	}
 
-	public CreateTaskBean getCreateTaskBean() {
-		return createTaskBean;
+	@Override
+	public String toString() {
+		return "ProjectBean [projectPkBean=" + projectPkBean + ", projectName=" + projectName + ", description="
+				+ description + ", createdDate=" + createdDate + ", deadline=" + deadline + "]";
 	}
 
-	public void setCreateTaskBean(CreateTaskBean createTaskBean) {
-		this.createTaskBean = createTaskBean;
-	}
 	
 	
 }

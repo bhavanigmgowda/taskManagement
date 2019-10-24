@@ -8,12 +8,15 @@ package com.taskmanagement.dto;
 import java.io.Serializable;
 import java.time.LocalDate;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.CreationTimestamp;
@@ -55,6 +58,17 @@ public class CreateTaskBean implements Serializable,Comparable<CreateTaskBean> {
 	@JoinColumn(name = "emp_id")
 	private UserBean userBean;
 	
+
+    @ManyToOne
+    @JoinColumns({
+        @JoinColumn(
+            name = "company_id",
+            referencedColumnName = "group_id"),
+        @JoinColumn(
+            name = "employee_number",
+            referencedColumnName = "emp_id")
+    })
+    private ProjectBean projectBean;
 	
 	public Integer getTaskId() {
 		return taskId;
