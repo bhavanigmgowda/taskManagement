@@ -105,4 +105,19 @@ public class ProjectServiceImpl implements ProjectService {
 		return response;
 	}
 
+        @Override
+	public Response searchMember(String name, int groupId) {
+		Response response = new Response();
+		List<ProjectBean> projectBean = repository.searchMember(name, groupId);
+		if (!projectBean.isEmpty()) {
+			response.setStatusCode(201);
+			response.setDescription("members found successfully");
+			response.setProjectBeans(projectBean);
+		} else {
+			response.setStatusCode(401);
+			response.setDescription("members not found ");
+		}
+		return response;
+	}
+
 }
