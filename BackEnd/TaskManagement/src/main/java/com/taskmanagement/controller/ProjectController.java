@@ -39,4 +39,10 @@ public class ProjectController {
 		public Response getAllMembers(@RequestParam("groupId") int groupId) {
 			return service.getAllMembers(groupId);
 		}
+
+
+	@GetMapping(value = "/search-members", produces = MediaType.APPLICATION_JSON_VALUE)
+	public Response searchMember(@RequestParam ("name") String name,@RequestParam ("groupId") int groupId) {
+	return service.searchMember(name,groupId);
+	}
 }
