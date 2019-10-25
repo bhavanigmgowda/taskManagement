@@ -32,4 +32,7 @@ public interface ProjectRepository extends JpaRepository<ProjectBean,ProjectPKBe
         @Query("select c from ProjectBean c where c.projectPkBean.groupId=:projectId and :projectId= (select c.projectPkBean.groupId from  ProjectBean c where c.projectPkBean.userBean.employeeName=:name)")
 	List<ProjectBean> searchMember(String name, int projectId);
 
+	@Query("select c from ProjectBean c where c.projectPkBean.userBean.employeeName=:name")
+	List<ProjectBean> searchMemberUniversal(String name);
+
 }
