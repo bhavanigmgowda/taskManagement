@@ -51,4 +51,10 @@ public class ProjectController {
 	return service.searchMember(name,groupId);
 	}
 
+
+	@GetMapping(value = "/search-members-universal", produces = MediaType.APPLICATION_JSON_VALUE)
+	public Response searchMemberUniversal(@RequestParam("name") String name) {
+		return service.searchMemberUniversal(name);
+	}
+
 }
