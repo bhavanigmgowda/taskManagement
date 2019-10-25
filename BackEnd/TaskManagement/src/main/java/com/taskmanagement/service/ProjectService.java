@@ -10,6 +10,7 @@ public interface ProjectService {
     public Response getAllMembers(int groupId);
     public Response getProjectsByEmail( String email);
     public Response searchMember(String name, int groupId);
+   public Response searchMemberUniversal(String name);
 
 	
 }
