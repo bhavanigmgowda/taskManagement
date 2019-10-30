@@ -5,25 +5,30 @@ import { BrowserRouter as Router, Route, withRouter } from 'react-router-dom'
 
 import Login from './components/login/Login'
 import HomePage from './components/homePage/HomePage'
+import Stiky from './components/Sticky/Sticky'
 import createTask from './components/createTask/createTask'
 import createUser from './components/createUser/createUser'
 import myprofile from './components/createUser/MyProfile'
 
 import navBar from './components/navBar/NavBar'
+import byme from './components/homePage/Byme'
 
 import completedTask from './components/homePage/CompletedTask';
 
+import SimpleNavBar from './components/navBar/SimpleNavBar';
 import welcomePage from './components/welcome/welcomePage';
 import ConfirmPassword from './components/login/confirmpassword';
+import ForgotPasswordEmailCheck from './components/login/forgotPasswordEmailCheck'
 
 import forgotPasswordEmailCheck from './components/login/forgotPasswordEmailCheck'
+import confirmPassword from './components/login/confirmpassword'
 
 import SearchNavabar from './components/navBar/SearchNavBar';
 import Byme from './components/homePage/Byme';
 import { ArchitectHomePage } from './components/Architect/ArchitectHomePage';
 import { EmployeeHomePage } from './components/Emp/EmployeeHomePage';
 import { LeadHomePage } from './components/Lead/LeadHome';
-import createProject from './components/createTask/createProject';
+import Projectmembers from './components/Architect/Projectmembers';
 
 
 let search=false
@@ -167,7 +172,6 @@ byme=()=>{
 render() {
   const page =JSON.parse(window.localStorage.getItem('pages')) ;
   let isValid=JSON.parse(window.localStorage.getItem('isValid')) ;
-  let role=JSON.parse(window.localStorage.getItem('role')) ;
   return (
     <div>
       {isValid ? <SearchNavabar
@@ -187,9 +191,9 @@ render() {
         clearSearch={this.clearSearch}  />
         : <div><Route exact path='/homePage' render={() => { return <HomePage value={this.state.email}    clearSearch={this.clearSearch}byme={this.byme}   /> }} ></Route>
           <Route exact path='/navBar' component={navBar}></Route>
-          <Route exact path='/createProject' component={createProject}></Route>
-          {role==="architect"? <Route exact path='/architectHomePage' component={ArchitectHomePage}></Route>:null
-}
+          <Route exact path='/members' component={Projectmembers}></Route>
+
+          <Route exact path='/architectHomePage' component={ArchitectHomePage}></Route>
           <Route exact path='/employeeHomePage' component={EmployeeHomePage}></Route>
           <Route exact path='/leadHomePage' component={LeadHomePage}></Route>
 

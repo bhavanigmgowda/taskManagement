@@ -66,20 +66,13 @@ export class Login extends Component {
 					isValid: true,
 					userData: response.data.userBean[0]
 				}, () => {
-					console.log(localStorage.setItem("beans", JSON.stringify(this.state.userData.email )));
-					localStorage.setItem("role", JSON.stringify(this.state.userData.role ))
-					if(response.data.userBean[0].role==="architect"){
-						this.props.history.push('/architectHomePage')
-						}else if(response.data.userBean[0].role==="lead"){
-							this.props.history.push('/leadHomePage')
-						}else{
-							this.props.history.push('/employeeHomePage')
-						}
+					console.log(localStorage.setItem("beans", JSON.stringify(this.state.userData.email)));
 				})
 				console.log(localStorage.setItem("isValid", JSON.stringify(this.state.isValid)));
 
 				this.props.clicked(this.state.userData.email)
-			
+
+				this.props.history.push('/homePage')
 			}
 			else if (response.data.statusCode === 401) {
 

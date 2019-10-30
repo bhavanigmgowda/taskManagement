@@ -12,25 +12,11 @@ export class ArchitectHomePage extends Component {
 	constructor(props) {
 		super(props)
 		this.state = {
-			email: JSON.parse(window.localStorage.getItem('beans')),
-			projectData:[]
+
 		}
 
 	}
 
-componentDidMount(){
-		 Axios.get('http://localhost:8080/get-projects-by-email?email=' + this.state.email)
-			.then((response) => {
-				if (response.data.statusCode === 201) {
-				this.setState({
-					projectData:response.data.projectBeans
-				})
-				console.log("===============",response.data.projectBeans)
-				}
-			}).catch((error) => {
-				console.log(error)
-			}) 
-		}
 
 	render() {
 
@@ -46,58 +32,12 @@ componentDidMount(){
                                                   </div>
 								</div>
 							</div>
+
+
 							<div className="col-md-8">
 								<div id="card" >
 									<div class=" card-body ">
-									<div>
-									<div className="row">
-                        {this.state.projectData.map(item=>{
-							return(
-					<div className='col-sm-4'>
-					<p id="drag1" className="stickys">
-	 				< textarea id="d2" className="textarea" rows="5" readOnly>{item.projectName}</textarea> </p>
- 					<p />
-					</div> 
-							)
-						})
-						}
-							</div>
 
-
-                <div style={{ marginLeft: "2%", marginTop: '5%' }}>
-                    <table class="table table-hover">
-                        <thead>
-                            <tr>
-                                <th scope="col">#</th>
-                                <th scope="col">Project Name</th>
-                                <th scope="col">People</th>
-                                <th scope="col">Creation Date</th>
-								<th scope="col">Deadline</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {
-                                this.state.projectData.map((projectData) => {
-                                    console.log('tabledate', projectData.id)
-                                    return (
-                                        <tr>
-
-                                            <th scope="row">{projectData.id}</th>
-                                            <td>{projectData.projectName}</td>
-                                            <td>{projectData.people}</td>
-                                            <td>{projectData.createdDate}</td>
-											<td>{projectData.deadline}</td>
-                                        </tr>
-                                    )
-                                })
-                            }
-                        </tbody>
-                    </table>
-
-                </div>
-            </div>
-
-						
 									</div>
 								</div>
 							</div>
