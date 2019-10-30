@@ -1,0 +1,16 @@
+.cssCard{
+    border: 1px solid #F4F5F7;
+    height: 950px;
+    background-color: #F4F5F7
+}
+
+.iconTask{
+    padding-top: 18px;
+    padding-bottom: 18px;
+}
+.option{
+    font-size: 131%;
+}
+.tab:hover{
+    background-color:white;
+}
