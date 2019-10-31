@@ -37,4 +37,7 @@ public interface UserRepository extends JpaRepository<UserBean, Integer> {
 	 * CreateTaskBean findTask(@Param("projectId") String projectId);
 	 */
 	
+	@Query(value="select u from UserBean u where u.email=:email ")
+	Optional<UserBean> getId(String email);
+	
 }//end of interface

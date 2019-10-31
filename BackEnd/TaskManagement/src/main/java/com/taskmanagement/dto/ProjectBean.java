@@ -2,13 +2,11 @@ package com.taskmanagement.dto;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.concurrent.atomic.AtomicInteger;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.CreationTimestamp;
@@ -23,9 +21,10 @@ import lombok.Data;
 @Table(name = "project")
 @Data
 public class ProjectBean implements Serializable {
+	
+
 
 	@EmbeddedId
-	@Column(name="project_id")
 	private  ProjectPKBean projectPkBean;
 	
 	@Column(name = "project_name")

@@ -26,12 +26,33 @@ public class Response {
 	private List<CommentBean> commentBean;
 
 	private List<ProjectBean> projectBeans ;
+	
+	private List<String> EndDate;
 
 	public int getStatusCode() {
 		return statusCode;
 	}
 
 	
+	
+
+
+	public List<String> getEndDate() {
+		return EndDate;
+	}
+
+
+
+
+
+	public void setEndDate(List<String> endDate) {
+		EndDate = endDate;
+	}
+
+
+
+
+
 	public List<ProjectBean> getProjectBeans() {
 		return projectBeans;
 	}
