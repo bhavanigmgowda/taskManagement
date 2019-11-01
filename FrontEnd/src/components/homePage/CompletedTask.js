@@ -199,7 +199,6 @@ class completedTask extends Component {
                 </div>
             </div>
         ];
-
         if (this.state.expandedRows.includes(item.taskId)) {
             itemRows.push(
                 <div className="row rowCss">

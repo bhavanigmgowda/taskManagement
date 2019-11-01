@@ -35,12 +35,63 @@ export class LeadHomePage extends Component {
 
 
                         <div className="col-md-8">
-                            <div id="card" >
-                                <div class=" card-body ">
+								<div id="card" >
+									<div class=" card-body ">
+										<div>
+											<div className="row">
+												{this.state.projectData.map(item => {
+													return (
+														<div onClick={() => {
+															this.page(item.projectPkBean)
+														}} className='col-sm-4'>
+															<p id="drag1" className="stickys">
+																< textarea id="d2" className="textarea" rows="5" readOnly>{item.projectName}</textarea> </p>
+															<p />
+														</div>
+													)
+												})
+												}
+											</div>
 
-                                </div>
-                            </div>
-                        </div>
+											<div style={{ marginLeft: "2%", marginTop: '5%' }}>
+												<table class="table table-hover">
+													<thead>
+														<tr>
+															<th scope="col">#</th>
+															<th scope="col">Project Name</th>
+															<th scope="col">People</th>
+															<th scope="col">Creation Date</th>
+															<th scope="col">Deadline</th>
+														</tr>
+													</thead>
+													<tbody>
+														{
+															this.state.projectData.map((projectData) => {
+																console.log('tabledate', projectData.id)
+																return (
+																	<tr>
+																		<th scope="row">{projectData.id}</th>
+																		<td onClick={() => {
+																			{
+																				this.page(projectData.projectPkBean)
+																			}
+																		}}>{projectData.projectName}</td>
+																		<td>{projectData.people}</td>
+																		<td>{projectData.createdDate}</td>
+																		<td>{projectData.deadline}</td>
+																	</tr>
+																)
+															})
+														}
+													</tbody>
+												</table>
+											</div>
+										</div>
+
+
+									</div>
+								</div>
+							</div>
                     </div>
                 </div>
             </div>

@@ -22,7 +22,7 @@ import { withRouter } from "react-router";
                 this.props.history.push('/searchPage')
 
             } else {
-                this.props.history.push('/homePage');
+                this.props.history.push('/taskPage');
                 localStorage.setItem('nouser', response.data.description);
             }
         }).catch((error) => {
@@ -33,7 +33,7 @@ import { withRouter } from "react-router";
     }
 homepage(e){
     e.preventDefault();
-    this.props.history.push('/homePage');
+    this.props.history.push('/taskPage');
 }
     logout(e) {
         e.preventDefault();

@@ -64,7 +64,7 @@ class Byme extends Component {
 
             })
             localStorage.setItem("pages", JSON.stringify("To Me"))
-            this.props.history.push('/homePage')
+            this.props.history.push('/taskPage')
         } else {
             localStorage.setItem("pages", JSON.stringify("By Me"))
             this.props.history.push('/byme')
@@ -97,7 +97,7 @@ class Byme extends Component {
         <i class="fa fa-caret-down"></i>
                             </button>
                             <div class="dropdown-content">
-                                <NavLink onClick={this.props.clearSearch} className="nav-link linkbar" onClick={(event) => { this.pageName("To Me") }} to="/homePage"  >To Me</NavLink>
+                                <NavLink onClick={this.props.clearSearch} className="nav-link linkbar" onClick={(event) => { this.pageName("To Me") }} to="/taskPage"  >To Me</NavLink>
                                 <NavLink onClick={this.props.clearSearch} className="nav-link linkbar" onClick={(event) => { this.pageName("By Me") }} to="/byme" >By Me</NavLink>
                             </div>
                         </div>

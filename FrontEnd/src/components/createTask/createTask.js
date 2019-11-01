@@ -45,7 +45,7 @@ export class CreateTask extends Component {
     }
     cancel(e) {
         e.preventDefault();
-        this.props.history.push('/homePage')
+        this.props.history.push('/taskPage')
     }
 
     textarea = () => {
@@ -116,7 +116,7 @@ export class CreateTask extends Component {
             if (response.data.statusCode === 201) {
                 this.NotifyTaskCreationSuccess();
                 setTimeout(() => {
-                    this.props.history.push('/homePage');
+                    this.props.history.push('/taskPage');
                 }, 3000)
             } else if (response.data.statusCode === 401) {
                 this.NotifyEmailDoesntExists();

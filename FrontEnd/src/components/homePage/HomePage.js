@@ -18,9 +18,11 @@ import Footer from '../navBar/footer';
 import '../login/welcom.css'
 import { stickyHigh, stickyMedium, stickyLow, stickyCri } from './Sticky';
 import { Architectproject } from '../Architect/SideData';
+import { LeadHomePage } from '../Lead/LeadHome';
+import { EmployeeHomePage } from '../Emp/EmployeeHomePage';
+import { ArchitectHomePage } from '../Architect/ArchitectHomePage';
 
 export class HomePage extends Component {
-
     constructor(props) {
         super(props)
         this.state = {
@@ -38,7 +40,8 @@ export class HomePage extends Component {
             mail: JSON.parse(window.localStorage.getItem('beans')),
             email: null,
             page: "To Me",
-            loading: false
+            loading: false,
+            groupId: null
 
         }
         {
@@ -76,6 +79,11 @@ export class HomePage extends Component {
                 this.getTask()
             })
         }
+
+        this.setState({
+            groupId: localStorage.getItem('groupId')
+        })
+
     }
     NotifyServerOffline = () => {
         if (!toast.isActive(this.toastId)) {
@@ -87,13 +95,17 @@ export class HomePage extends Component {
 
     getTask() {
         debugger
+        console.log("==================", this.state.groupId)
         this.setState({ loading: true });
         if (JSON.parse(window.localStorage.getItem('isValid'))) {
-            Axios.get('http://localhost:8080/get-assigned-task?email=' + this.state.email)
+            Axios.get(localStorage.getItem('groupId') ? 'http://localhost:8080/get-task-for-project?groupId=' + localStorage.getItem('groupId')
+                : 'http://localhost:8080/get-assigned-task?email=' + this.state.email)
                 .then((response) => {
-                    if (response.data.statusCode === 201) {
-                        localStorage.setItem("pages", JSON.stringify("To Me"));
+                    console.log("object", response.data.taskBean)
+                    this.setState({ loading: false });
 
+                    if (response.data.statusCode === 201) {
+                        console.log("object", response.data.taskBean)
                         //setstat
                         const state = { ...this.state }
                         state.todo = response.data.taskBean.filter(item => item.status === 'todo');
@@ -103,7 +115,6 @@ export class HomePage extends Component {
                             ...state
                         })
                         this.setState({ loading: false });
-                        localStorage.setItem("pages", JSON.stringify("To Me"))
                     }
                 }).catch((error) => {
                     console.log(error)
@@ -120,8 +131,6 @@ export class HomePage extends Component {
         Axios.put('http://localhost:8080/update-task-completed-Date?taskId=' + a + '&status=' + b + '&completedDate=' + moment)
             .then((response) => {
                 if (response.data.statusCode === 201) {
-                    this.getTask();
-                    this.props.history.push('/homePage')
                     this.getTask();
                 }
             }).catch((error) => {
@@ -144,12 +153,16 @@ export class HomePage extends Component {
 
             Axios.put('http://localhost:8080/update-task-status?taskId=' + a + '&status=' + b)
                 .then((response) => {
+                    this.setState(
+                        { loading: false }
+                    );
                     if (response.data.statusCode === 201) {
                         this.getTask();
-                        this.setState({ loading: false });
                     }
                 }).catch((error) => {
                     console.log(error)
+                    this.setState({ loading: false });
+
                     this.NotifyServerOffline();
                 })
         }
@@ -182,9 +195,27 @@ export class HomePage extends Component {
             this.props.byme()
             localStorage.setItem("pages", JSON.stringify("By Me"))
         } else {
-            localStorage.setItem("pages", JSON.stringify("To Me"))
-
+            /*             localStorage.setItem("pages", JSON.stringify("To Me"))
+             */
         }
+    }
+    rolePage() {
+        let role = localStorage.getItem('role')
+        console.log("aaaa", role)
+        if (role === "architect") {
+            return (
+                ArchitectHomePage()
+            )
+        } else if (role === "lead") {
+            return (
+                LeadHomePage()
+            )
+        } else {
+            return (
+<ArchitectHomePage/>
+                )
+        }
+
     }
 
     render() {
@@ -236,7 +267,7 @@ export class HomePage extends Component {
 
                                 <input type="text" style={{ color: 'black' }}
                                     value={moment(this.state.popup.assignDate).format("DD-MM-YYYY")} className="form-control" placeholder="Password" readOnly /></div>
-                             <label className="mb-0" style={{ color: '#808080' }}>Deadline</label>
+                            <label className="mb-0" style={{ color: '#808080' }}>Deadline</label>
                             <div className="input-group mb-2">
                                 <div className="input-group-prepend">
                                     <label className="input-group-text"><i className="far fa-calendar-alt" /></label>
@@ -259,7 +290,7 @@ export class HomePage extends Component {
                         </Modal.Footer>
                     </Modal>
                     {/* end of popup */}
-
+                    {/*    {localStorage.getItem('groupId')? <Link to="/Ar">Project</Link> */}
                     <div className="container-fluid">
                         <div className="row">
                             <div className="col-md-12">
@@ -267,8 +298,7 @@ export class HomePage extends Component {
                                     <div className="col-md-2 cssCard" >
                                         <div class=" card-body  h-75">
                                             <div className="input-group mb-3 option">
-                                                {Architectproject()}
-
+                                                <Architectproject/>
                                             </div>
                                         </div>
                                     </div>
@@ -484,7 +514,6 @@ export class HomePage extends Component {
                                                             </div>
 
 
-
                                                         </div>
                                                         {/*End Of blocked */}
                                                     </center>
@@ -502,7 +531,7 @@ export class HomePage extends Component {
                                                 <div class=" card-body  h-75">
                                                     <div className="input-group mb-3 option">
 
-                                                        
+
 
                                                     </div>
                                                 </div>
