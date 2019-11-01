@@ -13,5 +13,7 @@ public interface ProjectService {
 
     public Response addMemeber(String name, int groupId, String email);
 
+    public Response removeUserFromProject(int groupId,String newEmail, String removeEmail);
+
 	
 }

@@ -56,4 +56,17 @@ public class ProjectController {
 	return service.searchMember(name,groupId);
 	}
 
+
+	/**
+	 * @role handler for removing user from the particular project group and assigning his task to different user of an existing project
+	 * @param groupId: takes groupId from request
+	 * @param newEmail: takes newEmail from request
+	 * @param newEmail: takes removeEmail from request
+	 * @return response object from service.removeTask(taskId)
+	 */
+	@DeleteMapping(value = "/remove-user-from-project", produces = MediaType.APPLICATION_JSON_VALUE)
+	public Response removeUserFromProject(@RequestParam("groupId") int groupId,@RequestParam("newEmail") String newEmail, @RequestParam("removeEmail") String removeEmail ) {
+		return service.removeUserFromProject(groupId, newEmail ,removeEmail);
+	}
+
 }

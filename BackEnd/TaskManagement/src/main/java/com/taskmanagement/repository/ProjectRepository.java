@@ -42,4 +42,10 @@ public interface ProjectRepository extends JpaRepository<ProjectBean, ProjectPKB
 	@Transactional
 	@Query(value = "alter table project change project_id project_id INT(10) AUTO_INCREMENT", nativeQuery = true)
 	int alterProjectId();
+
+
+	@Modifying
+	@Transactional
+	@Query(value = "update assign_task set assigned_to=:newEmail , e_id=(select emp_id from user where email=:newEmail) where e_id=(select emp_id from user where email=:removeEmail) and           project_id=:groupId ",nativeQuery = true)
+	int updateTask(int groupId, String newEmail, String removeEmail );
 }

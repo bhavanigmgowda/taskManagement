@@ -179,4 +179,27 @@ public class ProjectServiceImpl implements ProjectService {
 		return response;
 	}
 
+       @Override
+	public Response removeUserFromProject(int groupId, String newEmail, String removeEmail) {
+		Response response = new Response();
+		if (repository.getProjectsByEmaill(removeEmail, groupId) != null
+				&& repository.getProjectsByEmaill(newEmail, groupId) != null) {
+			int i = repository.updateTask(groupId, newEmail, removeEmail);
+			System.out.println("iiiiiiiiiiiiiii" + i);
+			if (i > 0) {
+				repository.removeUserFromProject(groupId, removeEmail);
+				response.setStatusCode(201);
+				response.setDescription("members removed found successfully");
+			} else {
+				response.setStatusCode(401);
+				response.setDescription(removeEmail + " has no tasks and cannot be removed ");
+			}
+		} else {
+			response.setStatusCode(401);
+			response.setDescription(newEmail + " not present in the group  ");
+		}
+
+		return response;
+	}
+
 }
