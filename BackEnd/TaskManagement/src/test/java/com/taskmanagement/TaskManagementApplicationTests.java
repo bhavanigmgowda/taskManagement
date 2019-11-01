@@ -20,7 +20,6 @@ import com.taskmanagement.service.UserServiceImpl;
 public class TaskManagementApplicationTests {
 
 
-	@SuppressWarnings("unused")
 	@Autowired
 	private UserRepository userRepository;
 	

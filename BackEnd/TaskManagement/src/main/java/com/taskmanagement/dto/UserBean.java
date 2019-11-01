@@ -76,6 +76,11 @@ public class UserBean implements Serializable {
 	public void setRole(String role) {
 		this.role = role;
 	}
+	@Override
+	public String toString() {
+		return "UserBean [employeeId=" + employeeId + ", employeeName=" + employeeName + ", email=" + email
+				+ ", password=" + password + ", designation=" + designation + ", role=" + role + "]";
+	}
 	
 	
 

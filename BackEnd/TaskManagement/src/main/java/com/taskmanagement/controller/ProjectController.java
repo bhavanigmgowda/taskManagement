@@ -21,9 +21,14 @@ public class ProjectController {
 	ProjectService service;
 
 	@PostMapping(value = "/create-project", produces = MediaType.APPLICATION_JSON_VALUE)
-	public Response createProject(@RequestBody ProjectBean bean) {
+	public Response createProject(@RequestParam int count, @RequestBody ProjectBean bean) {
 		System.out.println("================1" + bean);
-		return service.createProject(bean);
+		return service.createProject(bean,count);
+	}
+	
+	@PostMapping(value = "/add-member", produces = MediaType.APPLICATION_JSON_VALUE)
+	public Response addMemeber(@RequestParam String email, @RequestParam int projectId, @RequestParam String newEmail) {
+		return service.addMemeber(email,projectId, newEmail);
 	}
 
 	@PostMapping(value = "/update-project", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -49,12 +54,6 @@ public class ProjectController {
 	@GetMapping(value = "/search-members", produces = MediaType.APPLICATION_JSON_VALUE)
 	public Response searchMember(@RequestParam ("name") String name,@RequestParam ("groupId") int groupId) {
 	return service.searchMember(name,groupId);
-	}
-
-
-	@GetMapping(value = "/search-members-universal", produces = MediaType.APPLICATION_JSON_VALUE)
-	public Response searchMemberUniversal(@RequestParam("name") String name) {
-		return service.searchMemberUniversal(name);
 	}
 
 }

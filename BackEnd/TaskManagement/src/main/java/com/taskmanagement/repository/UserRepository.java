@@ -1,5 +1,8 @@
 package com.taskmanagement.repository;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  *@role UserRepository interface for performing CRUD operation on UserBean 
  */
@@ -7,7 +10,10 @@ package com.taskmanagement.repository;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
+import com.taskmanagement.dto.CreateTaskBean;
 import com.taskmanagement.dto.UserBean;
 
 public interface UserRepository extends JpaRepository<UserBean, Integer> {
@@ -21,14 +27,17 @@ public interface UserRepository extends JpaRepository<UserBean, Integer> {
 
 	/**
 	 * @role abstract method to check whether email exist or not
-	 * @param email :takes email value
+	 * @param email :takes email value 
 	 * @return boolean value
 	 */
 	boolean existsByEmail(String email);
-
+	
 	/*
 	 * @Query(value = "select t from CreateTaskBean where t.taskId=:projectId ")
 	 * CreateTaskBean findTask(@Param("projectId") String projectId);
 	 */
-
-}// end of interface
+	
+	@Query(value="select u from UserBean u where u.email=:email ")
+	Optional<UserBean> getId(String email);
+	
+}//end of interface
