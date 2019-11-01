@@ -58,11 +58,23 @@ public class ProjectController {
 
 
 	/**
+	 * @role handler for searching a member related to any project
+	 * @param name: takes name of the member from request
+	 * @return Response object
+	 */
+
+        @GetMapping(value = "/search-members-universal", produces = MediaType.APPLICATION_JSON_VALUE)
+	public Response searchMemberUniversal(@RequestParam("name") String name) {
+		return service.searchAnyMember(name);
+	}
+
+
+	/**
 	 * @role handler for removing user from the particular project group and assigning his task to different user of an existing project
 	 * @param groupId: takes groupId from request
 	 * @param newEmail: takes newEmail from request
 	 * @param newEmail: takes removeEmail from request
-	 * @return response object from service.removeTask(taskId)
+	 * @return Response object 
 	 */
 	@DeleteMapping(value = "/remove-user-from-project", produces = MediaType.APPLICATION_JSON_VALUE)
 	public Response removeUserFromProject(@RequestParam("groupId") int groupId,@RequestParam("newEmail") String newEmail, @RequestParam("removeEmail") String removeEmail ) {

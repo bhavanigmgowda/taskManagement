@@ -35,6 +35,10 @@ public interface ProjectRepository extends JpaRepository<ProjectBean, ProjectPKB
 	@Query("select c from ProjectBean c where c.projectPkBean.projectId=:projectId and :pId= (select c.projectPkBean.projectId from  ProjectBean c where c.projectPkBean.userBean.employeeName=:name)")
 	List<ProjectBean> searchMember(String name, int pId);
 
+
+	@Query("select c from ProjectBean c where c.projectPkBean.userBean.employeeName=:name")
+	List<ProjectBean> searchMemberUniversal(String name);
+
 	@Query("select c from ProjectBean c where c.projectPkBean.userBean.email=:email and c.projectPkBean.projectId=:groupId ")
 	Optional<ProjectBean> getProjectsByEmaill(String email, int groupId);
 
