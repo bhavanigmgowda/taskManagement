@@ -91,7 +91,7 @@ public interface TaskService {
 	
 	public Response getTaskForProject(@RequestParam("projectId") int pid);
 
-	public Response getCompletedTaskForProject(@RequestParam("projectId") int pid,@RequestParam("from") String from);
+	public Response getCompletedTaskForProject(@RequestParam("projectId") int pid);
 
 	
 }// end of interface

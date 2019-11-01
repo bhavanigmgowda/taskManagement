@@ -14,8 +14,6 @@ import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonRootName;
 
-import lombok.Data;
-
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "comment")

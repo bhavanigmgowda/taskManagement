@@ -8,15 +8,11 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
-import javax.transaction.Transactional;
-
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import com.taskmanagement.dto.CreateTaskBean;
-import com.taskmanagement.dto.ProjectBean;
 
 public interface TaskRepository extends JpaRepository<CreateTaskBean, Integer> {
 
@@ -152,12 +148,6 @@ public interface TaskRepository extends JpaRepository<CreateTaskBean, Integer> {
 	@Query("Select  count(*) from CreateTaskBean t where t.description LIKE %:name%")
 	int countDescription(String name);
 	
-	@Modifying
-    @Transactional
-	@Query(value = "update  assign_task set status=:status  where task_id=:taskId",nativeQuery = true)
-
-
-	int update(int taskId,String status);
 
 	@Query(value="select * from assign_task t where "
 			+ " t.project_id=:id",nativeQuery = true)
@@ -167,8 +157,5 @@ public interface TaskRepository extends JpaRepository<CreateTaskBean, Integer> {
 			+ " t.status='completed' and t.project_id=:id and t.completed!=null",nativeQuery = true)
 	List<CreateTaskBean> findCompletedProject(int id);
 
-	@Query(value =  "select  t.completed " + " from assign_task t where "
-			+ "t.status='completed' and t.project_id=:id and  t.completed>=:from",nativeQuery = true)
-	List<String> findEndDateProject(int id, String from);
-	
+
 }// end of interface

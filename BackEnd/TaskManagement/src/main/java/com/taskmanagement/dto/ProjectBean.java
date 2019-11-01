@@ -2,7 +2,6 @@ package com.taskmanagement.dto;
 
 import java.io.Serializable;
 import java.time.LocalDate;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
@@ -21,10 +20,9 @@ import lombok.Data;
 @Table(name = "project")
 @Data
 public class ProjectBean implements Serializable {
-	
-
 
 	@EmbeddedId
+	@Column(name="project_id")
 	private  ProjectPKBean projectPkBean;
 	
 	@Column(name = "project_name")

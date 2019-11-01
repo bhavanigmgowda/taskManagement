@@ -82,11 +82,11 @@ public class TaskServiceImpl implements TaskService {
 	@Override
 	public Response updateStatus(int taskId, String status) {
 		Response response = new Response();
+		try {
 			CreateTaskBean taskbean = taskRepository.findById(taskId).get();
 			if (taskbean != null) {
 				taskbean.setStatus(status);
-				
-				taskRepository.update(taskId,status);
+				taskRepository.save(taskbean);
 				response.setStatusCode(201);
 				response.setMessage("Success");
 				response.setDescription("Status Change successfully");
@@ -95,7 +95,12 @@ public class TaskServiceImpl implements TaskService {
 				response.setMessage("Failure");
 				response.setDescription("Status not Changed");
 			}
-		
+		} catch (Exception e) {
+
+			response.setDescription("Exception occured :-" + e.getMessage());
+			response.setMessage("Exception");
+			response.setStatusCode(501);
+		}
 		return response;
 	}
 
@@ -370,11 +375,12 @@ public class TaskServiceImpl implements TaskService {
 		try {
 			CreateTaskBean taskbean = taskRepository.findById(taskId).get();
 			if (taskbean.getTaskId().equals(taskId) && taskId != 0) {
-				taskRepository.deleteById(taskId);
-				response.setStatusCode(201);
-				response.setMessage("Success");
-				response.setDescription("Task Removed successfully");
-			} else {
+					taskRepository.deleteById(taskId);
+					response.setStatusCode(201);
+					response.setMessage("Success");
+					response.setDescription("Task Removed successfully");
+				}
+			 else {
 				response.setStatusCode(401);
 				response.setMessage("Failure");
 				response.setDescription("taskId not Found");
@@ -385,52 +391,53 @@ public class TaskServiceImpl implements TaskService {
 			response.setDescription("Exception occured :-" + e.getMessage());
 		}
 		return response;
-	}// End of removeTask()
+	}//End of removeTask()
 
 	@Override
 	public Response getTaskForProject(int projectId) {
 		Response response = new Response();
-
-		if (!taskRepository.findProject(projectId).isEmpty()) {
-			response.setStatusCode(201);
-			response.setMessage("Success");
-			response.setDescription("All Task Assigned Found Successfully");
-			response.setTaskBean(taskRepository.findProject(projectId));
-		} else {
-			response.setStatusCode(401);
-			response.setMessage("Failure");
-			response.setDescription("taskId not Found");
-		}
-
-		return response;
-	}
-
 	
+			if(!taskRepository.findProject(projectId).isEmpty()) {
+				response.setStatusCode(201);
+				response.setMessage("Success");
+				response.setDescription("All Task Assigned Found Successfully");
+				response.setTaskBean(taskRepository.findProject(projectId));
+			}else {
+				response.setStatusCode(401);
+				response.setMessage("Failure");
+				response.setDescription("taskId not Found");
+			}
+		
+		return response;	
+	}
 
 	@Override
-	public Response getCompletedTaskForProject(int projectId, String from) {
-		Response response = new Response();
-		try {
-			List<CreateTaskBean> createTaskBeans = taskRepository.findCompletedProject(projectId);
-			if (createTaskBeans.isEmpty()) {
-					response.setMessage("Success");
-					response.setDescription("All Task data Assigned Found Successfully");
-					TreeSet<CreateTaskBean> set = new TreeSet<>();
-					List<String> endList = taskRepository.findEndDateProject(projectId, from);
-					response.setEndDate(endList);
-					response.setTaskBean(createTaskBeans);
-					response.setEnd(set);
-				} else {
-					response.setStatusCode(401);
-					response.setMessage("Failure");
-					response.setDescription("Task data not found");
-				}
-			} catch (Exception e) {
-				response.setDescription("Exception occured :-" + e.getMessage());
-				response.setMessage("Exception");
-				response.setStatusCode(501);
-			}
-			return response;
+	public Response getCompletedTaskForProject(int pid) {
+		// TODO Auto-generated method stub
+		return null;
 	}
+	
+	/*
+	 * @Override public Response getCompletedTaskForProject(int projectId) {
+	 * Response response = new Response(); try { if
+	 * (userRepository.existsByEmail(email)) { response.setStatusCode(201);
+	 * response.setMessage("Success");
+	 * response.setDescription("All Task data Assigned Found Successfully");
+	 * TreeSet<CreateTaskBean> set = new TreeSet<>(); List<String> endList =
+	 * taskRepository.findEndDateToMe(email, from); ArrayList<CreateTaskBean>
+	 * arrayList = new ArrayList<>();
+	 * 
+	 * for (String i : endList) {
+	 * set.addAll(taskRepository.findCompletedTaskBySetToMe(email, i));
+	 * arrayList.addAll(taskRepository.findCompletedTask(email, i));
+	 * System.out.println(set); }
+	 * response.setTaskBean(taskRepository.findCompletedToMe(email));
+	 * response.setEnd(set); } else { response.setStatusCode(401);
+	 * response.setMessage("Failure");
+	 * response.setDescription("Task data not found"); } } catch (Exception e) {
+	 * response.setDescription("Exception occured :-" + e.getMessage());
+	 * response.setMessage("Exception"); response.setStatusCode(501); } return
+	 * response; }// End of getCompletedTaskToMe()
+	 */
 
 }// End of TaskServiceImpl()
