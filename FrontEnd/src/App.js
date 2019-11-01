@@ -187,16 +187,12 @@ render() {
           <Route exact path='/navBar' component={navBar}></Route>
           <Route exact path='/createProject' component={createProject}></Route>
        
-          {role==="architect"? <Route exact path='/homePage' component={ArchitectHomePage}></Route>:null}
-          {role==="lead"? <Route exact path='/homePage' component={EmployeeHomePage}></Route>:null}
-          {role==="employee"? <Route exact path='/homePage' component={LeadHomePage}></Route>:null}
-          <Route exact path='/byme' render={() => { return <Byme byme={this.byme} searchData={this.state.taskData}  clearSearch={this.clearSearch}
+          <Route exact path='/homePage' component={ArchitectHomePage}></Route>
+                  <Route exact path='/byme' render={() => { return <Byme byme={this.byme} searchData={this.state.taskData}  clearSearch={this.clearSearch}
 /> }}></Route>
           <Route exact path='/completedTask' component={completedTask}></Route>
           <Route exact path='/myprofile' component={myprofile}></Route>
-           {(isValid && this.props.location.pathname === '/'&& role==="architect") ? <Redirect to='/homePage' /> : null}
-           {(isValid && this.props.location.pathname === '/'&& role==="lead") ? <Redirect to='/leadHomePage' /> : null}
-           {(isValid && this.props.location.pathname === '/'&& role==="employee") ? <Redirect to='/employeeHomePage' /> : null}
+           {(isValid && this.props.location.pathname === '/') ? <Redirect to='/homePage' /> : null}
            <Route exact path='/createTask' component={createTask}></Route>
         </div>
       }

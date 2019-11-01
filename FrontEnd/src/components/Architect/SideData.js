@@ -2,14 +2,16 @@ import React, { Component, useState } from 'react';
 import { NavLink, Link } from 'react-router-dom';
 import { Button, Modal, FormControl } from 'react-bootstrap';
 import Axios from 'axios';
-
-function AddMember(email) {
+let value=false;
+function AddMember(email,props) {
     {console.log("object",email)}
 
-    Axios.post('http://localhost:8080/add-member?email='+localStorage.getItem('beans')+'&projectId='+localStorage.getItem('groupId')+'&newEmail='+email)
+    Axios.post('http://localhost:8080/add-member?email='+JSON.parse(localStorage.getItem('beans'))+'&projectId='+localStorage.getItem('groupId')+'&newEmail='+email)
         .then((response) => {
             if (response.data.statusCode === 201) {
+                value=true;
                 console.log(response.data.statusCode)
+               props.onHide()
             }
         }).catch((error) => {
             console.log(error)
@@ -17,7 +19,7 @@ function AddMember(email) {
 }
 
 export const MyVerticallyCenteredModal = (props) => {
-    let [email] = React.useState('');
+    var email='aa';
     return (
         <Modal
             {...props}
@@ -34,15 +36,12 @@ export const MyVerticallyCenteredModal = (props) => {
                     <div className="input-group-prepend">
                         <label className="input-group-text"><i className="fas fa-at" /></label>
                     </div>
-                    <FormControl type="text" name="search"  
-                                onChange={(event) => {  email = event.target.value }}
-                                   value={email}   />
+                    <FormControl type="text" name="search" onChange={(event)=>{email=event.target.value}} />
                             
-                   {/*  <input className="form-control" type="email" title="Enter Email" placeholder="Enter email whom task to be assigned" onChange={(event) => {
-                        email = event.target.value
-                    }} /> */}
+          
                     {console.log("object",email)}
-                    <Button onClick={(email)=>{AddMember(email)}}>add</Button>
+                    <Button onClick={()=>{AddMember(email)}}>add</Button>
+                    {console.log("===================",value)}
                 </div>
             </Modal.Body>
             <Modal.Footer>
@@ -190,21 +189,46 @@ export const Architectproject = () => {
   render(<Architectproject />); */
 
 export const Leadproject = () => {
+    const [modalShow, setModalShow] = React.useState(false);
+
 
     return (
         <div>
-            <div className="input-group-prepend iconTask">
+             <div onClick={() => setModalShow(true)} className="input-group iconTask tab">
                 <i class="fas fa-user-plus" > &nbsp; Add User</i>
             </div>
+            <MyVerticallyCenteredModal
+                show={modalShow}
+                onHide={() => setModalShow(false)}
+            />
             <div className="input-group-prepend iconTask">
                 <i class="fas fa-user-times" >&nbsp; Remove User</i>g
             </div>
             <div className="input-group-prepend iconTask">
                 <i class="fas fa-users">&nbsp; Project Members</i>
             </div>
-            <div className="input-group-prepend iconTask">
+            <Link to="/createTask" className="input-group-prepend iconTask">
                 <i class="fas fa-users">&nbsp; Add Task</i>
+            </Link>
+            <hr /><hr />
+
+        </div>
+
+    )
+}
+
+
+export const Employeeproject = () => {
+
+    return (
+        <div>
+           
+            <div className="input-group-prepend iconTask">
+                <i class="fas fa-users">&nbsp; Project Members</i>
             </div>
+            <Link to="/createTask" className="input-group-prepend iconTask">
+                <i class="fas fa-users">&nbsp; Add Task</i>
+            </Link>
             <hr /><hr />
 
         </div>

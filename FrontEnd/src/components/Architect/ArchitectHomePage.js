@@ -3,7 +3,8 @@ import { BrowserRouter as Router, Route, Link, withRouter } from 'react-router-d
 import Axios from 'axios'
 import "react-toastify/dist/ReactToastify.css";
 import './homepage.css';
-import { Architect } from './SideData';
+import { Architect, Employee, Lead } from './SideData';
+import LeadHome from '../Lead/LeadHome';
 
 
 export class ArchitectHomePage extends Component {
@@ -11,12 +12,17 @@ export class ArchitectHomePage extends Component {
 		super(props)
 		this.state = {
 			email: JSON.parse(window.localStorage.getItem('beans')),
-			projectData: []
+			projectData: [],
+			role:JSON.parse(window.localStorage.getItem('role')),
+			architect:false,
+			lead:false,
+			emp:false,
 		}
 
 	}
 
 	componentDidMount() {
+	
 		Axios.get('http://localhost:8080/get-projects-by-email?email=' + this.state.email)
 			.then((response) => {
 				if (response.data.statusCode === 201) {
@@ -28,6 +34,20 @@ export class ArchitectHomePage extends Component {
 			}).catch((error) => {
 				console.log(error)
 			})
+
+			if(this.state.role==="architect"){
+				this.setState({
+					architect:true
+				})
+			}else if(this.state.role==="lead"){
+				this.setState({
+					lead:true
+				})
+			}else{
+				this.setState({
+					emp:true
+				})
+			}
 	}
 	setPage(group) {
 		console.log("object",group.groupId)
@@ -42,13 +62,17 @@ export class ArchitectHomePage extends Component {
 
 		return (
 			<div className="container-fluid">
+			{console.log("object",this.state.projectData.email)}
+
 				<div className="row">
 					<div className="col-md-12">
 						<div className="row">
 							<div className="col-md-2 cssCard" >
 								<div class=" card-body  h-75">
 									<div className="input-group mb-3 option">
-										{Architect()}
+										{this.state.architect?Architect():null}
+										{this.state.lead?Lead():null}
+										{this.state.emp?Employee():null}
 									</div>
 								</div>
 							</div>
@@ -69,7 +93,9 @@ export class ArchitectHomePage extends Component {
 													)
 												})
 												}
+
 											</div>
+											{this.state.projectData[0]?
 											<div style={{ marginLeft: "2%", marginTop: '5%' }}>
 												<table class="table table-hover">
 													<thead>
@@ -87,7 +113,6 @@ export class ArchitectHomePage extends Component {
 																console.log('tabledate', projectData.id)
 																return (
 																	<tr>
-
 																		<th scope="row">{projectData.id}</th>
 																		<td onClick={() => {
 																			{
@@ -103,7 +128,7 @@ export class ArchitectHomePage extends Component {
 														}
 													</tbody>
 												</table>
-											</div>
+											</div>:<h1>No Project assigned</h1>}
 										</div>
 
 

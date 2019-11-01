@@ -35,13 +35,10 @@ export class CreateTask extends Component {
             showDateInvalid: false,
             showEmailInvalid: false,
             loading: false,
-            userBean: ''
+            userBean: '',
+            projectBean:null,
+
         }
-
-
-
-
-
     }
     cancel(e) {
         e.preventDefault();
@@ -79,6 +76,7 @@ export class CreateTask extends Component {
                     }, () => {
                         console.log("==========sfgfds========", this.state.userBean)
                     })
+                    
 
                 }
             }).catch((error) => {
@@ -86,6 +84,23 @@ export class CreateTask extends Component {
             })
         }// end of if
     } //End of getProfile
+
+    getProject(){
+        if(localStorage.getItem('groupId')!=null){
+        Axios.get('http://localhost:8080/get-task-project?projectId=' + localStorage.getItem('groupId')+'&email='+this.state.assignedTo)
+        .then((response) => {
+            if (response.data.statusCode === 201) {
+                this.setState({
+                    projectBean: response.data.projectBeans[0]
+                })
+                console.log("===============", response.data.projectBeans)
+            }
+        }).catch((error) => {
+            console.log(error)
+        })
+    }
+}
+
 
     create(e) {
         debugger
@@ -308,12 +323,14 @@ export class CreateTask extends Component {
                                                     this.setState({
                                                         assignedTo: event.target.value
                                                     })
+                                                
+                                                    
                                                 }} />
                                             </div>
                                             {this.state.showEmailInvalid ? <div id="errordiv" className="container-fluid">Please enter a valid email address</div> : null}
                                             {this.state.showAssignTo ? <div id="errordiv" className="container-fluid">Please set Email**</div> : null}
                                             <div className="input-group mb-3">
-                                                <select id="Priority" className="form-control" onClick={this.hidePriority} required name="Priority" title="Select Priority" onChange={(event) => {
+                                                <select id="Priority" className="form-control" onClick={this.hidePriority} onClick={()=>this.getProject()} required name="Priority" title="Select Priority" onChange={(event) => {
                                                     this.setState({
                                                         priority: event.target.value
                                                     })

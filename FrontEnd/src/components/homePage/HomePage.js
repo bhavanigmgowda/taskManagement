@@ -3,23 +3,16 @@ import Axios from 'axios';
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { PropagateLoader } from 'react-spinners';
-import { NavDropdown, Navbar, Nav, Button } from 'react-bootstrap'
 import { NavLink, withRouter, Link } from 'react-router-dom';
 import { Modal } from 'react-bootstrap'
 import moment from 'moment';
-import Popover from 'react-bootstrap/Popover'
-import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
-import ButtonToolbar from 'react-bootstrap/ButtonToolbar'
-
-
 
 import './HomePage.css';
 import Footer from '../navBar/footer';
 import '../login/welcom.css'
 import { stickyHigh, stickyMedium, stickyLow, stickyCri } from './Sticky';
-import { Architectproject } from '../Architect/SideData';
+import { Architectproject, Leadproject, Employeeproject } from '../Architect/SideData';
 import { LeadHomePage } from '../Lead/LeadHome';
-import { EmployeeHomePage } from '../Emp/EmployeeHomePage';
 import { ArchitectHomePage } from '../Architect/ArchitectHomePage';
 
 export class HomePage extends Component {
@@ -41,7 +34,11 @@ export class HomePage extends Component {
             email: null,
             page: "To Me",
             loading: false,
-            groupId: null
+            groupId: null,
+            architect:false,
+			lead:false,
+            emp:false,
+            groupId:localStorage.getItem('groupId'),
 
         }
         {
@@ -83,6 +80,20 @@ export class HomePage extends Component {
         this.setState({
             groupId: localStorage.getItem('groupId')
         })
+
+        if(this.state.role==="architect"){
+            this.setState({
+                architect:true
+            })
+        }else if(this.state.role==="lead"){
+            this.setState({
+                lead:true
+            })
+        }else{
+            this.setState({
+                emp:true
+            })
+        }
 
     }
     NotifyServerOffline = () => {
@@ -298,7 +309,9 @@ export class HomePage extends Component {
                                     <div className="col-md-2 cssCard" >
                                         <div class=" card-body  h-75">
                                             <div className="input-group mb-3 option">
-                                                <Architectproject/>
+                                            {this.state.architect?<Architectproject/>:null}
+										{this.state.lead?<Leadproject/>:null}
+										{this.state.emp?<Employeeproject/>:null}
                                             </div>
                                         </div>
                                     </div>
