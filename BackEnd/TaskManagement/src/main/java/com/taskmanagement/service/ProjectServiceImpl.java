@@ -1,5 +1,6 @@
 package com.taskmanagement.service;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +27,10 @@ public class ProjectServiceImpl implements ProjectService {
 	@Override
 	public Response createProject(ProjectBean bean, int count) {
 		Response response = new Response();
-		if (repository.findById(bean.getProjectPkBean()) != null) {
+		System.out.println("===========" + bean);
+		System.out.println("===========" + count);
+
+		if (bean != null) {
 			if (!isExcecuted) {
 				System.out.println("executed :" + repository.alterProjectId());
 				isExcecuted = true;
@@ -34,7 +38,12 @@ public class ProjectServiceImpl implements ProjectService {
 			if (count > 0) {
 				bean.getProjectPkBean().setProjectId(bean.getProjectPkBean().getProjectId());
 			}
-			repository.save(bean);
+			bean = repository.save(bean);
+
+			System.out.println("===========" + bean.getProjectPkBean().getProjectId());
+			if (!repository.findByProjectName(bean.getProjectName()).isEmpty()) {
+				response.setProjectBeans(repository.findByProjectName(bean.getProjectName()));
+			}
 			response.setStatusCode(201);
 			response.setMessage("Success");
 			response.setDescription("project created successfully");
@@ -50,18 +59,18 @@ public class ProjectServiceImpl implements ProjectService {
 	@Override
 	public Response addMemeber(String architectEmail, int groupId, String userEmail) {
 		Response response = new Response();
-		ProjectBean projectBean = new ProjectBean();
-		if (repository.findProjectById(groupId) >= 0) {
-			ProjectBean bean = repository.getProjectsByEmaill(architectEmail, groupId).get();
-			ProjectPKBean pkBean = bean.getProjectPkBean();
-			UserBean userBean = userRepository.getId(userEmail).get();
-			pkBean.setUserBean(userBean);
 
+		if (repository.getProjectsByEmaill(userEmail, groupId).isEmpty()
+				&& !userRepository.findByEmail(userEmail).isEmpty()) {
+			ProjectBean bean = repository.getProjectsByEmaill(architectEmail, groupId).get();
+			UserBean userBean = userRepository.getId(userEmail).get();
+			bean.getProjectPkBean().setUserBean(userBean);
+			ProjectBean projectBean = new ProjectBean();
 			projectBean.setCreatedDate(bean.getCreatedDate());
 			projectBean.setDeadline(bean.getDeadline());
 			projectBean.setDescription(bean.getDescription());
 			projectBean.setProjectName(bean.getProjectName());
-			projectBean.setProjectPkBean(pkBean);
+			projectBean.setProjectPkBean(bean.getProjectPkBean());
 			repository.save(projectBean);
 			response.setStatusCode(201);
 			response.setMessage("Success");
@@ -69,7 +78,7 @@ public class ProjectServiceImpl implements ProjectService {
 		} else {
 			response.setStatusCode(401);
 			response.setMessage("Failure");
-			response.setDescription("project id already exist ");
+			response.setDescription("user is already exist ");
 		}
 		return response;
 	}
@@ -164,22 +173,6 @@ public class ProjectServiceImpl implements ProjectService {
 		return response;
 	}
 
-
-	@Override
-	public Response searchAnyMember(String name) {
-		Response response = new Response();
-		List<ProjectBean> projectBean = repository.searchMemberUniversal(name);
-		if (!projectBean.isEmpty()) {
-			response.setStatusCode(201);
-			response.setDescription("members found successfully");
-			response.setProjectBeans(projectBean);
-		} else {
-			response.setStatusCode(401);
-			response.setDescription("members not found ");
-		}
-		return response;
-	}
-
 	@Override
 	public Response searchMember(String name, int groupId) {
 		Response response = new Response();
@@ -195,11 +188,27 @@ public class ProjectServiceImpl implements ProjectService {
 		return response;
 	}
 
-       @Override
+	@Override
+	public Response getProject(int projectId, String email) {
+		Response response = new Response();
+		if (projectId != 0 && !userRepository.getId(email).isEmpty()) {
+			response.setProjectBeans(Arrays.asList(repository.getProjectsByEmaill(email, projectId).get()));
+			response.setStatusCode(201);
+			response.setMessage("Success");
+			response.setDescription("project created successfully");
+		} else {
+			response.setStatusCode(401);
+			response.setMessage("Failure");
+			response.setDescription("project id already exist ");
+		}
+
+		return response;
+	}
+
+	@Override
 	public Response removeUserFromProject(int groupId, String newEmail, String removeEmail) {
 		Response response = new Response();
-		if (repository.getProjectsByEmaill(removeEmail, groupId) != null
-				&& repository.getProjectsByEmaill(newEmail, groupId) != null) {
+		if (!repository.getProjectsByEmaill(removeEmail, groupId).isEmpty() && !repository.getProjectsByEmaill(newEmail, groupId).isEmpty()) {
 			int i = repository.updateTask(groupId, newEmail, removeEmail);
 			System.out.println("iiiiiiiiiiiiiii" + i);
 			if (i > 0) {
@@ -217,5 +226,21 @@ public class ProjectServiceImpl implements ProjectService {
 
 		return response;
 	}
+	@Override
+	public Response removeUserFromProject(int groupId, String removeEmail) {
+		Response response = new Response();
+		if (!repository.getProjectsByEmaill(removeEmail, groupId).isEmpty()) {
+			repository.removeUserFromProject(groupId, removeEmail);
+			response.setStatusCode(201);
+			response.setDescription("members removed found successfully");
+		}else {
+			response.setStatusCode(401);
+			response.setMessage("Failure");
+			response.setDescription("project id or email not exist ");	
+		}
+
+		return response;
+	}
+
 
 }

@@ -45,7 +45,7 @@ public class CreateTaskBean implements Serializable,Comparable<CreateTaskBean> {
 	@Column(name = "end_date")
 	private LocalDate endDate;
 	@Column(name = "priority")
-	private String priority;
+	private String priority;	
 	@Column(name = "assign_date")
 	@CreationTimestamp
 	private LocalDate assignDate;
@@ -60,15 +60,14 @@ public class CreateTaskBean implements Serializable,Comparable<CreateTaskBean> {
 	@JoinColumn(name = "emp_id")
 	private UserBean userBean;
 	
-	@NotFound(action = NotFoundAction.IGNORE)
     @ManyToOne
     @JoinColumns({
         @JoinColumn(
             name = "project_id",
-            referencedColumnName = "project_id"),
+            referencedColumnName = "project_id" , insertable = true, updatable = true),
         @JoinColumn(
             name = "e_id",
-            referencedColumnName = "emp_id")
+            referencedColumnName = "emp_id", insertable = true, updatable = true)
     })
     private ProjectBean projectBean;
 	
@@ -176,4 +175,25 @@ public class CreateTaskBean implements Serializable,Comparable<CreateTaskBean> {
 	public int compareTo(CreateTaskBean o) {
 		return this.completed.compareTo(o.completed);
 	}
+
+
+	public ProjectBean getProjectBean() {
+		return projectBean;
+	}
+
+
+	public void setProjectBean(ProjectBean projectBean) {
+		this.projectBean = projectBean;
+	}
+
+
+	@Override
+	public String toString() {
+		return "CreateTaskBean [taskId=" + taskId + ", description=" + description + ", subject=" + subject
+				+ ", endDate=" + endDate + ", priority=" + priority + ", assignDate=" + assignDate + ", assignedTo="
+				+ assignedTo + ", status=" + status + ", completed=" + completed + ", userBean=" + userBean
+				+ ", projectBean=" + projectBean + "]";
+	}
+	
+	
 }

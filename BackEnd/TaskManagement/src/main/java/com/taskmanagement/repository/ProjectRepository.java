@@ -35,11 +35,7 @@ public interface ProjectRepository extends JpaRepository<ProjectBean, ProjectPKB
 	@Query("select c from ProjectBean c where c.projectPkBean.projectId=:projectId and :pId= (select c.projectPkBean.projectId from  ProjectBean c where c.projectPkBean.userBean.employeeName=:name)")
 	List<ProjectBean> searchMember(String name, int pId);
 
-
-	@Query("select c from ProjectBean c where c.projectPkBean.userBean.employeeName=:name")
-	List<ProjectBean> searchMemberUniversal(String name);
-
-	@Query("select c from ProjectBean c where c.projectPkBean.userBean.email=:email and c.projectPkBean.projectId=:groupId ")
+	@Query(value = "select * from project where project_id=:groupId and emp_id=(select emp_id from user where email=:email)", nativeQuery = true)
 	Optional<ProjectBean> getProjectsByEmaill(String email, int groupId);
 
 	@Modifying
@@ -47,15 +43,16 @@ public interface ProjectRepository extends JpaRepository<ProjectBean, ProjectPKB
 	@Query(value = "alter table project change project_id project_id INT(10) AUTO_INCREMENT", nativeQuery = true)
 	int alterProjectId();
 
-        @Modifying
-	@Transactional
-	@Query(value = "delete from project  where project_id=:projectId and emp_id=(select emp_id from user where email=:removeEmail)",nativeQuery = true)
-	int removeUserFromProject(int projectId,String removeEmail);
-	
-
+	List<ProjectBean> findByProjectName(String projectname);
 
 	@Modifying
 	@Transactional
-	@Query(value = "update assign_task set assigned_to=:newEmail , e_id=(select emp_id from user where email=:newEmail) where e_id=(select emp_id from user where email=:removeEmail) and           project_id=:groupId ",nativeQuery = true)
-	int updateTask(int groupId, String newEmail, String removeEmail );
+	@Query(value = "update assign_task set assigned_to=:newEmail , e_id=(select emp_id from user where email=:newEmail) where e_id=(select emp_id from user where email=:removeEmail) and           project_id=:groupId ", nativeQuery = true)
+	int updateTask(int groupId, String newEmail, String removeEmail);
+
+	@Modifying
+	@Transactional
+	@Query(value = "delete from project  where project_id=:projectId and emp_id=(select emp_id from user where email=:removeEmail)", nativeQuery = true)
+	int removeUserFromProject(int projectId, String removeEmail);
+
 }

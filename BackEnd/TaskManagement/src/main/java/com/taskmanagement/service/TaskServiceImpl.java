@@ -47,7 +47,7 @@ public class TaskServiceImpl implements TaskService {
 	@Override
 	public Response createTask(String email, CreateTaskBean task) {
 		Response response = new Response();
-		try {
+		System.out.println("========="+task);
 			if (userRepository.existsById(task.getUserBean().getEmployeeId()) && userRepository.existsByEmail(email)) {
 				taskRepository.save(task);
 				response.setStatusCode(201);
@@ -58,11 +58,7 @@ public class TaskServiceImpl implements TaskService {
 				response.setMessage("Failure");
 				response.setDescription("user id does not exist ");
 			}
-		} catch (Exception e) {
-			response.setDescription("Exception occured :-" + e.getMessage());
-			response.setMessage("Exception");
-			response.setStatusCode(501);
-		}
+		
 		return response;
 	}
 
@@ -399,13 +395,12 @@ public class TaskServiceImpl implements TaskService {
 		} else {
 			response.setStatusCode(401);
 			response.setMessage("Failure");
-			response.setDescription("taskId not Found");
+			response.setDescription("no task found Found");
 		}
 
 		return response;
 	}
 
-	
 
 	@Override
 	public Response getCompletedTaskForProject(int projectId, String from) {
