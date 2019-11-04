@@ -47,6 +47,12 @@ public interface ProjectRepository extends JpaRepository<ProjectBean, ProjectPKB
 	@Query(value = "alter table project change project_id project_id INT(10) AUTO_INCREMENT", nativeQuery = true)
 	int alterProjectId();
 
+        @Modifying
+	@Transactional
+	@Query(value = "delete from project  where project_id=:projectId and emp_id=(select emp_id from user where email=:removeEmail)",nativeQuery = true)
+	int removeUserFromProject(int projectId,String removeEmail);
+	
+
 
 	@Modifying
 	@Transactional
