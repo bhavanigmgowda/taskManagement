@@ -30,6 +30,9 @@ class SearchNavabar extends Component {
     }
     homepage(e) {
         e.preventDefault();
+        localStorage.removeItem('groupId');
+        localStorage.removeItem('projectName');
+
         this.props.clearSearch()
         this.props.history.push('/homePage')
 

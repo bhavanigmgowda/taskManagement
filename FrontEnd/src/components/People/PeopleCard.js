@@ -8,7 +8,8 @@ export default class PeopleCard extends Component {
         this.state = {
             peoples:[],
             searchInput:'',
-            searchData:true
+            searchData:true,
+           
         }
     }
 

@@ -59,9 +59,6 @@ export class Login extends Component {
 			console.log(response.data.message)
 
 			if (response.data.statusCode === 201) {
-				console.log("=====sssssss==aaaaaaa=================",response.data.userBean[0].role)
-
-
 				console.log('data', response.data)
 				this.setState({
 
@@ -70,7 +67,6 @@ export class Login extends Component {
 				}, () => {
 					console.log(localStorage.setItem("beans", JSON.stringify(this.state.userData.email )));
 					localStorage.setItem("role", JSON.stringify(this.state.userData.role ))
-					console.log("=====sssssss==aaaaaaa=================",response.data.userBean[0].role)
 						this.props.history.push('/homePage')
 				})
 

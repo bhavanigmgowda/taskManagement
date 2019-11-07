@@ -8,6 +8,9 @@ import Footer from '../navBar/footer'
 import NavBarForTask from '../navBar/NavBarForTask'
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { Architectproject, Leadproject, Employeeproject, Architect, Lead, Employee } from '../Architect/SideData';
+import {  Link } from 'react-router-dom';
+
 import { PropagateLoader } from 'react-spinners';
 
 
@@ -37,6 +40,10 @@ export class CreateTask extends Component {
             loading: false,
             userBean: '',
             projectBean:null,
+            architect: false,
+            lead: false,
+            emp: false,
+            role: JSON.parse(window.localStorage.getItem('role')),
 
         }
     }
@@ -106,10 +113,6 @@ export class CreateTask extends Component {
 
     create(e) {
         debugger
-
-        console.log("description ===", this.state.description);
-
-          
         this.setState({ loading: true })
         e.preventDefault();
         this.setState({
@@ -182,6 +185,19 @@ export class CreateTask extends Component {
         this.getProfile();
         this.getProject();
         var that = this;
+        if (this.state.role === "architect") {
+            this.setState({
+                architect: true
+            })
+        } else if (this.state.role === "lead") {
+            this.setState({
+                lead: true
+            })
+        } else {
+            this.setState({
+                emp: true
+            })
+        }
 
         $(document).ready(function () {
             $('#submit').click(function (e) {
@@ -248,7 +264,7 @@ export class CreateTask extends Component {
     NotifyFieldMandatory = () => {
         if (!toast.isActive(this.toastId)) {
             this.toastId = toast.info(<center>All Fields Are Mandatory</center>, {
-                position: "top-center", autoClose: 5000
+                position: "top-center", autoClose: 1000
             });
         }
     }
@@ -270,7 +286,7 @@ export class CreateTask extends Component {
     NotifyTaskCreationSuccess = () => {
         if (!toast.isActive(this.toastId)) {
             this.toastId = toast.success(<center>Task Created Successfully</center>, {
-                position: "top-center", autoClose: 3000,
+                position: "top-center", autoClose: 1000,
             });
         }
     }
@@ -278,11 +294,26 @@ export class CreateTask extends Component {
 
     render() {
         return (
-            <div id="form-container" >
-                <div id="content-wrap">
-                    <div className="container-fluid ">
-                        <div className="row">
-                            <div id="container" className="col-auto container-fluid pb-5">
+            <div className="container-fluid">
+            <div className="row">
+                <div className="col-md-12">
+                    <div className="row">
+                        <div className="col-md-2 cssCard" >
+                            <div class=" card-body  h-75">
+                                <div className="input-group mb-3 option">
+                                {this.state.architect ?<div>{localStorage.getItem("groupId")?<Architectproject/> :<Architect/>} </div> : null}
+                                            {this.state.lead ?<div>{localStorage.getItem("groupId")? <Leadproject /> :<Lead/>} </div> : null}
+                                            {this.state.emp ?<div>{localStorage.getItem("groupId")? <Employeeproject /> :<Employee/>} </div> : null}                                             
+                                       
+                                </div>
+                            </div>
+                        </div>                                        
+           <br/><br/>
+                        {localStorage.getItem('groupId')?<div className="projectName" style={{    margin: "2%"}}><Link style={{color:'black'}} onClick={()=>{this.props.history.push('/homePage')}} className="dark">Project</Link>&nbsp;/&nbsp;
+                                                            <Link style={{color:'black'}} to='/taskPage'>{localStorage.getItem("projectName")}</Link></div>:null} 
+                                               
+                            <div id="container" className="col-auto container-fluid pb-5 "  style={{marginTop:"5%",marginRight:"35%"}}>
+                                
                                 <div id="create" className="card shadow-lg mt-5 " >
                                     <div id="cardHead" className="card-header" >
                                         <legend className="text-center">Task Form</legend>
@@ -295,7 +326,9 @@ export class CreateTask extends Component {
                                         </div>
                                         <ToastContainer />
                                     </div>
+                                    
                                     <div className="card-body">
+                                  
                                         <form onSubmit={this.create.bind(this)}>
                                             <div className="input-group mb-3">
                                                 <div className="input-group-prepend">
@@ -368,6 +401,7 @@ export class CreateTask extends Component {
                             </div>
                         </div>
                     </div>
+                   
                     <Footer />
                 </div>
 

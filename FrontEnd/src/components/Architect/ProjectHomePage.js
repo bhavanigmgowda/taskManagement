@@ -4,7 +4,8 @@ import Axios from 'axios'
 import "react-toastify/dist/ReactToastify.css";
 import './homepage.css';
 import { Architect, Employee, Lead } from './SideData';
-import LeadHome from '../Lead/LeadHome';
+import { toast, ToastContainer } from 'react-toastify';
+import Footer from '../navBar/footer';
 
 
 export class ProjectHomePage extends Component {
@@ -17,9 +18,25 @@ export class ProjectHomePage extends Component {
 			architect:false,
 			lead:false,
 			emp:false,
+			projectTaskData:[]
 		}
-
 	}
+	NotifyNoTaskAssigned = () => {
+		debugger
+        if (!toast.isActive(this.toastId)) {
+            this.toastId = toast.error(<center>No Project Exists</center>, {
+                position: "top-center", autoClose: 7000,
+            });
+        }
+	}
+	
+	NotifyServerOffline = () => {
+        if (!toast.isActive(this.toastId)) {
+            this.toastId = toast.error(<center>Server Not Responding</center>, {
+                position: "top-center", autoClose: 7000,
+            });
+        }
+    }
 
 	componentDidMount() {
 	
@@ -27,12 +44,16 @@ export class ProjectHomePage extends Component {
 			.then((response) => {
 				if (response.data.statusCode === 201) {
 					this.setState({
-						projectData: response.data.projectBeans
+						projectData: response.data.projectBeans,
+						projectTaskData: response.data.projectBean
 					})
 					console.log("===============", response.data.projectBeans)
+				}else if(response.data.statusCode === 401) {
+					this.NotifyNoTaskAssigned();
 				}
 			}).catch((error) => {
-				console.log(error)
+				console.log("==========error",error)
+				this.NotifyServerOffline();
 			})
 
 			if(this.state.role==="architect"){
@@ -49,12 +70,10 @@ export class ProjectHomePage extends Component {
 				})
 			}
 	}
-	setPage(group) {
-		console.log("object",group.groupId)
-		localStorage.setItem("groupId", group.projectId)
-	}
+
 	page(group) {
-		this.setPage(group)
+		localStorage.setItem("groupId", group.projectPkBean.projectId)
+		localStorage.setItem("projectName", group.projectName)
 		this.props.history.push('/taskPage')
 	}
 
@@ -63,7 +82,7 @@ export class ProjectHomePage extends Component {
 		return (
 			<div className="container-fluid">
 			{console.log("object",this.state.projectData.email)}
-
+			<ToastContainer />
 				<div className="row">
 					<div className="col-md-12">
 						<div className="row">
@@ -79,12 +98,13 @@ export class ProjectHomePage extends Component {
 							<div className="col-md-8">
 								<div id="card" >
 									<div class=" card-body ">
+										<h4><b>Projects</b></h4>
 										<div>
 											<div className="row">
-												{this.state.projectData.map(item => {
+												{this.state.projectTaskData.map(item => {
 													return (
 														<div onClick={() => {
-															this.page(item.projectPkBean)
+															this.page(item)
 														}} className='col-sm-4'>
 															<p id="drag1" className="stickys">
 																< textarea id="d2" className="textarea" rows="5" readOnly>{item.projectName}</textarea> </p>
@@ -95,7 +115,7 @@ export class ProjectHomePage extends Component {
 												}
 
 											</div>
-											{this.state.projectData[0]?
+										
 											<div style={{ marginLeft: "2%", marginTop: '5%' }}>
 												<table class="table table-hover">
 													<thead>
@@ -112,13 +132,13 @@ export class ProjectHomePage extends Component {
 															this.state.projectData.map((projectData) => {
 																console.log('tabledate', projectData.id)
 																return (
-																	<tr>
+																	<tr className="ProjectTable" onClick={() => {
+																		{
+																			this.page(projectData)
+																		}
+																	}}>
 																		<th scope="row">{projectData.id}</th>
-																		<td onClick={() => {
-																			{
-																				this.page(projectData.projectPkBean)
-																			}
-																		}}>{projectData.projectName}</td>
+																		<td >{projectData.projectName}</td>
 																		<td>{projectData.people}</td>
 																		<td>{projectData.createdDate}</td>
 																		<td>{projectData.deadline}</td>
@@ -128,7 +148,7 @@ export class ProjectHomePage extends Component {
 														}
 													</tbody>
 												</table>
-											</div>:<h1>No Project assigned</h1>}
+											</div>
 										</div>
 
 
@@ -138,6 +158,7 @@ export class ProjectHomePage extends Component {
 						</div>
 					</div>
 				</div>
+				<Footer/>
 			</div>
 
 

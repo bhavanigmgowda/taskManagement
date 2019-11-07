@@ -5,7 +5,8 @@
 
 .cssCard{
     border: 1px solid #F4F5F7;
-    height: 950px;
+    height: 925px; 
+    max-height: 100%;
     background-color: #F4F5F7
 }
 
@@ -20,4 +21,41 @@
 }
 .tab:hover{
     background-color:white;
+    text-decoration: none
 }
+
+.project{
+    background-color: rgb(240, 201, 191) !important	 ;
+    border-bottom: 25px solid white !important;
+    border-radius: 15px 10px 0px 0px;
+    height: 120px !important;
+    width: 91%;
+    box-shadow: 10px;
+    margin-left: -6px;
+    margin-bottom: 25%;
+    cursor: pointer;
+    margin-top: 12%;
+  }
+  .project:hover{
+    box-shadow: 5px 10px 18px #888888;
+
+  }
+
+  .projectTextArea {
+    border: none;
+    resize: vertical;
+    width: 100%;
+    padding: 5px;
+    font-size: 18px;
+    color: black;
+  resize: none;
+    border: none white;
+    cursor: pointer;
+    height: 55px !important;
+    background-color: rgb(240, 201, 191) !important	 ;
+
+  }
+  .ProjectTable{
+    cursor: pointer;
+    
+  }

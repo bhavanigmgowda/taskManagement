@@ -25,6 +25,7 @@ import ProjectHomePage from './components/Architect/ProjectHomePage';
 import Projectmembers from './components/Architect/Projectmembers';
 import GetPeople from './components/People/GetPeople';
 import { userInfo } from 'os';
+import MyVerticallyCenteredModal from './components/Architect/SideData';
 
 
 let search=false
@@ -39,7 +40,12 @@ export class App extends Component {
       isValid: false,
       searchtask:null,
       taskData:null,
-      email:JSON.parse(window.localStorage.getItem('beans'))
+      email:JSON.parse(window.localStorage.getItem('beans')),
+      architect: false,
+            lead: false,
+            emp: false,
+            role: JSON.parse(window.localStorage.getItem('role')),
+
 
     }
       }
@@ -77,6 +83,20 @@ export class App extends Component {
     this.setState({
       isValid : isValid
     })
+
+    if (this.state.role === "architect") {
+      this.setState({
+          architect: true
+      })
+  } else if (this.state.role === "lead") {
+      this.setState({
+          lead: true
+      })
+  } else {
+      this.setState({
+          emp: true
+      })
+  }
 
    this.getEmail();
 
@@ -186,11 +206,13 @@ render() {
         clearSearch={this.clearSearch}  />
         : <div><Route exact path='/taskPage' render={() => { return <HomePage value={this.state.email}    clearSearch={this.clearSearch}byme={this.byme}   /> }} ></Route>
           <Route exact path='/navBar' component={navBar}></Route>
-          <Route exact path='/createProject' component={createProject}></Route>
+         {this.state.emp?<Redirect to='/homePage' /> :<Route exact path='/createProject' component={createProject}></Route>} 
+        {/*  {this.state.architect?<Route exact path='/createProject' component={createProject}></Route>:null} 
+         {this.state.lead?<Route exact path='/createProject' component={createProject}></Route>:null}  */}
+
           <Route exact path='/getPeople' component={GetPeople}></Route>
           <Route exact path='/userInfo' component={userInfo}></Route>
-
-          <Route exact path='/homePage' component={ProjectHomePage}></Route>
+                    <Route exact path='/homePage' component={ProjectHomePage}></Route>
                   <Route exact path='/byme' render={() => { return <Byme byme={this.byme} searchData={this.state.taskData}  clearSearch={this.clearSearch}
 /> }}></Route>
 

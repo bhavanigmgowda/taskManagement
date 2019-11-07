@@ -6,12 +6,15 @@ import $ from 'jquery';
 import Axios from 'axios';
 import { FormControl } from 'react-bootstrap';
 import { arrayTypeAnnotation } from '@babel/types';
+import Footer from '../navBar/footer'
+import { Architect, Lead, Employee } from '../Architect/SideData';
 
-var user=null
+
+var user = null
 
 
 export class createProject extends Component {
-    
+
     constructor(props) {
         super(props)
 
@@ -20,18 +23,21 @@ export class createProject extends Component {
             groupName: '',
             description: '',
             addTo: '',
-            deadline:'',
+            deadline: '',
             showgroupName: false,
             showDescription: false,
-            showAssignTo: false,
             showEnddate: false,
             showDateInvalid: false,
             showEmailInvalid: false,
             loading: false,
-            projectPkBean:{projectId:null,userBean:null},
-            user:[],
-            i:0,
-            show:false
+            projectPkBean: { projectId: null, userBean: null },
+            user: [],
+            i: 0,
+            show: false,
+            architect: false,
+            lead: false,
+            emp: false,
+            role: JSON.parse(window.localStorage.getItem('role')),
         }
     }
     cancel(e) {
@@ -55,6 +61,9 @@ export class createProject extends Component {
         this.hideDate();
         this.hideDescription();
         this.setState({ showEmailInvalid: false });
+        this.setState({
+            i: 0
+        })
     }
     hidegroupName = () => {
         this.setState({
@@ -68,11 +77,7 @@ export class createProject extends Component {
         })
 
     }
-    hideEmail = () => {
-        this.setState({
-            showAssignTo: false
-        })
-    }
+    
     hideDate = () => {
         this.setState({
             showEnddate: false
@@ -82,25 +87,31 @@ export class createProject extends Component {
         this.setState({ showDateInvalid: false })
     }
 
-    getProfile(e,email) {
+    getProfile(e, email) {
         e.preventDefault()
-        if(email!=null){
+        console.log("==================kkkkkkkkkkkk",email)
+        if (email != null) {
             this.setState({
-                addTo:email
+                addTo: email
             })
         }
         console.log('inside get profile')
         if (JSON.parse(window.localStorage.getItem('isValid'))) {
-            Axios.get('http://localhost:8080/get-profile?email=' +this.state.addTo ).then((response) => {
+            Axios.get('http://localhost:8080/get-profile?email=' + this.state.addTo).then((response) => {
 
                 if (response.data.message === 'Success') {
-                        this.setState(prevState => ({
+                    this.setState(prevState => ({
                         projectPkBean: {
-                          ...prevState.projectPkBean,           // copy all other key-value pairs of food object
-                          userBean: response.data.userBean[0]
+                            ...prevState.projectPkBean,           // copy all other key-value pairs of food object
+                            userBean: response.data.userBean[0]
                         }
-                      }))
-                    console.log("object",this.state.projectPkBean)
+                    }),
+
+                    )
+                    this.setState({
+                        i: this.state.i + 1
+                    })
+                    console.log("object", this.state.projectPkBean)
                 }
                 this.create(e);
             }).catch((error) => {
@@ -109,31 +120,28 @@ export class createProject extends Component {
         }// end of if
     } //End of getProfile
 
-    delete(e,email){
+    delete(e, email) {
         if (JSON.parse(window.localStorage.getItem('isValid'))) {
-            Axios.delete('http://localhost:8080/remove-user-from-create-project?email=' +email +'&projectId='+this.state.projectPkBean.projectId)
-            .then((response) => {
+            Axios.delete('http://localhost:8080/remove-user-from-create-project?email=' + email + '&projectId=' + this.state.projectPkBean.projectId)
+                .then((response) => {
 
-                if (response.data.message === 'Success') {
-                       this.setState({
-                           show:false,
-                           i:this.state.i-1
-                       })
-                       
-                    console.log("object",this.state.projectPkBean)
-                }
-                this.create(e);
-            }).catch((error) => {
-                console.log('Error', error);
-            })
+                    if (response.data.message === 'Success') {
+                        this.setState({
+                            show: false,
+                            i: this.state.i - 1
+                        })
+
+                        console.log("object", this.state.projectPkBean)
+                    }
+                    this.create(e);
+                }).catch((error) => {
+                    console.log('Error', error);
+                })
         }// end of if
     }
+
     create(e) {
-        debugger
-
         console.log("description ===", this.state.description);
-
-
         this.setState({ loading: true })
         e.preventDefault();
         this.setState({
@@ -143,26 +151,26 @@ export class createProject extends Component {
         Axios({
             method: 'post',
             url: 'http://localhost:8080/create-project?count=' + this.state.i,
-            headers: {}, 
-            data:this.state
-          }).then((response) => {
+            headers: {},
+            data: this.state
+        }).then((response) => {
             this.setState({ loading: false })
             if (response.data.statusCode === 201) {
-                console.log("object",response.data.projectBeans[0].projectPkBean.projectId)
-               this.setState({
-                   show:true,
-                   user:this.state.projectPkBean.userBean.email,
-                   addTo:"",
-                   i:this.state.i+1,
-               }) 
-               this.setState(prevState => ({
-                projectPkBean: {
-                  ...prevState.projectPkBean,           // copy all other key-value pairs of food object
-                  projectId:response.data.projectBeans[0].projectPkBean.projectId
-                }
+                console.log("object", response.data.projectBeans[0].projectPkBean.projectId)
+                this.setState({
+                    show: true,
+                    user: this.state.projectPkBean.userBean.email,
+                    addTo: ""
+                    // i:this.state.i+1,
+                })
+                this.setState(prevState => ({
+                    projectPkBean: {
+                        ...prevState.projectPkBean,           // copy all other key-value pairs of food object
+                        projectId: response.data.projectBeans[0].projectPkBean.projectId
+                    }
 
-              }))
-              console.log("==================",this.state.projectPkBean)
+                }))
+                console.log("==================", this.state.projectPkBean)
             } else if (response.data.statusCode === 401) {
                 this.NotifyEmailDoesntExists();
             }
@@ -175,7 +183,21 @@ export class createProject extends Component {
 
     componentDidMount() {
 
+
         var that = this;
+        if (this.state.role === "architect") {
+            this.setState({
+                architect: true
+            })
+        } else if (this.state.role === "lead") {
+            this.setState({
+                lead: true
+            })
+        } else {
+            this.setState({
+                emp: true
+            })
+        }
 
         $(document).ready(function () {
             $('#submit').click(function (e) {
@@ -192,9 +214,7 @@ export class createProject extends Component {
                 if (endDate === "") {
                     that.setState({ showEnddate: true })
                 }
-                if (AssignTo === "") {
-                    that.setState({ showAssignTo: true })
-                }
+             
                 if (description === "") {
                     that.setState({ showDescription: true })
                 }
@@ -264,119 +284,139 @@ export class createProject extends Component {
             });
         }
     }
-    addfeild(email,i){
-        return(
-            <div>
-<div className="input-group mb-3">
-                  <FormControl type="text" autoComplete="off" value={this.state.addTo} className="form-control" placeholder={email}  />
-  
-        <button type="button" onClick={(e) => this.delete(e,email)} style={{ borderRadius: '0px 5px 5px 0px', border: "1px solid #ced4da" }} class="btn btn-outline-primary"><i  class="far fa-trash-alt"></i></button>
-     </div>  
-        <div>{i}</div>
-        </div>
     
-/* 
-<div className="input-group mb-3">
+    addfeild(email, i) {
+        return (
+            <div>
+                <div className="input-group mb-3">
+                    <FormControl type="text" autoComplete="off" value={this.state.addTo} className="form-control" placeholder={email} />
 
-<FormControl type="text" autoComplete="off" value={this.state.addTo} className="form-control"  onKeyPress={this.hideEmail} type="email" name="AssignTo" id="AssignTo" title="Enter Email" placeholder="Enter User email to add to group" />
+                    <button type="button" onClick={(e) => this.delete(e, email)} style={{ borderRadius: '0px 5px 5px 0px', border: "1px solid #ced4da" }} class="btn btn-outline-primary"><i class="far fa-trash-alt"></i></button>
+                </div>
+                <div style={{ marginBottom: '10px', marginTop: '-10px' }}>
+                    No. of Users added : {i}
+                </div>
+            </div>
 
+            /* 
+            <div className="input-group mb-3">
+            
+            <FormControl type="text" autoComplete="off" value={this.state.addTo} className="form-control"  onKeyPress={this.hideEmail} type="email" name="AssignTo" id="AssignTo" title="Enter Email" placeholder="Enter User email to add to group" />
+            
+            
+            <button type="button" onClick={(e) => this.getProfile(e)} style={{ borderRadius: '0px 5px 5px 0px', border: "1px solid #ced4da" }} class="btn btn-outline-primary"><i  class="fas fa-plus"></i></button>
+            </div> */
 
-<button type="button" onClick={(e) => this.getProfile(e)} style={{ borderRadius: '0px 5px 5px 0px', border: "1px solid #ced4da" }} class="btn btn-outline-primary"><i  class="fas fa-plus"></i></button>
-</div> */
-        
         )
     }
-    
+
     render() {
-       
+
         return (
             <div id="form-container" >
-            <div id="content-wrap">
-                <div className="container-fluid ">
-                    <div className="row">
-                        <div id="container" className="col-auto container-fluid pb-5">
-                            <div id="create" className="card shadow-lg mt-5 " >
-                                <div id="cardHead" className="card-header" >
-                                    <legend className="text-center">Group Form</legend>
-                                    <div className="w-100" style={{ marginLeft: '50%', marginRight: 'auto' }}>
-                                        <PropagateLoader
-                                            size={10}
-                                            color={'#123abc'}
-                                            loading={this.state.loading}
-                                        />
-                                    </div>
-                                    <ToastContainer />
-                                </div>
-                                <div className="card-body">
-                                    <form >
-                                        <div className="input-group mb-3">
-                                            <div className="input-group-prepend">
-                                                <label className="input-group-text"><i className="fas fa-hashtag" /></label>
-                                            </div>
-                                            <input autoComplete="off" className="form-control" onKeyPress={this.hidegroupName} required="required" type="text" name="groupName" title="Enter Group Name" id="groupName" placeholder="Enter Group Name" onChange={(event) => {
-                                                this.setState({
-                                                    projectName: event.target.value
-                                                })
-                                            }} />
-                                        </div>
-                                        {this.state.showgroupName ? <div id="errordiv" className="container-fluid">Please set Group Name**</div> : null}
-                                        <div className="input-group mb-3">
-                                            <textarea onBlur={this.hideCharacterCount} onKeyPress={this.hideDescription} type="text" className="form-control" id="description" name="description" title="Enter Description" maxLength={180} placeholder="Enter Description (character limit: 180)" rows={3} onChange={(event) => {
-                                                this.setState({
-                                                    description: event.target.value
-                                                });this.textarea()
-                                            }} />
-                                        </div>
-                                        {this.state.showChar ? <div id="errordiv" className="container-fluid text-right font-weight-normal"><span id="info"></span> </div> : null}
-                                        {this.state.showDescription ? <div id="errordiv" className="container-fluid">Please set Description**</div> : null}
-                                        <div className="input-group mb-3">
-                                            <div className="input-group-prepend">
-                                                <label className="input-group-text"><i className="far fa-calendar-alt" /></label>
-                                            </div>
-                                            <input className="form-control" onClick={() => { this.hideDate(); this.hideInvalidDate() }} required="required" type="date" name="EndDate" title="Enter Deadline" id="EndDate" placeholder="Enter Deadline" onChange={(event) => {
-                                                this.setState({
-                                                    deadline: event.target.value
-                                                })
-                                            }} />
-                                        </div>
-                                        {this.state.showEnddate ? <div id="errordiv" className="container-fluid">Please select Date**</div> : null}
-                                        {this.state.showDateInvalid ? <div id="errordiv" className="container-fluid">Assign Date must be greater than Current date**</div> : null}
-                                        <div className="input-group mb-3">
-                                            <div className="input-group-prepend">
-                                                <label className="input-group-text"><i className="fas fa-at" /></label>
-                                            </div>
-                                            <FormControl type="text" autoComplete="off" value={this.state.addTo} className="form-control"  onKeyPress={this.hideEmail} type="email" name="AssignTo" id="AssignTo" title="Enter Email" placeholder="Enter User email to add to group" onChange={(event) => {
-                                                this.setState({
-                                                    addTo: event.target.value
-                                                })
-                                            }} />
+                <div id="content-wrap">
+                    <div className="container-fluid ">
+                        <div className="row">
 
-                      {/*               <FormControl type="text" name="search"  
+
+                        <div className="col-md-2 cssCard" >
+                                <div class=" card-body  h-75">
+                                    <div className="input-group mb-3 option">
+                                        {this.state.architect ? <Architect /> : null}
+                                        {this.state.lead ? <Lead /> : null}
+                                        {this.state.emp ? <Employee /> : null}
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+                            <div className="col-md-10 " >
+
+
+                            <div id="container" className="col-auto container-fluid pb-5">
+                                <div id="create" className="card shadow-lg mt-5 " >
+                                    <div id="cardHead" className="card-header" >
+                                        <legend className="text-center">Create a project</legend>
+                                        <div className="w-100" style={{ marginLeft: '50%', marginRight: 'auto' }}>
+                                            <PropagateLoader
+                                                size={10}
+                                                color={'#123abc'}
+                                                loading={this.state.loading}
+                                            />
+                                        </div>
+                                        <ToastContainer />
+                                    </div>
+                                    <div className="card-body">
+                                        <form >
+                                            <div className="input-group mb-3">
+                                                <div className="input-group-prepend">
+                                                    <label className="input-group-text"><i className="fas fa-hashtag" /></label>
+                                                </div>
+                                                <input autoComplete="off" className="form-control" onKeyPress={this.hidegroupName} required="required" type="text" name="groupName" title="Enter Group Name" id="groupName" placeholder="Enter Project Name" onChange={(event) => {
+                                                    this.setState({
+                                                        projectName: event.target.value
+                                                    })
+                                                }} />
+                                            </div>
+                                            {this.state.showgroupName ? <div id="errordiv" className="container-fluid">Please set Project Name**</div> : null}
+                                            <div className="input-group mb-3">
+                                                <textarea onBlur={this.hideCharacterCount} onKeyPress={this.hideDescription} type="text" className="form-control" id="description" name="description" title="Enter Description" maxLength={180} placeholder="Enter Description (character limit: 180)" rows={3} onChange={(event) => {
+                                                    this.setState({
+                                                        description: event.target.value
+                                                    }); this.textarea()
+                                                }} />
+                                            </div>
+                                            {this.state.showChar ? <div id="errordiv" className="container-fluid text-right font-weight-normal"><span id="info"></span> </div> : null}
+                                            {this.state.showDescription ? <div id="errordiv" className="container-fluid">Please set Description**</div> : null}
+                                            <div className="input-group mb-3">
+                                                <div className="input-group-prepend">
+                                                    <label className="input-group-text"><i className="far fa-calendar-alt" /></label>
+                                                </div>
+                                                <input className="form-control" onClick={() => { this.hideDate(); this.hideInvalidDate() }} required="required" type="date" name="EndDate" title="Enter Deadline" id="EndDate" placeholder="Enter Deadline" onChange={(event) => {
+                                                    this.setState({
+                                                        deadline: event.target.value
+                                                    })
+                                                }} />
+                                            </div>
+                                            {this.state.showEnddate ? <div id="errordiv" className="container-fluid">Please select Date**</div> : null}
+                                            {this.state.showDateInvalid ? <div id="errordiv" className="container-fluid">Assign Date must be greater than Current date**</div> : null}
+                                            <div className="input-group mb-3">
+                                                <div className="input-group-prepend">
+                                                    <label className="input-group-text"><i className="fas fa-at" /></label>
+                                                </div>
+                                                <FormControl type="text" autoComplete="off" value={this.state.addTo} className="form-control" onKeyPress={this.hideEmail} type="email" name="AssignTo" id="AssignTo" title="Enter Email" placeholder="Enter User email to be added to Project" onChange={(event) => {
+                                                    this.setState({
+                                                        addTo: event.target.value
+                                                    })
+                                                }} />
+
+                                                {/*               <FormControl type="text" name="search"  
                                 onChange={(event) => { this.setState({ search: event.target.value }) }}
                                    value={this.state.search} onKeyDown={(event) => { this.searchByEnter(event) }}  placeholder="Search" className="w-55" /> */}
 
 
-                                            <button type="button" onClick={(e) => this.getProfile(e)} style={{ borderRadius: '0px 5px 5px 0px', border: "1px solid #ced4da" }} class="btn btn-outline-primary"><i  class="fas fa-plus"></i></button>
-                                        </div>
-                                        {this.state.showEmailInvalid ? <div id="errordiv" className="container-fluid">Please enter a valid email address</div> : null}
-                                        {this.state.showAssignTo ? <div id="errordiv" className="container-fluid">Please set Email**</div> : null}
-                                        {this.state.show?this.addfeild(this.state.user,this.state.i):null}
-                                        <div className="input-group container-fluid">
-                                            <button type="reset" id="reset" onClick={this.hideOnReset} title="reset" className="form-control-plaintext btn btn-outline-primary btn-sm">Reset</button>
-                                            <button type="submit" id="submit" title="submit" onClick={(e)=>{this.getProfile(e,JSON.parse(window.localStorage.getItem('beans')))}} className="form-control-plaintext btn btn-outline-success btn-sm">Submit</button>
-                                            <button type="cancel" id="cancel" title="cancel" className="form-control-plaintext btn btn-outline-info btn-sm"  >Cancel</button>
-                                        </div>
-                                    </form>
+                                                <button type="button" onClick={(e) => this.getProfile(e)} style={{ borderRadius: '0px 5px 5px 0px', border: "1px solid #ced4da" }} class="btn btn-outline-primary"><i class="fas fa-plus"></i></button>
+                                            </div>
+                                            {this.state.showEmailInvalid ? <div id="errordiv" className="container-fluid">Please enter a valid email address</div> : null}
+                                            {this.state.show ? this.addfeild(this.state.user, this.state.i) : null}
+                                            <div className="input-group container-fluid">
+                                                <button type="reset" id="reset" onClick={this.hideOnReset} title="reset" className="form-control-plaintext btn btn-outline-primary btn-sm">Reset</button>
+                                                <button type="submit" id="submit" title="submit" onClick={(e) => { this.getProfile(e, JSON.parse(window.localStorage.getItem('beans'))) }} className="form-control-plaintext btn btn-outline-success btn-sm">Submit</button>
+                                                <button type="cancel" id="cancel" title="cancel" className="form-control-plaintext btn btn-outline-info btn-sm"  >Cancel</button>
+                                            </div>
+                                        </form>
+                                    </div>
                                 </div>
                             </div>
+                            </div>.
                         </div>
                     </div>
                 </div>
+                <Footer />
             </div>
-        </div>
-        )}
+        )
+    }
 }
 
 export default createProject
-
-

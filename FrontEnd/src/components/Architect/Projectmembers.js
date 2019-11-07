@@ -8,6 +8,9 @@ import './projectmembers.css'
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { PropagateLoader } from 'react-spinners';
+import { Architectproject, Leadproject, Employeeproject, Architect, Lead, Employee } from '../Architect/SideData';
+
+
 import { Modal } from 'react-bootstrap'
 
 
@@ -21,9 +24,13 @@ class Projectmembers extends React.Component {
             show: false,
             cun: '',
             nun: '',
-            groupId:localStorage.getItem('groupId'),
+            groupId: localStorage.getItem('groupId'),
+            architect: false,
+            lead: false,
+            emp: false,
+            role: JSON.parse(window.localStorage.getItem('role')),
 
-            //  projectBean: null
+                //  projectBean: null
         }
     }
 
@@ -54,21 +61,6 @@ class Projectmembers extends React.Component {
             this.props.history.push('/')
         }
     }
-
-    
-
-    // remove() {
-    //     console.log("entered remove method")
-    //     Axios.delete('http://localhost:8080/remove-user-from-project?emp_id=' + 4).then((response) => {
-    //         if (response.data.statusCode === 201) {
-    //             console.log("jkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk")
-    //             this.getMembers()
-    //         }
-    //     }).catch((error) => {
-    //         console.log(error)
-    //     })
-    // }
-
     change() {
 
         console.log("entered change method")
@@ -76,7 +68,7 @@ class Projectmembers extends React.Component {
             if (response.data.statusCode === 201) {
                 console.log("jkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk")
                 this.setState({
-                    show:!this.state.show
+                    show: !this.state.show
                 })
                 this.getMembers()
             }
@@ -84,39 +76,29 @@ class Projectmembers extends React.Component {
             console.log("error occured")
         })
     }
-
-
-
-    // delete(a) {
-
-    //     Axios.delete('http://localhost:8080/remove-task?taskId=' + a )
-    //         .then((response) => {
-    //             if (response.data.statusCode === 201) {
-    //                 this.props.byme()
-    //             }
-    //         }).catch((error) => {
-    //             console.log(error)
-    //         })
-    // }
-
-
-
     componentDidMount() {
-        // this.getProjectBean();
         console.log("object")
+        if(this.state.role==="architect"){
+            this.setState({
+                architect:true
+            })
+        }else if(this.state.role==="lead"){
+            this.setState({
+                lead:true
+            })
+        }else{
+            this.setState({
+                emp:true
+            })
+        }
         this.getMembers()
-        //  console.log("email",this.state.projectmembers[0].projectPkBean[0].userBean.email)
 
     }
-
-
-
-
     Example(email) {
         this.setState({
 
             show: !this.state.show,
-            cun:email
+            cun: email
         })
     }
 
@@ -126,27 +108,54 @@ class Projectmembers extends React.Component {
     }
 
     render() {
-    let i=1    
+        let i = 1
         return (
             <div>
-                <Table striped bordered hover>
+                 <div className="container-fluid">
+                <div className="row">
+                    <div className="col-md-12">
+                        <div className="row">
+                            <div className="col-md-2 cssCard" >
+                                <div class=" card-body  h-75">
+                                    <div className="input-group mb-3 option">
+                                    {this.state.architect ?<div>{localStorage.getItem("groupId")?<Architectproject/> :<Architect/>} </div> : null}
+                                                {this.state.lead ?<div>{localStorage.getItem("groupId")? <Leadproject /> :<Lead/>} </div> : null}
+                                                {this.state.emp ?<div>{localStorage.getItem("groupId")? <Employeeproject /> :<Employee/>} </div> : null}                                             
+                                           
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="col-md-10" >
+
+                <Table striped  hover>
                     <thead>
-                        <tr className="head">
+                        <tr className="head" >
                             <th>sl.No.</th>
                             <th> Name</th>
-                            <th></th>
+                            {this.state.emp?null:<th></th>}
                         </tr>
                     </thead>
                     {this.state.projectmembers.map(item => {
-              
                         return (
-
                             <tbody>
-                                <tr className="data">
+                                <tr className="data" style={{backgroundColor:"white"}}>
                                     <td>{i++}</td>
-                                    <td>{item.projectPkBean.userBean.employeeName}</td>
-                                    <td><Button variant="danger" onClick={()=>this.Example(item.projectPkBean.userBean.email)}>change user</Button></td>
+                                    <td>
+                                    <div className="card col-sm-4" style={{ width: "176px", height: "177px", marginBottom: "25px", margin: "20px" }}>
+                                        <div class="card-body">
+                                            <img style={{ height: "80px", marginLeft: "21px", marginRight: "auto" }} src="https://cdn2.iconfinder.com/data/icons/ios-7-icons/50/user_male2-512.png" alt="Smiley face" />
+                                            <div style={{ textAlign: "center" }} class="card-text">{item.projectPkBean.userBean.employeeName}</div>
+                                            <div style={{ textAlign: "center" }}>{item.projectPkBean.userBean.email}</div>
+                                        </div>
 
+                                    </div>
+                                    
+                                    </td>
+                                   {this.state.emp?null: <td>
+                                        <Button variant="danger" onClick={() => this.Example(item.projectPkBean.userBean.email)}>change user</Button>
+                                    </td>}
+
+                                    
                                     {/* onClick={() => this.delete(item.taskId, "completed")} */}
                                 </tr>
 
@@ -163,7 +172,7 @@ class Projectmembers extends React.Component {
                                             <div className="input-group-prepend ">
                                                 <label className="input-group-text "><i className="fas fa-at" /></label>
                                             </div>
-                                            <input type="text" value ={this.state.cun} readOnly style={{ color: 'black' }} className="form-control" placeholder="Enter current user's name" /></div>
+                                            <input type="text" value={this.state.cun} readOnly style={{ color: 'black' }} className="form-control" placeholder="Enter current user's name" /></div>
 
 
                                         <label className="mb-0" style={{ color: '#808080' }}>new user</label>
@@ -176,13 +185,18 @@ class Projectmembers extends React.Component {
 
                                     </Modal.Body>
                                     <Modal.Footer style={{ color: 'red' }} className=" justify-content-center" >
-                                        <button type="button" onClick={()=>this.change()}>Apply</button>
+                                        <button type="button" onClick={() => this.change()}>Apply</button>
                                     </Modal.Footer>
                                 </Modal>
                             </tbody>
                         )
                     })}
                 </Table>
+                </div>
+                </div>
+                </div>
+                </div>
+                </div>
                 <Footer />
             </div>
         )

@@ -35,20 +35,7 @@ export default class userInfo extends Component {
                                     <div class="card-body">
                                         
                                         <h5 style={{ fontWeight: "600" }} class="card-title">About</h5>
-                                         {/*  this.state.userInfo.map((info)=>{
-                                            return(
-                                              <div>
-                                              <p class="card-text">{info.Designation}</p>
-                                              <p class="card-text">{info.CompanyName}</p>
-                                              <p class="card-text">{info.department}</p>
-                                              <p class="card-text">{info.location}</p>
-      
-                                              <h5 class="card-title">Contact</h5>
-                                              <p class="card-text">{info.email}</p>
-                                              </div>
-                                            )
-                                         })
-                                        */} 
+                                          
                                         
                                       
                                         

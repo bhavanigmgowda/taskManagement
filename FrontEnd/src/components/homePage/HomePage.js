@@ -11,8 +11,9 @@ import './HomePage.css';
 import Footer from '../navBar/footer';
 import '../login/welcom.css'
 import { stickyHigh, stickyMedium, stickyLow, stickyCri } from './Sticky';
-import { Architectproject, Leadproject, Employeeproject } from '../Architect/SideData';
+import { Architectproject, Leadproject, Employeeproject, Architect, Lead, Employee } from '../Architect/SideData';
 import { Project } from '../Architect/ProjectInfo';
+import '../createTask/home.css'
 
 export class HomePage extends Component {
     constructor(props) {
@@ -117,7 +118,7 @@ export class HomePage extends Component {
               }).then((response) => {
                     if (response.data.statusCode === 201) {
                       this.setState({
-                          comment:null
+                          updateComment:''
                       })
                     }
                     this.comment();
@@ -140,9 +141,11 @@ addComment(){
                 if (response.data.statusCode === 201) {
                   this.setState({
                       comment:null
+                  },()=>{
+                    this.comment();
                   })
                 }
-                this.comment();
+                
             }).catch((error) => {
                 console.log(error)
                 this.setState({ loading: false });
@@ -172,6 +175,30 @@ if(this.state.email===email){
         }
     }
 
+    NotifyNoTaskAssigned = () => {
+        if (!toast.isActive(this.toastId)) {
+            this.toastId = toast.error(<center>No Task Exists</center>, {
+                position: "top-center", autoClose: 7000,
+            });
+        }
+    }
+    deleteComment(commentId){
+        Axios.delete('http://localhost:8080/delete-comment?commentId=' + commentId)
+        .then((response) => {
+                if (response.data.statusCode === 201) {
+                 
+                    this.comment();
+                 
+                }
+                
+            }).catch((error) => {
+                console.log(error)
+                this.setState({ loading: false });
+                this.NotifyServerOffline();
+            })
+     
+    }
+
     getTask() {
         debugger
         console.log("==================", this.state.groupId)
@@ -180,7 +207,6 @@ if(this.state.email===email){
             Axios.get(localStorage.getItem('groupId') ? 'http://localhost:8080/get-task-for-project?groupId=' + localStorage.getItem('groupId')+'&email='+this.state.email
                 : 'http://localhost:8080/get-assigned-task?email=' + this.state.email)
                 .then((response) => {
-                    console.log("object", response.data.taskBean[0].projectBean)
                         this.setState({ loading: false });
 
                         if (response.data.statusCode === 201) {
@@ -199,9 +225,12 @@ if(this.state.email===email){
                             
                             console.log("object===============", response.data.bean)
 
+                        }else if(response.data.statusCode === 401){
+                            this.NotifyNoTaskAssigned();
+
                         }
                     }).catch((error) => {
-                    console.log(error)
+                    console.log("error",error)
                     this.setState({ loading: false });
                     this.NotifyServerOffline();
                 })
@@ -210,6 +239,9 @@ if(this.state.email===email){
         }
     }
     updateCompleted(a, b) {
+        this.setState({
+            showData:false
+        })
         var moment = require('moment');
         var moment = moment().format('YYYY-MM-DD');
         Axios.put('http://localhost:8080/update-task-completed-Date?taskId=' + a + '&status=' + b + '&completedDate=' + moment)
@@ -267,10 +299,13 @@ if(this.state.email===email){
            
             if (response.data.statusCode === 201) {
                 this.setState(
-                    { commentBean: response.data.commentBean }
+                    { 
+                        commentBean: response.data.commentBean ,
+                        comment:''
+                    
+                    }
                 )
-                this.getTask();
-                    console.log("=======comment======",response.data.commentBean)
+               
             }
         }).catch((error) => {
             console.log(error)
@@ -320,9 +355,9 @@ if(this.state.email===email){
 
     render() {
         return (
-            <div id="page-container" >
+            <div id="page-container" className="container-fluid" >
 
-                <div className="w-100" style={{ marginLeft: '50%', marginRight: 'auto', marginBottom: '1%' }}>
+                <div className="w-100" style={{ marginLeft: '50%', marginRight: 'auto' }}>
                     <PropagateLoader css={this.override} size={10} color={'#123abc'} loading={this.state.loading} />
                 </div>
                 <ToastContainer />
@@ -376,26 +411,25 @@ if(this.state.email===email){
                         </Modal.Footer>
                     </Modal>
                     {/* end of taskBean */}
-                    {/*    {localStorage.getItem('groupId')? <Link to="/Ar">Project</Link> */}
                     <div className="container-fluid">
                         <div className="row">
                             <div className="col-md-12">
                                 <div className="row">
-                                    <div className="col-md-2 cssCard" >
+                                    <div className="col-md-2 cssCard " >
                                         <div class=" card-body  h-75">
                                             <div className="input-group mb-3 option">
-                                                {this.state.architect ? <Architectproject /> : null}
-                                                {this.state.lead ? <Leadproject /> : null}
-                                                {this.state.emp ? <Employeeproject /> : null}
+                                                {this.state.architect ?<div>{localStorage.getItem("groupId")?<Architectproject/> :<Architect/>} </div> : null}
+                                                {this.state.lead ?<div>{localStorage.getItem("groupId")? <Leadproject /> :<Lead/>} </div> : null}
+                                                {this.state.emp ?<div>{localStorage.getItem("groupId")? <Employeeproject /> :<Employee/>} </div> : null}                                             
                                             </div>
                                         </div>
                                     </div>
-
-
                                     <div className="col-md-8">
                                         <div id="card" >
                                             <div class=" card-body ">
                                                 <div className="container-fluid">
+                                               {localStorage.getItem('groupId')?<div className="projectName"><Link style={{color:'black'}} onClick={()=>{this.props.history.push('/homePage')}} className="dark">Project</Link>&nbsp;/&nbsp;
+                                                            <Link style={{color:'black'}} to='/taskPage'>{localStorage.getItem("projectName")}</Link></div>:null} 
                                                     <center>
                                                         <div className="row container">
                                                             <div className="col-lg-4 col-md-3 col-sm-3" id="todo" onDragOver={(e) => this.onDragOver(e, "todo")} >
@@ -611,11 +645,11 @@ if(this.state.email===email){
                                         </div>
                                     </div>
 
-                                    <div className="col-lg-2 cssCard" >
+                                    <div className="col-lg-2 " >
                                         <div className="col-md-12">
                                             <div className="row">
-                                            {Project(this.state.project)}
-
+{/*                                             {localStorage.getItem("projectName")?<h4>Project Name: {localStorage.getItem("projectName")}</h4>:null}
+ */}
 {this.state.showData?
                                                 <div class=" card-body  h-75">
                                                     <div className="input-group mb-3 option">
@@ -667,7 +701,7 @@ if(this.state.email===email){
                                                             {this.state.commentBean.filter(item => this.state.email !== item.userBean.email).map(item => {
                                                                             return (
                                                                                 <div>
-                                                                                <label className="mb-0" style={{ color: 'black',    fontSize:'15' }}>{item.userBean.email}</label>
+                                                                                <label className="mb-0" style={{ color: 'black',    fontSize:'15' }}>{item.userBean.employeeName}</label>
                                                                                 <div className="input-group mb-2">               
                                                                                
                                                                                   <textarea style={{ color: 'black' }} readOnly value={item.comment} onClick={()=>this.edit(item.userBean.email)} type="text" className="form-control" placeholder="Designation"  />  
@@ -681,22 +715,21 @@ if(this.state.email===email){
                                                             {this.state.commentBean.filter(item => this.state.email === item.userBean.email).map(item => {
                                                                             return (
                                                                                 <div>
-                                                                                <label className="mb-0" style={{ color: 'black',    fontSize:'15' }}>{item.userBean.email}</label>
+                                                                                <label className="mb-0" style={{ color: 'black',    fontSize:'15' }}>{item.userBean.employeeName}</label>
                                                                                 <div className="input-group mb-2">               
                                                                                
-                                                                                  <textarea style={{ color: 'black' }}  onChange={(e)=>this.setState({updateComment:e.target.value})}  onClick={()=>this.edit(item.userBean.email)} type="text" className="form-control" placeholder={item.comment}  />  
+                                                                                  <textarea style={{ color: 'black' }}  onChange={(e)=>this.setState({updateComment:e.target.value})} value={this.state.updateComment}  onClick={()=>this.edit(item.userBean.email)} type="text" className="form-control" placeholder={item.comment}  />  
                                                                                     </div>
                                                                                     <Link className="edit" onClick={()=>this.updateComment(item)}>save</Link>
-                                                                                   &nbsp;&nbsp; <Link className="edit" onClick={()=>this.deleteComment()}>delete</Link>
+                                                                                   &nbsp;&nbsp; <Link className="edit" onClick={()=>this.deleteComment(item.commentId)}>delete</Link>
                                                                                     </div>
-                                                                     
-                                                                                )
+                                                                               )
                                                                         }
                                                                         )}
                                                             </div>
                                                         <div className="input-group mb-2">
                                                             <textarea style={{ color: 'black' }}  type="text" className="form-control" placeholder="Add a Comment"
-                                                            onChange={(e)=>this.setState({comment:e.target.value})}  />  </div>
+                                                            onChange={(e)=>this.setState({comment:e.target.value})} value={this.state.comment}  />  </div>
                                                             <Button onClick={()=>this.addComment()} >save</Button>
                                                             {console.log("============",this.state.comment)}
                                                             
@@ -710,7 +743,7 @@ if(this.state.email===email){
                         </div>
                     </div>
                 </div>
-                <div> <Footer></Footer></div>
+                <div> <Footer style={{}}/></div>
             </div>
         )
     }
