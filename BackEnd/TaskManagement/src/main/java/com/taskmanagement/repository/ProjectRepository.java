@@ -74,4 +74,7 @@ public interface ProjectRepository extends JpaRepository<ProjectBean, ProjectPKB
 	
 	@Query("select p.projectPkBean.userBean from ProjectBean p where p.projectPkBean.projectId=:projectId ")
 	Set<UserBean> getAllUser(int projectId);
+	
+	@Query(value = "select count(*) from user c where c.emp_id in (select emp_id from project where project_id=:projectId)" ,nativeQuery = true)
+	int getCount(int projectId);
 }

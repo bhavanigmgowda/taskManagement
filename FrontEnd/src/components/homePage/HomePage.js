@@ -132,7 +132,7 @@ export class HomePage extends Component {
     }
 addComment(){
     
-    if (JSON.parse(window.localStorage.getItem('isValid'))) {
+  
         Axios({
             method: 'post',
             url: 'http://localhost:8080/add-comment',
@@ -151,9 +151,7 @@ addComment(){
                 this.setState({ loading: false });
                 this.NotifyServerOffline();
             })
-    } else {
-        this.props.history.push('/')
-    }
+     
 
 }
 
@@ -222,9 +220,6 @@ if(this.state.email===email){
                                 ...state                                                                                                                                                                                                                                                
                             })
                             this.setState({ loading: false });      
-                            
-                            console.log("object===============", response.data.bean)
-
                         }else if(response.data.statusCode === 401){
                             this.NotifyNoTaskAssigned();
 
@@ -411,7 +406,6 @@ if(this.state.email===email){
                         </Modal.Footer>
                     </Modal>
                     {/* end of taskBean */}
-                    <div className="container-fluid">
                         <div className="row">
                             <div className="col-md-12">
                                 <div className="row">
@@ -741,7 +735,6 @@ if(this.state.email===email){
                                 </div>
                             </div>
                         </div>
-                    </div>
                 </div>
                 <div> <Footer style={{}}/></div>
             </div>

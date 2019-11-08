@@ -16,13 +16,13 @@ export default class PeopleCard extends Component {
 
 
     componentDidMount() {
-            Axios.get('http://localhost:8080/get-all-User'
+            Axios.get('http://localhost:8080/search-members-for-project?email='+JSON.parse(window.localStorage.getItem('beans'))
             ).then((response) => {
 
                 if (response.data.message === "Success" ) {
                     console.log("response people", response);
                     this.setState({
-                        peoples: response.data.userBean
+                        peoples: response.data.userBeans
                     })
 
                 }
@@ -55,7 +55,9 @@ export default class PeopleCard extends Component {
             }).catch((error) => {
             })
         } 
-
+        sendMyProfile(people){
+            this.props.sendToProfile(people);
+}
 
 
     render() {
@@ -95,7 +97,7 @@ export default class PeopleCard extends Component {
                         {
                             this.state.peoples.map((people) => {
                                 return (
-                                    <div className="card col-sm-2" style={{ width: "176px", height: "177px", marginBottom: "25px", margin: "20px" }}>
+                                    <div className="card col-sm-2" onClick={()=>this.sendMyProfile(people)} style={{ width: "176px", height: "177px", marginBottom: "25px", margin: "20px" }}>
                                         <div class="card-body">
                                             <img style={{ height: "80px", marginLeft: "21px", marginRight: "auto" }} src="https://cdn2.iconfinder.com/data/icons/ios-7-icons/50/user_male2-512.png" alt="Smiley face" />
                                             <div style={{ textAlign: "center" }} class="card-text">{people.employeeName}</div>

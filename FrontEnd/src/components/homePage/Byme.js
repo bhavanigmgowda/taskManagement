@@ -9,6 +9,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { PropagateLoader } from 'react-spinners';
 import Axios from 'axios';
 import { stickyLow, stickyMedium, stickyCri, stickyHigh } from './Sticky';
+import { Architect, Lead, Employee } from '../Architect/SideData';
 class Byme extends Component {
     constructor(props) {
         super(props)
@@ -22,8 +23,12 @@ class Byme extends Component {
             popup: [],
             user: '',
             page: 'By Me',
-            loading: false
-
+            loading: false,
+            taskData:[],
+            architect: false,
+            lead: false,
+            emp: false,
+            role: JSON.parse(window.localStorage.getItem('role')),
         }
     }
     NotifyServerOffline = () => {
@@ -34,47 +39,30 @@ class Byme extends Component {
         }
     }
     componentDidMount() {
-        if (!this.props.searchData) {
-            this.props.byme()
-        }
-    }
-
-    delete(a) {
-     
-            Axios.delete('http://localhost:8080/remove-task?taskId=' + a )
-                .then((response) => {
-                    if (response.data.statusCode === 201) {
-                        this.props.byme()
-                    }
-                }).catch((error) => {
-                    console.log(error)
+            Axios.get('http://localhost:8080/get-assign-to-task?email=' + this.state.email
+            ).then((response) => {
+              if (response.data.message === "Success") {
+                this.setState({
+                  taskData: response.data.taskBean
                 })
-        }
-    
-
-    completedTask(e) {
-        e.preventDefault();
-        this.props.history.push('/completedTask')
-        this.props.clearSearch()
-    }
-    pageName(data) {
-        if (data === "To Me") {
-            this.setState({
-                page: data
-
+              }
+            }).catch((error) => {
             })
-            localStorage.setItem("pages", JSON.stringify("To Me"))
-            this.props.history.push('/taskPage')
-        } else {
-            localStorage.setItem("pages", JSON.stringify("By Me"))
-            this.props.history.push('/byme')
-        }
-        this.props.clearSearch()
-
-
-
+            if (this.state.role === "architect") {
+                this.setState({
+                    architect: true
+                })
+            } else if (this.state.role === "lead") {
+                this.setState({
+                    lead: true
+                })
+            } else {
+                this.setState({
+                    emp: true
+                })
+            }
     }
-    handleClose() {
+ handleClose() {
         this.setState({ show: !this.state.show })
     }
     showvis(item, userBean) {
@@ -86,26 +74,24 @@ class Byme extends Component {
         this.setState({ show: !this.state.show })
     }
     render() {
-        if (this.props.searchData) {
-            console.log("searchData", this.props.searchData)
+     
             return (
                 <div>
-                    <Nav >
-
-                        <div class="dropdown">
-                            <button class="dropbtn">{this.props.searchPage ? this.props.searchPage : "By Me"} &nbsp;
-        <i class="fa fa-caret-down"></i>
-                            </button>
-                            <div class="dropdown-content">
-                                <NavLink onClick={this.props.clearSearch} className="nav-link linkbar" onClick={(event) => { this.pageName("To Me") }} to="/taskPage"  >To Me</NavLink>
-                                <NavLink onClick={this.props.clearSearch} className="nav-link linkbar" onClick={(event) => { this.pageName("By Me") }} to="/byme" >By Me</NavLink>
-                            </div>
-                        </div>
-
-                        <Button onClick={(e) => { this.completedTask(e) }} className="com" style={{ marginLeft: '88%' }}>Completed Task</Button>
-
-                    </Nav>
-                    <div className="w-100" style={{ marginLeft: '50%', marginRight: 'auto', marginBottom: '1%' }}>
+                     <div id="form-container" >
+                    <div id="content-wrap">
+                        <div className="container-fluid ">
+                            <div className="row">
+                               <div className="col-md-2 cssCard" >
+                                    <div class=" card-body  h-75">
+                                        <div className="input-group mb-3 option">
+                                            {this.state.architect ? <Architect /> : null}
+                                            {this.state.lead ? <Lead /> : null}
+                                            {this.state.emp ? <Employee /> : null}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="col-md-8 " >
+                        <div className="w-100" style={{ marginLeft: '50%', marginRight: 'auto', marginBottom: '1%' }}>
                         <PropagateLoader
                             css={this.override}
                             size={10}
@@ -176,12 +162,10 @@ class Byme extends Component {
                                             </h5>
                                         </div>
                                         <div className=" card-body cards">
-                                            {this.props.searchData.filter(item => (item.priority === 'critical') && (item.status === 'todo')).map(item => {
+                                            {this.state.taskData.filter(item => (item.priority === 'critical') && (item.status === 'todo')).map(item => {
                                                 return (
                                                     <div className="col-auto" >
-                                                           <div className="cor" >
-                                                           <i class="fas fa-times-circle" onClick={() => this.delete(item.taskId, "completed")}></i>
-                                                     </div>
+                                                      
                                                         <div id="i7" className="col-lg-4 col-md-4 col-sm-4 a" >
                                                             <i onClick={() => this.showvis(item, item.userBean)} class="fas fa-info-circle"></i>
                                                         </div>
@@ -190,13 +174,10 @@ class Byme extends Component {
                                                 )
                                             }
                                             )}
-                                            {this.props.searchData.filter(item => (item.priority === 'high') && (item.status === 'todo')).map(item => {
+                                            {this.state.taskData.filter(item => (item.priority === 'high') && (item.status === 'todo')).map(item => {
                                                 return (
                                                     <div className="col-auto">
-                                                          <div className="cor" >
-                                                          <i class="fas fa-times-circle" onClick={() => this.delete(item.taskId, "completed")}></i>
-                                                     </div>
-                                                        <div id="i7" className="col-lg-4 col-md-4 col-sm-4 a" >
+                                                         <div id="i7" className="col-lg-4 col-md-4 col-sm-4 a" >
                                                             <i onClick={() => this.showvis(item, item.userBean)} class="fas fa-info-circle"></i>
                                                         </div>
                                                         {stickyHigh(item)}
@@ -204,12 +185,9 @@ class Byme extends Component {
                                                 )
                                             }
                                             )}
-                                            {this.props.searchData.filter(item => (item.priority === 'medium') && (item.status === 'todo')).map(item => {
+                                            {this.state.taskData.filter(item => (item.priority === 'medium') && (item.status === 'todo')).map(item => {
                                                 return (
                                                     <div className="col-auto">
-                                                    <div className="cor" >
-                                                    <i class="fas fa-times-circle" onClick={() => this.delete(item.taskId, "completed")}></i>
-                                                     </div>
                                                         <div id="i7" className="col-lg-4 col-md-4 col-sm-4 a" >
                                                             <i onClick={() => this.showvis(item, item.userBean)} class="fas fa-info-circle"></i>
                                                         </div>
@@ -219,19 +197,16 @@ class Byme extends Component {
                                                 )
                                             }
                                             )}
-                                            {this.props.searchData.filter(item => (item.priority === 'low') && (item.status === 'todo')).map(item => {
+                                            {this.state.taskData.filter(item => (item.priority === 'low') && (item.status === 'todo')).map(item => {
                                                 return (
-                                                    <div className="col-auto">
-                                                          <div className="cor" >
-                                                          <i class="fas fa-times-circle" onClick={() => this.delete(item.taskId, "completed")}></i>
-                                                     </div>
+                                                    <div className="col-auto">>
                                                         <div id="i7" className="col-lg-4 col-md-4 col-sm-4 a" >
                                                             <i onClick={() => this.showvis(item, item.userBean)} class="fas fa-info-circle"></i>
                                                         </div> 
                                                         {stickyLow(item)}
                                                     </div>
                                                 )
-                                            }
+                                            }   
                                             )}
                                         </div>
                                     </div>
@@ -244,7 +219,7 @@ class Byme extends Component {
                                             </h5>
                                         </div>
                                         <div className="  card-body cards">
-                                            {this.props.searchData.filter(item => (item.priority === 'critical') && (item.status === 'onProgress')).map(item => {
+                                            {this.state.taskData.filter(item => (item.priority === 'critical') && (item.status === 'onProgress')).map(item => {
                                                 return (
                                                     <div className="col-auto container">
 
@@ -260,7 +235,7 @@ class Byme extends Component {
                                                 )
                                             }
                                             )}
-                                            {this.props.searchData.filter(item => (item.priority === 'high') && (item.status === 'onProgress')).map(item => {
+                                            {this.state.taskData.filter(item => (item.priority === 'high') && (item.status === 'onProgress')).map(item => {
                                                 return (
                                                     <div className="col-auto container">
                                                         <div id="i7" className="col-lg-4 col-md-4 col-sm-4 a" >
@@ -274,7 +249,7 @@ class Byme extends Component {
                                                 )
                                             }
                                             )}
-                                            {this.props.searchData.filter(item => (item.priority === 'medium') && (item.status === 'onProgress')).map(item => {
+                                            {this.state.taskData.filter(item => (item.priority === 'medium') && (item.status === 'onProgress')).map(item => {
                                                 return (
                                                     <div className="col-auto container">
 
@@ -290,7 +265,7 @@ class Byme extends Component {
                                                 )
                                             }
                                             )}
-                                            {this.props.searchData.filter(item => (item.priority === 'low') && (item.status === 'onProgress')).map(item => {
+                                            {this.state.taskData.filter(item => (item.priority === 'low') && (item.status === 'onProgress')).map(item => {
                                                 return (
                                                     <div className="col-auto">
 
@@ -314,7 +289,7 @@ class Byme extends Component {
                                             </h5>
                                         </div>
                                         <div className=" card-body cards">
-                                            {this.props.searchData.filter(item => (item.priority === 'critical') && (item.status === 'blocked')).map(item => {
+                                            {this.state.taskData.filter(item => (item.priority === 'critical') && (item.status === 'blocked')).map(item => {
                                                 return (
                                                     <div className="col-auto" >
                                                         <div id="i7" className="col-lg-4 col-md-4 col-sm-4 a" >
@@ -326,7 +301,7 @@ class Byme extends Component {
                                                 )
                                             }
                                             )}
-                                            {this.props.searchData.filter(item => (item.priority === 'high') && (item.status === 'blocked')).map(item => {
+                                            {this.state.taskData.filter(item => (item.priority === 'high') && (item.status === 'blocked')).map(item => {
                                                 return (
                                                     <div className="col-auto">
                                                         <div id="i7" className="col-lg-4 col-md-4 col-sm-4 a" >
@@ -337,7 +312,7 @@ class Byme extends Component {
                                                 )
                                             }
                                             )}
-                                            {this.props.searchData.filter(item => (item.priority === 'medium') && (item.status === 'blocked')).map(item => {
+                                            {this.state.taskData.filter(item => (item.priority === 'medium') && (item.status === 'blocked')).map(item => {
                                                 return (
                                                     <div className="col-auto">
                                                         <div id="i7" className="col-lg-4 col-md-4 col-sm-4 a" >
@@ -349,7 +324,7 @@ class Byme extends Component {
                                                 )
                                             }
                                             )}
-                                            {this.props.searchData.filter(item => (item.priority === 'low') && (item.status === 'blocked')).map(item => {
+                                            {this.state.taskData.filter(item => (item.priority === 'low') && (item.status === 'blocked')).map(item => {
                                                 return (
                                                     <div className="col-auto">
 
@@ -369,13 +344,15 @@ class Byme extends Component {
 
                         </center>
                     </div>
+                    </div>
+                    </div>
+                    </div>
+                    </div>
+                    </div>
                 </div>
 
             )
-        } else {
-            return (<center><h3>No Records Found</h3></center>)
-        }
-
+       
     }
 }
 export default withRouter(Byme)

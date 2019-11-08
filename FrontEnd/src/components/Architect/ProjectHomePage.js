@@ -6,6 +6,7 @@ import './homepage.css';
 import { Architect, Employee, Lead } from './SideData';
 import { toast, ToastContainer } from 'react-toastify';
 import Footer from '../navBar/footer';
+import Example from './Example';
 
 
 export class ProjectHomePage extends Component {
@@ -14,61 +15,64 @@ export class ProjectHomePage extends Component {
 		this.state = {
 			email: JSON.parse(window.localStorage.getItem('beans')),
 			projectData: [],
-			role:JSON.parse(window.localStorage.getItem('role')),
-			architect:false,
-			lead:false,
-			emp:false,
-			projectTaskData:[]
+			role: JSON.parse(window.localStorage.getItem('role')),
+			architect: false,
+			lead: false,
+			emp: false,
+			projectTaskData: [],
+			count: [],
+
 		}
 	}
 	NotifyNoTaskAssigned = () => {
 		debugger
-        if (!toast.isActive(this.toastId)) {
-            this.toastId = toast.error(<center>No Project Exists</center>, {
-                position: "top-center", autoClose: 7000,
-            });
-        }
+		if (!toast.isActive(this.toastId)) {
+			this.toastId = toast.error(<center>No Project Exists</center>, {
+				position: "top-center", autoClose: 7000,
+			});
+		}
 	}
-	
+
 	NotifyServerOffline = () => {
-        if (!toast.isActive(this.toastId)) {
-            this.toastId = toast.error(<center>Server Not Responding</center>, {
-                position: "top-center", autoClose: 7000,
-            });
-        }
-    }
+		if (!toast.isActive(this.toastId)) {
+			this.toastId = toast.error(<center>Server Not Responding</center>, {
+				position: "top-center", autoClose: 7000,
+			});
+		}
+	}
 
 	componentDidMount() {
-	
 		Axios.get('http://localhost:8080/get-projects-by-email?email=' + this.state.email)
 			.then((response) => {
 				if (response.data.statusCode === 201) {
 					this.setState({
 						projectData: response.data.projectBeans,
-						projectTaskData: response.data.projectBean
+						projectTaskData: response.data.projectBean,
+						count: response.data.count,
+
 					})
 					console.log("===============", response.data.projectBeans)
-				}else if(response.data.statusCode === 401) {
+				} else if (response.data.statusCode === 401) {
 					this.NotifyNoTaskAssigned();
 				}
 			}).catch((error) => {
-				console.log("==========error",error)
+				console.log("==========error", error)
 				this.NotifyServerOffline();
 			})
 
-			if(this.state.role==="architect"){
-				this.setState({
-					architect:true
-				})
-			}else if(this.state.role==="lead"){
-				this.setState({
-					lead:true
-				})
-			}else{
-				this.setState({
-					emp:true
-				})
-			}
+		if (this.state.role === "architect") {
+			this.setState({
+				architect: true
+			})
+		} else if (this.state.role === "lead") {
+			this.setState({
+				lead: true
+			})
+		} else {
+			this.setState({
+				emp: true
+			})
+		}
 	}
 
 	page(group) {
@@ -78,20 +82,21 @@ export class ProjectHomePage extends Component {
 	}
 
 	render() {
+		var i = 0
 
 		return (
 			<div className="container-fluid">
-			{console.log("object",this.state.projectData.email)}
-			<ToastContainer />
+				{console.log("object", this.state.projectData.email)}
+				<ToastContainer />
 				<div className="row">
 					<div className="col-md-12">
 						<div className="row">
 							<div className="col-md-2 cssCard" >
 								<div class=" card-body  h-75">
 									<div className="input-group mb-3 option">
-										{this.state.architect?Architect():null}
-										{this.state.lead?Lead():null}
-										{this.state.emp?Employee():null}
+										{this.state.architect ? Architect() : null}
+										{this.state.lead ? Lead() : null}
+										{this.state.emp ? Employee() : null}
 									</div>
 								</div>
 							</div>
@@ -115,40 +120,9 @@ export class ProjectHomePage extends Component {
 												}
 
 											</div>
-										
-											<div style={{ marginLeft: "2%", marginTop: '5%' }}>
-												<table class="table table-hover">
-													<thead>
-														<tr>
-															<th scope="col">#</th>
-															<th scope="col">Project Name</th>
-															<th scope="col">People</th>
-															<th scope="col">Creation Date</th>
-															<th scope="col">Deadline</th>
-														</tr>
-													</thead>
-													<tbody>
-														{
-															this.state.projectData.map((projectData) => {
-																console.log('tabledate', projectData.id)
-																return (
-																	<tr className="ProjectTable" onClick={() => {
-																		{
-																			this.page(projectData)
-																		}
-																	}}>
-																		<th scope="row">{projectData.id}</th>
-																		<td >{projectData.projectName}</td>
-																		<td>{projectData.people}</td>
-																		<td>{projectData.createdDate}</td>
-																		<td>{projectData.deadline}</td>
-																	</tr>
-																)
-															})
-														}
-													</tbody>
-												</table>
-											</div>
+
+											<Example sendCount={this.state.count} sendData={this.state.projectData} />
+
 										</div>
 
 
@@ -158,8 +132,10 @@ export class ProjectHomePage extends Component {
 						</div>
 					</div>
 				</div>
-				<Footer/>
+				<Footer />
 			</div>
+
+
 
 
 		)

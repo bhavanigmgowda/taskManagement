@@ -26,29 +26,31 @@ import Projectmembers from './components/Architect/Projectmembers';
 import GetPeople from './components/People/GetPeople';
 import { userInfo } from 'os';
 import MyVerticallyCenteredModal from './components/Architect/SideData';
+import SearchPage from './components/navBar/SearchPage';
 
 
-let search=false
-let emailData=null
+let search = false
+let emailData = null
 export class App extends Component {
   constructor(props) {
-    let email=JSON.parse(window.localStorage.getItem('beans'))
+    let email = JSON.parse(window.localStorage.getItem('beans'))
 
     super(props);
     this.state = {
       search: false,
       isValid: false,
-      searchtask:null,
-      taskData:null,
-      email:JSON.parse(window.localStorage.getItem('beans')),
+      searchtask: null,
+      taskData: null,
+      email: JSON.parse(window.localStorage.getItem('beans')),
       architect: false,
-            lead: false,
-            emp: false,
-            role: JSON.parse(window.localStorage.getItem('role')),
+      lead: false,
+      emp: false,
+      role: JSON.parse(window.localStorage.getItem('role')),
+      userBean: []
 
 
     }
-      }
+  }
   getLoginData = (data) => {
     this.setState({
       email: data,
@@ -57,183 +59,116 @@ export class App extends Component {
     return (data)
   }
 
-  getEmail(){
-    let email=null
+  getEmail() {
+    let email = null
     if ((!this.state.email)) {
       email = JSON.parse(window.localStorage.getItem('beans'))
-      if (email!=null) {
-        emailData=email
-
+      if (email != null) {
+        emailData = email
         this.setState({
-          email : email
-        },()=>{
+          email: email
+        }, () => {
           console.log("object")
         })
-      }}
-  } 
+      }
+    }
+  }
   componentDidMount() {
     let email = ''
     let isValid;
     let page;
-    if(localStorage.getItem("isValid") === 'true'){
+    if (localStorage.getItem("isValid") === 'true') {
       isValid = true
-    }else{
+    } else {
       isValid = false
-    } 
+    }
     this.setState({
-      isValid : isValid
+      isValid: isValid
     })
 
     if (this.state.role === "architect") {
       this.setState({
-          architect: true
+        architect: true
       })
-  } else if (this.state.role === "lead") {
+    } else if (this.state.role === "lead") {
       this.setState({
-          lead: true
+        lead: true
       })
-  } else {
+    } else {
       this.setState({
-          emp: true
+        emp: true
       })
+    }
+
+    this.getEmail();
+
   }
 
-   this.getEmail();
-
-  }
-  clearSearch = () => {
-    this.setState({
-      search: false
-    })
-  }
-  
-  setVal=()=>{
+  setVal = () => {
     this.setState({
       isValid: localStorage.getItem("isValid") === 'true' ? true : false,
     })
     this.props.history.push('/')
   }
-byme=()=>{
-    
-      Axios.get('http://localhost:8080/get-assign-to-task?email=' + this.state.email
-      ).then((response) => {
-          if (response.data.message === "Success") {
-            this.setState({
-              taskData:response.data.taskBean
-            })
-              localStorage.setItem("pages", JSON.stringify("By Me"));
-            } 
-      }).catch((error) => {
-      })
-}
-   searchPage = (data) => {
-    if (JSON.parse(window.localStorage.getItem('isValid'))) {
-      if (localStorage.getItem("pages") === '"By Me"') {
-        Axios.get('http://localhost:8080/search-task-by-me?searchTerm=' + data + "&&email=" + this.state.email).then((response) => {
-              if (response.data.message === "success") {
 
-                  this.setState({
-                      searchtask: response.data.taskBean.filter(item => item.status != 'completed'),
-                      search: true
-                  },()=>{
-                    if((this.state.searchtask.length===0)){
-                      this.setState({
-                        searchtask: null,
-                    })
-                    }
-                  })              
-              }else{
-                this.setState({
-                  searchtask: null,
-                  search: true
-              })
-              }
-          }).catch((error) => {
-              console.log('Error', error);
-          })
-      }
-      else if(localStorage.getItem("pages") === '"By Me"') {
-        Axios.get('http://localhost:8080/search-task-to-me?searchTerm=' + data + "&&email=" + this.state.email).then((response) => {
-
-              if (response.data.message === "success") {
-                  this.setState({
-                    searchtask: response.data.taskBean.filter(item => item.status != 'completed'),
-                    search: true
-                  },()=>{
-                    if((this.state.searchtask.length===0)){
-                      this.setState({
-                        searchtask: null,
-                    })
-                    }
-                  })
-              } else{
-                this.setState({
-                  searchtask: null,
-                  search: true
-              })
-              }
-          }).catch((error) => {
-              console.log('Error', error);
-          })
-      }
-  } else {
-      this.props.history.push('/')
+ 
+  profile = (data) => {
+    console.log("object===========", data)
+    this.setState({
+      userBean: data
+    })
   }
-  
-  }
-  
 
-  
 
-render() {
-  const page =JSON.parse(window.localStorage.getItem('pages')) ;
-  let isValid=JSON.parse(window.localStorage.getItem('isValid')) ;
-  let role=JSON.parse(window.localStorage.getItem('role')) ;
-  return (
-    <div>
-      {isValid ? <SearchNavabar
-        setVal={this.setVal}
-        clearSearch={this.clearSearch}
-        sendToApp={this.searchPage}
-        byme={this.byme} /> : <div>  {(this.props.location.pathname != '/'&&
-        this.props.location.pathname!='/Login'
-        &&this.props.location.pathname!='/getEmail'
-        &&this.props.location.pathname!='/createUser'
-        &&this.props.location.pathname!='/confirmPassword'&&!isValid )? this.props.history.push('/'):null }    </div>
-}
-      {this.state.search ?
-        <Byme searchData={this.state.searchtask} searchPage={page} byme={this.byme} 
-        clearSearch={this.clearSearch}  />
-        : <div><Route exact path='/taskPage' render={() => { return <HomePage value={this.state.email}    clearSearch={this.clearSearch}byme={this.byme}   /> }} ></Route>
-          <Route exact path='/navBar' component={navBar}></Route>
-         {this.state.emp?<Redirect to='/homePage' /> :<Route exact path='/createProject' component={createProject}></Route>} 
-        {/*  {this.state.architect?<Route exact path='/createProject' component={createProject}></Route>:null} 
+
+
+  render() {
+    const page = JSON.parse(window.localStorage.getItem('pages'));
+    let isValid = JSON.parse(window.localStorage.getItem('isValid'));
+    let role = JSON.parse(window.localStorage.getItem('role'));
+    return (
+      <div>
+        {isValid ? <SearchNavabar
+          setVal={this.setVal}
+          sendToApp={this.searchPage}
+          byme={this.byme} /> : <div>  {(this.props.location.pathname != '/' &&
+            this.props.location.pathname != '/Login'
+            && this.props.location.pathname != '/getEmail'
+            && this.props.location.pathname != '/createUser'
+            && this.props.location.pathname != '/confirmPassword' && !isValid) ? this.props.history.push('/') : null}    </div>
+        }
+        {this.state.isValid ?
+          <div><Route exact path='/taskPage' render={() => { return <HomePage value={this.state.email}  byme={this.byme} /> }} ></Route>
+            <Route exact path='/navBar' component={navBar}></Route>
+            {this.state.emp ? <Redirect to='/homePage' /> : <Route exact path='/createProject' component={createProject}></Route>}
+            {/*  {this.state.architect?<Route exact path='/createProject' component={createProject}></Route>:null} 
          {this.state.lead?<Route exact path='/createProject' component={createProject}></Route>:null}  */}
+            <Route exact path='/getPeople' render={() => { return <GetPeople sendToProfile={this.profile} /> }}></Route>
+            <Route exact path='/searchPage' component={SearchPage}></Route>
+            <Route exact path='/userInfo' component={userInfo}></Route>
+            <Route exact path='/homePage' component={ProjectHomePage}></Route>
+            <Route exact path='/byme' render={() => {
+              return <Byme byme={this.byme} searchData={this.state.taskData} />
+            }}></Route>
 
-          <Route exact path='/getPeople' component={GetPeople}></Route>
-          <Route exact path='/userInfo' component={userInfo}></Route>
-                    <Route exact path='/homePage' component={ProjectHomePage}></Route>
-                  <Route exact path='/byme' render={() => { return <Byme byme={this.byme} searchData={this.state.taskData}  clearSearch={this.clearSearch}
-/> }}></Route>
+            <Route exact path='/members' component={Projectmembers}></Route>
 
-<Route exact path='/members' component={Projectmembers}></Route>
-
-          <Route exact path='/completedTask' component={completedTask}></Route>
-          <Route exact path='/myprofile' component={myprofile}></Route>
-           {(isValid && this.props.location.pathname === '/') ? <Redirect to='/homePage' /> : null}
-           <Route exact path='/createTask' component={createTask}></Route>
-        </div>
-      }
-      {isValid ? null :
-        <Route exact path='/' component={welcomePage}></Route>
-      }
-      <Route exact path='/confirmPassword' component={ConfirmPassword}></Route>
-      <Route exact path='/getEmail' component={forgotPasswordEmailCheck}></Route>
-      <Route exact path='/createUser' component={createUser}></Route>
-      <Route exact path='/Login' render={() => { return <Login clicked={this.getLoginData.bind(this)} /> }}></Route>
-    </div>
-  )
-} //End of render
+            <Route exact path='/completedTask' component={completedTask}></Route>
+            <Route exact path='/myprofile' profileData={this.state.userBean} component={myprofile}></Route>
+            {(isValid && this.props.location.pathname === '/') ? <Redirect to='/homePage' /> : null}
+            <Route exact path='/createTask' component={createTask}></Route>
+          </div>:null
+        }
+        {isValid ? null :
+          <Route exact path='/' component={welcomePage}></Route>
+        }
+        <Route exact path='/confirmPassword' component={ConfirmPassword}></Route>
+        <Route exact path='/getEmail' component={forgotPasswordEmailCheck}></Route>
+        <Route exact path='/createUser' component={createUser}></Route>
+        <Route exact path='/Login' render={() => { return <Login clicked={this.getLoginData.bind(this)} /> }}></Route>
+      </div>
+    )
+  } //End of render
 }
 
 export default withRouter(App); 

@@ -59,6 +59,13 @@ class completedTask extends Component {
             });
         }
     }
+    NotifyNotFound = () => {
+        if (!toast.isActive(this.toastId)) {
+            this.toastId = toast.error(<center>No Task Exists</center>, {
+                position: "top-center", autoClose: 7000,
+            });
+        }
+    }
 
     handleClick(e, id) {
         const itemIndex = this.state.items.findIndex(i => i.id === id);
@@ -104,11 +111,15 @@ class completedTask extends Component {
             'http://localhost:8080/completed-task-by-me?email=' + this.state.mail + '&from=' + dateFrom)
             .then((response) => {
                 console.log('Response Object', response.data);
+                this.setState({
+                    loading: false
+                })
+               
+
                 if (response.data.message === "Success") {
                     this.setState({
                         data: response.data.end,
                         datas: response.data.taskBean,
-                        loading: false
                     }, () => {
                         console.log("response.data.completedTask", response.data.end, response.data.taskBean)
                         uniqueArr = response.data.taskBean;
@@ -118,6 +129,8 @@ class completedTask extends Component {
                             this.state.data[i].isCollapsed = false;
                         }
                     })
+                }else{
+                    this.NotifyNotFound();
                 }
             }).catch((error) => {
                 console.log('Error', error);
@@ -144,6 +157,8 @@ class completedTask extends Component {
                         loading: false
                     })
                 } else if (response.data.statusCode === 401) {
+                    this.NotifyNotFound();
+
                 }
             }).catch((error) => {
                 console.log('Error', error);

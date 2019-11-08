@@ -15,6 +15,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import com.taskmanagement.dto.CommentBean;
 import com.taskmanagement.dto.CreateTaskBean;
 
 public interface TaskRepository extends JpaRepository<CreateTaskBean, Integer> {
@@ -24,7 +25,7 @@ public interface TaskRepository extends JpaRepository<CreateTaskBean, Integer> {
 	 * @param email: takes email value from request
 	 * @return list of TaskBean object
 	 */
-	@Query("Select t from CreateTaskBean t where t.userBean.email=:email")
+	@Query("Select t from CreateTaskBean t where t.userBean.email=:email ")
 	List<CreateTaskBean> getAssignTo(String email);
 
 	/**
@@ -32,7 +33,7 @@ public interface TaskRepository extends JpaRepository<CreateTaskBean, Integer> {
 	 * @param email: takes email value of user
 	 * @return list of CreateTaskBean object
 	 */
-	@Query("Select t from CreateTaskBean t where t.assignedTo=:email")
+	@Query("Select t from CreateTaskBean t where t.assignedTo=:email ")
 	List<CreateTaskBean> getAssignedTask(String email);
 
 	/**
@@ -130,8 +131,8 @@ public interface TaskRepository extends JpaRepository<CreateTaskBean, Integer> {
 	 * @param email:      take email value
 	 * @return list of CreateTaskBean object
 	 */
-	@Query(value = "select t from CreateTaskBean t where t.userBean.email=:email and ( t.description LIKE %:searchTerm% ) ")
-	List<CreateTaskBean> findByMe(@Param("searchTerm") String searchTerm, @Param("email") String email);
+	@Query(value = "select t from CreateTaskBean t where ( t.description LIKE %:searchTerm% ) ")
+	List<CreateTaskBean> findByMe(@Param("searchTerm") String searchTerm);
 
 	/**
 	 * @role abstract method for finding assigned task by user based on search
@@ -179,5 +180,10 @@ public interface TaskRepository extends JpaRepository<CreateTaskBean, Integer> {
 	@Query("select  t " + " from CreateTaskBean t where "
 			+ " t.status='completed' and t.projectBean.projectPkBean.projectId=:projectId and t.completed between concat(:from ,'%') and concat(:to ,'%') ")
 	TreeSet<CreateTaskBean> fromTo(int projectId, String from, String to);
+	
+	/*
+	 * @Query(value = "select c from  ComnentBean c where c.") List<CommentBean>
+	 * getAllComment(int projectId);
+	 */
 	
 }// end of interface

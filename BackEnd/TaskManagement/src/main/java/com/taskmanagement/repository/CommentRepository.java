@@ -11,5 +11,6 @@ public interface CommentRepository extends JpaRepository<CommentBean, Integer> {
 
 	@Query("select c from CommentBean c where  c.taskBean.taskId=:tId")
 	List<CommentBean> getCommentBasedOnTaskId(int tId);
+	
 
 }

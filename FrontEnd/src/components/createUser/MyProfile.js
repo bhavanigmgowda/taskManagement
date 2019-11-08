@@ -2,12 +2,11 @@
 import React, { Component } from 'react'
 import { Modal, Button, Card } from 'react-bootstrap'
 import Axios from 'axios';
-import ListGroup from 'react-bootstrap/ListGroup'
-import InputGroup from 'react-bootstrap/InputGroup';
-import FormControl from 'react-bootstrap/FormControl'
 import Footer from '../navBar/footer'
+import {  Link } from 'react-router-dom';
 
 import './myprofile.css'
+import { Architectproject, Leadproject, Employeeproject, Architect, Lead, Employee } from '../Architect/SideData';
 
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -29,7 +28,11 @@ export default class MyProfile1 extends Component {
             employeeName: '',
             employeeNameUpper: '',
             designation: '',
-            loading: false
+            loading: false,
+            architect: false,
+            lead: false,
+            emp: false,
+            role: JSON.parse(window.localStorage.getItem('role')),
         }
         this.getProfile = this.getProfile.bind(this);
         console.log('bean inside constructor: ', this.state.email);
@@ -61,6 +64,19 @@ export default class MyProfile1 extends Component {
 
     componentDidMount() {
         this.getProfile();
+        if (this.state.role === "architect") {
+            this.setState({
+                architect: true
+            })
+        } else if (this.state.role === "lead") {
+            this.setState({
+                lead: true
+            })
+        } else {
+            this.setState({
+                emp: true
+            })
+        }
     }
 
 
@@ -145,8 +161,27 @@ export default class MyProfile1 extends Component {
 
         return (
             <div id="profile-container">
-             
+             <div className="container-fluid">
+            <div className="row">
+                <div className="col-md-12">
+                    <div className="row">
+                        <div className="col-md-2 cssCard" >
+                            <div class=" card-body  h-75">
+                                <div className="input-group mb-3 option">
+                                {this.state.architect ?<div>{localStorage.getItem("groupId")?<Architectproject/> :<Architect/>} </div> : null}
+                                            {this.state.lead ?<div>{localStorage.getItem("groupId")? <Leadproject /> :<Lead/>} </div> : null}
+                                            {this.state.emp ?<div>{localStorage.getItem("groupId")? <Employeeproject /> :<Employee/>} </div> : null}                                             
+                                       
+                                </div>
+                            </div>
+                        </div>                                        
+           <br/><br/>
+                      
+           <div className="col-md-10 " >
                 <div id="content-wrap" class="container-fluid ">
+                {localStorage.getItem('groupId')?<div className="projectName" style={{    margin: "2%"}}><Link style={{color:'black'}} onClick={()=>{this.props.history.push('/homePage')}} className="dark">Project</Link>&nbsp;/&nbsp;
+                                                            <Link style={{color:'black'}} to='/taskPage'>{localStorage.getItem("projectName")}</Link></div>:null} 
+                                                         
                     <div style={{ textAlign: 'center' }}>
 
                         <div style={cardStyle}>
@@ -219,6 +254,11 @@ export default class MyProfile1 extends Component {
                         </Modal.Footer>
                     </Modal>
 
+                </div>
+                </div>
+                </div>
+                </div>
+                </div>
                 </div>
                 <Footer />
             </div>

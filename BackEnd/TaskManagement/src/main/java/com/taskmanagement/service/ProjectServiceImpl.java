@@ -5,7 +5,6 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.TreeSet;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -33,6 +32,7 @@ public class ProjectServiceImpl implements ProjectService {
 
 		if (bean != null) {
 			if (!isExcecuted) {
+				repository.alterProjectId();
 				isExcecuted = true;
 			}
 			if (count > 0) {
@@ -157,8 +157,14 @@ public class ProjectServiceImpl implements ProjectService {
 	public Response getProjectsByEmail(String email) {
 		Response response = new Response();
 		try {
-			List<ProjectBean> beans=repository.getAllProjectsByEmaill(email);
-			if (!beans.isEmpty()) {
+			List<ProjectBean> beans = repository.getAllProjectsByEmaill(email);
+			if (!beans.isEmpty() && repository.getProjectsByEmail(email) >= 1) {
+
+				List<Integer> couList = new ArrayList<Integer>();
+				for (ProjectBean bean2 : beans) {
+					couList.add(repository.getCount(bean2.getProjectPkBean().getProjectId()));
+				}
+				response.setCount(couList);
 				response.setStatusCode(201);
 				response.setMessage("Success");
 				response.setDescription("projects found successfully");
@@ -249,29 +255,29 @@ public class ProjectServiceImpl implements ProjectService {
 
 		return response;
 	}
-	
+
 	@Override
 	public Response getUserInProject(String email) {
-		Response response=new Response();
-		List<Integer> projectId=repository.getUserForSearchForProject(email);
-		System.out.println("======="+projectId);
-		Set<UserBean> beans =new HashSet();
-		if(!projectId.isEmpty()) {
-			for(Integer i : projectId) {
+		Response response = new Response();
+		List<Integer> projectId = repository.getUserForSearchForProject(email);
+		System.out.println("=======" + projectId);
+		Set<UserBean> beans = new HashSet();
+		if (!projectId.isEmpty()) {
+			for (Integer i : projectId) {
 				beans.addAll(repository.getAllUser(i));
 			}
 			response.setUserBeans(beans);
 			response.setStatusCode(201);
 			response.setMessage("Success");
 			response.setDescription("members found  successfully");
-		}else {
+		} else {
 			response.setStatusCode(401);
 			response.setMessage("Failure");
 			response.setDescription("no members found  successfully ");
 		}
-		
+
 		return response;
-		
+
 	}
 
 }

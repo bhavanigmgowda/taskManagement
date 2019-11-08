@@ -13,6 +13,7 @@ import lombok.Data;
 public class Response {
 
 	private int statusCode;
+	private List<Integer> count;
 
 	private String message;
 
@@ -49,6 +50,22 @@ public class Response {
 
 	public Set<UserBean> getUserBeans() {
 		return userBeans;
+	}
+
+
+
+
+
+	public List<Integer> getCount() {
+		return count;
+	}
+
+
+
+
+
+	public void setCount(List<Integer> count) {
+		this.count = count;
 	}
 
 

@@ -57,7 +57,6 @@ export class createProject extends Component {
     }
     hideOnReset = () => {
         this.hidegroupName();
-        this.hideEmail();
         this.hideDate();
         this.hideDescription();
         this.setState({ showEmailInvalid: false });
@@ -86,15 +85,21 @@ export class createProject extends Component {
     hideInvalidDate = () => {
         this.setState({ showDateInvalid: false })
     }
-
+onSubmit(e,email){
+    e.preventDefault()
+    
+    if (email != null) {
+        this.setState({
+            addTo: email
+        },()=>{
+            this.getProfile(e,true)
+        })
+    }
+}
     getProfile(e, email) {
         e.preventDefault()
         console.log("==================kkkkkkkkkkkk",email)
-        if (email != null) {
-            this.setState({
-                addTo: email
-            })
-        }
+       
         console.log('inside get profile')
         if (JSON.parse(window.localStorage.getItem('isValid'))) {
             Axios.get('http://localhost:8080/get-profile?email=' + this.state.addTo).then((response) => {
@@ -112,8 +117,10 @@ export class createProject extends Component {
                         i: this.state.i + 1
                     })
                     console.log("object", this.state.projectPkBean)
+                    
+
                 }
-                this.create(e);
+                this.create(e,email);
             }).catch((error) => {
                 console.log('Error', error);
             })
@@ -140,7 +147,7 @@ export class createProject extends Component {
         }// end of if
     }
 
-    create(e) {
+    create(e,email) {
         console.log("description ===", this.state.description);
         this.setState({ loading: true })
         e.preventDefault();
@@ -156,6 +163,11 @@ export class createProject extends Component {
         }).then((response) => {
             this.setState({ loading: false })
             if (response.data.statusCode === 201) {
+                console.log("====================kkkk",email)
+                if(email){
+                    debugger
+                    this.props.history.push('/homePage')       
+                   }
                 console.log("object", response.data.projectBeans[0].projectPkBean.projectId)
                 this.setState({
                     show: true,
@@ -168,8 +180,10 @@ export class createProject extends Component {
                         ...prevState.projectPkBean,           // copy all other key-value pairs of food object
                         projectId: response.data.projectBeans[0].projectPkBean.projectId
                     }
+                    
 
                 }))
+               
                 console.log("==================", this.state.projectPkBean)
             } else if (response.data.statusCode === 401) {
                 this.NotifyEmailDoesntExists();
@@ -201,8 +215,6 @@ export class createProject extends Component {
 
         $(document).ready(function () {
             $('#submit').click(function (e) {
-
-
                 var groupName = (document.getElementById("groupName").value).trim();
                 var description = (document.getElementById('description').value).trim();
                 var endDate = (document.getElementById("EndDate").value);
@@ -222,7 +234,7 @@ export class createProject extends Component {
                     that.setState({ showgroupName: true })
                 }
 
-                if (groupName === "" && description === "" && AssignTo === "" && endDate === "") {
+                if (groupName === "" && description === "" && endDate === "") {
                     console.log("here")
                     that.NotifyFieldMandatory();
                 }
@@ -230,7 +242,7 @@ export class createProject extends Component {
                     that.setState({ showDateInvalid: true })
 
                 }
-                if (groupName !== "" && description !== "" && AssignTo !== "" && endDate !== "" && (selectedDate >= now) && that.handleEmail() == true) {
+                if (groupName !== "" && description !== "" &&  endDate !== "" && (selectedDate >= now) && that.handleEmail() == true) {
                     return true;
                 } else {
                     return false;
@@ -250,6 +262,8 @@ export class createProject extends Component {
                 that.setState({ showEmailInvalid: true })
                 return false;
             }
+        }else{
+           return true
         }
         that.setState({ showEmailInvalid: false })
         return true;
@@ -348,7 +362,7 @@ export class createProject extends Component {
                                         <ToastContainer />
                                     </div>
                                     <div className="card-body">
-                                        <form >
+                                        <form onSubmit={(e)=>{ this.onSubmit(e, JSON.parse(window.localStorage.getItem('beans'))) }}>
                                             <div className="input-group mb-3">
                                                 <div className="input-group-prepend">
                                                     <label className="input-group-text"><i className="fas fa-hashtag" /></label>
@@ -402,7 +416,7 @@ export class createProject extends Component {
                                             {this.state.show ? this.addfeild(this.state.user, this.state.i) : null}
                                             <div className="input-group container-fluid">
                                                 <button type="reset" id="reset" onClick={this.hideOnReset} title="reset" className="form-control-plaintext btn btn-outline-primary btn-sm">Reset</button>
-                                                <button type="submit" id="submit" title="submit" onClick={(e) => { this.getProfile(e, JSON.parse(window.localStorage.getItem('beans'))) }} className="form-control-plaintext btn btn-outline-success btn-sm">Submit</button>
+                                              <button type="submit" id="submit"  title="submit"  className="form-control-plaintext btn btn-outline-success btn-sm">Submit</button>
                                                 <button type="cancel" id="cancel" title="cancel" className="form-control-plaintext btn btn-outline-info btn-sm"  >Cancel</button>
                                             </div>
                                         </form>

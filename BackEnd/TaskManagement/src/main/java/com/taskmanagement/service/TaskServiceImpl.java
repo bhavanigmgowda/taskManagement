@@ -53,7 +53,7 @@ public class TaskServiceImpl implements TaskService {
 	@Override
 	public Response createTask(String email, CreateTaskBean task) {
 		Response response = new Response();
-		try {
+		
 			if (userRepository.existsById(task.getUserBean().getEmployeeId()) && userRepository.existsByEmail(email)) {
 
 				taskRepository.save(task);
@@ -65,11 +65,6 @@ public class TaskServiceImpl implements TaskService {
 				response.setMessage("Failure");
 				response.setDescription("user id does not exist ");
 			}
-		} catch (Exception e) {
-			response.setDescription("Exception occured :-" + e.getMessage());
-			response.setMessage("Exception");
-			response.setStatusCode(501);
-		}
 		return response;
 	}
 
@@ -152,11 +147,12 @@ public class TaskServiceImpl implements TaskService {
 	public Response getAssignedTask(String email) {
 		Response response = new Response();
 		try {
-			if (userRepository.existsByEmail(email)) {
+			List<CreateTaskBean> beans=taskRepository.getAssignedTask(email);
+			if (!beans.isEmpty()) {
 				response.setStatusCode(201);
 				response.setMessage("Success");
 				response.setDescription("All Task Assigned Found Successfully");
-				response.setTaskBean(taskRepository.getAssignedTask(email));
+				response.setTaskBean(beans);
 			} else {
 				response.setStatusCode(401);
 				response.setMessage("Failure");
@@ -183,14 +179,13 @@ public class TaskServiceImpl implements TaskService {
 	public Response getCompletedTaskByMe(String email, String from) {
 		Response response = new Response();
 		try {
-			if (userRepository.existsByEmail(email)) {
+			List<String> endList = taskRepository.findEndDateByMe(email, from);
+
+			if (!endList.isEmpty()) {
 				response.setStatusCode(201);
 				response.setMessage("Success");
 				response.setDescription("All Task data Assigned Found Successfully");
 				TreeSet<CreateTaskBean> set = new TreeSet<>();
-				List<String> endList = taskRepository.findEndDateByMe(email, from);
-				ArrayList<CreateTaskBean> arrayList = new ArrayList<>();
-
 				for (String i : endList) {
 					set.addAll(taskRepository.findCompletedTaskBySetByMe(email, i));
 				}
@@ -290,7 +285,7 @@ public class TaskServiceImpl implements TaskService {
 				response.setStatusCode(201);
 				response.setMessage("success");
 				response.setDescription("Task to me found successfully");
-				response.setTaskBean(taskRepository.findByMe(data, email));
+				response.setTaskBean(taskRepository.findByMe(data));
 			} else {
 				response.setStatusCode(401);
 				response.setMessage("Failure");

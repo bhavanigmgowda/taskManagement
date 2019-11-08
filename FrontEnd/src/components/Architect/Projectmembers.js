@@ -34,8 +34,6 @@ class Projectmembers extends React.Component {
         }
     }
 
-
-
     getMembers() {
 
         if (JSON.parse(window.localStorage.getItem('isValid'))) {
@@ -126,7 +124,10 @@ class Projectmembers extends React.Component {
                                 </div>
                             </div>
                             <div className="col-md-10" >
-
+                          <div className="projectName"  style={{    margin: "2%"}} ><Link style={{color:'black'}} onClick={()=>{this.props.history.push('/homePage')}} className="dark">Project</Link>&nbsp;/&nbsp;
+                                                            <Link style={{color:'black'}} to='/taskPage'>{localStorage.getItem("projectName")}</Link></div>
+                            
+                            
                 <Table striped  hover>
                     <thead>
                         <tr className="head" >
@@ -197,7 +198,7 @@ class Projectmembers extends React.Component {
                 </div>
                 </div>
                 </div>
-                <Footer />
+             
             </div>
         )
     }

@@ -9,7 +9,6 @@ export default class SearchPeople extends Component {
             this.state={
                 searchInput:null
             }
-
         }
 
  

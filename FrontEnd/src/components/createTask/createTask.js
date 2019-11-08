@@ -113,8 +113,12 @@ export class CreateTask extends Component {
 
     create(e) {
         debugger
+        this.getProfile()
         this.setState({ loading: true })
         e.preventDefault();
+        if(localStorage.getItem("groupId")!=null){
+            this.getProject();
+        }
         this.setState({
             email: this.state.userBeans,
         }, () => {
@@ -135,9 +139,15 @@ export class CreateTask extends Component {
             console.log(response.data.message)
             if (response.data.statusCode === 201) {
                 this.NotifyTaskCreationSuccess();
+                if(localStorage.getItem("groupId")!=null){
                 setTimeout(() => {
                     this.props.history.push('/taskPage');
                 }, 3000)
+            }else{
+                setTimeout(() => {
+                    this.props.history.push('/byme');
+                }, 3000)
+            }
             } else if (response.data.statusCode === 401) {
                 this.NotifyEmailDoesntExists();
             }
@@ -182,8 +192,6 @@ export class CreateTask extends Component {
 
 
     componentDidMount() {
-        this.getProfile();
-        this.getProject();
         var that = this;
         if (this.state.role === "architect") {
             this.setState({
@@ -198,7 +206,10 @@ export class CreateTask extends Component {
                 emp: true
             })
         }
-
+        if(localStorage.getItem('groupId')!=null){
+            this.getProject()
+        }
+        this.getProfile()
         $(document).ready(function () {
             $('#submit').click(function (e) {
 
@@ -372,7 +383,7 @@ export class CreateTask extends Component {
                                                 }}>
                                                     <option selected disabled hidden>Choose Priority</option>
                                                     <option value="low">Low</option>
-                                                    <option value="intermediate">Medium</option>
+                                                    <option value="medium">Medium</option>
                                                     <option value="high">High</option>
                                                     <option value="critical">Critical</option>
                                                 </select>
