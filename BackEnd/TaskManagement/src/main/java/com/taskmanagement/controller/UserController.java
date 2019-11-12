@@ -115,6 +115,11 @@ public class UserController {
 	public Response getEmailsWhileSearch(String email) {
 		return service.getEmailsWhilesearch(email);
 	}
+
+        @GetMapping("/get-emails-while-createtask")
+	public Response getEmailsWhileCreatingTask(String email,int projectId) {
+		return service.getEmailsWhileCreatingTask(email,projectId);
+	}
 	
 	@GetMapping(value = "/get-User", produces = MediaType.APPLICATION_JSON_VALUE)
 	public Response getMember(String name) {

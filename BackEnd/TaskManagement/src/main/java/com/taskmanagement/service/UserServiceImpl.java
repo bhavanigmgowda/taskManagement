@@ -318,5 +318,19 @@ public class UserServiceImpl implements UserService {
 		return response;
 	}
 
+         @Override
+	public Response getEmailsWhileCreatingTask(String email,int projectId) {
+		Response response = new Response();
+		List<String> emailList = userRepository.getEmailsWhileCreatingTask(email, projectId);
+		if (!emailList.isEmpty()) {
+			response.setEmailList(emailList);
+			response.setStatusCode(201);
+		} else {
+			response.setStatusCode(401);
+		}
+
+		return response;
+	}
+
 
 }// End of class

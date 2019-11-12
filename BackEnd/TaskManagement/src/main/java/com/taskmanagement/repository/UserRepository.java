@@ -37,6 +37,10 @@ public interface UserRepository extends JpaRepository<UserBean, Integer> {
 
 	@Query(value = "select email from user where email like :email% and length(email)>=3",nativeQuery = true)
 	List<String> getEmailsWhileSearch(String email);
+
+
+	@Query(value = "select email from user where email like :email% and emp_id in(select emp_id from project where project_Id=:projectId)",nativeQuery = true)
+	List<String> getEmailsWhileCreatingTask(String email, int projectId);
 	
 
 

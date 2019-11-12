@@ -73,6 +73,8 @@ public interface UserService {
 
 	public Response getMemeber(String name);
 
+        public Response getEmailsWhileCreatingTask(String email,int projectId);
+
         public Response getEmailsWhilesearch(String email);
 
 }// end of interface
