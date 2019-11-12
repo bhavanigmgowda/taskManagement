@@ -303,4 +303,20 @@ public class UserServiceImpl implements UserService {
 
 	}
 
+
+        @Override
+	public Response getEmailsWhilesearch(String email) {
+		Response response = new Response();
+		List<String> emailList = userRepository.getEmailsWhileSearch(email);
+		if (!emailList.isEmpty()) {
+			response.setEmailList(emailList);
+			response.setStatusCode(201);
+		} else {
+			response.setStatusCode(401);
+		}
+
+		return response;
+	}
+
+
 }// End of class

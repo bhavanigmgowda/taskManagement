@@ -37,6 +37,8 @@ public class Response {
 	private List<String> EndDate;
  
 	private UserBean bean;
+
+        private List<String> emailList;
 	
 	
 	

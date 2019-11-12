@@ -35,4 +35,9 @@ public interface UserRepository extends JpaRepository<UserBean, Integer> {
 	@Query(value = "select u from UserBean u where u.employeeName LIKE :name%")
 	List<UserBean> getUser(String name);
 
+	@Query(value = "select email from user where email like :email% and length(email)>=3",nativeQuery = true)
+	List<String> getEmailsWhileSearch(String email);
+	
+
+
 }// end of interface

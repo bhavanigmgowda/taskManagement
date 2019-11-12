@@ -110,6 +110,11 @@ public class UserController {
 	public Response getAllMember() {
 		return service.getAllMemebers();
 	}
+
+        @GetMapping("/get-emails-while-search")
+	public Response getEmailsWhileSearch(String email) {
+		return service.getEmailsWhilesearch(email);
+	}
 	
 	@GetMapping(value = "/get-User", produces = MediaType.APPLICATION_JSON_VALUE)
 	public Response getMember(String name) {
