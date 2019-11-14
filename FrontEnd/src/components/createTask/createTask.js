@@ -8,10 +8,11 @@ import Footer from '../navBar/footer'
 import NavBarForTask from '../navBar/NavBarForTask'
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { Architectproject, Leadproject, Employeeproject, Architect, Lead, Employee } from '../Architect/SideData';
+import { Architectproject, Leadproject, Employeeproject, Architect, Lead, Employee, SideNavBar } from '../Architect/SideData';
 import { Link } from 'react-router-dom';
 
 import { PropagateLoader } from 'react-spinners';
+import { Dropdown, ThemeProvider } from 'react-bootstrap';
 
 
 export class CreateTask extends Component {
@@ -40,11 +41,12 @@ export class CreateTask extends Component {
             loading: false,
             userBean: '',
             projectBean: null,
-            architect: false,
-            lead: false,
-            emp: false,
-            role: JSON.parse(window.localStorage.getItem('role')),
-            emailLists: []
+            isProject: false,
+            emailLists: [],
+            projectBean: false,
+            project: [],
+            nullValue: true,
+            projectId: ''
 
         }
     }
@@ -84,8 +86,6 @@ export class CreateTask extends Component {
                     }, () => {
                         console.log("==========sfgfds========", this.state.userBean)
                     })
-
-
                 }
             }).catch((error) => {
                 console.log('Error', error);
@@ -93,25 +93,7 @@ export class CreateTask extends Component {
         }// end of if
     } //End of getProfile
 
-    getProject() {
-        if (localStorage.getItem('groupId') != null) {
-            Axios.get('http://localhost:8080/get-task-project?projectId=' + localStorage.getItem('groupId') + '&email=' + this.state.userBeans)
-                .then((response) => {
-                    if (response.data.statusCode === 201) {
-                        this.setState({
-                            projectBean: response.data.projectBeans[0]
-                        }, () => {
-                            console.log("===============", response.data.projectBeans)
-
-                        })
-                    }
-                }).catch((error) => {
-                    console.log(error)
-                })
-        }
-    }
-
-
+   
     create(e) {
         debugger
         this.setState({ loading: true })
@@ -137,7 +119,7 @@ export class CreateTask extends Component {
             if (response.data.statusCode === 201) {
                 this.NotifyTaskCreationSuccess();
                 setTimeout(() => {
-                    this.props.history.push('/taskPage');
+                    this.props.history.push('/byme');
                 }, 3000)
             } else if (response.data.statusCode === 401) {
                 this.NotifyEmailDoesntExists();
@@ -180,30 +162,12 @@ export class CreateTask extends Component {
         this.setState({ showDateInvalid: false })
     }
 
-
-
     componentDidMount() {
         this.getProfile();
-        this.getProject();
+        this.getProjects();
         var that = this;
-        if (this.state.role === "architect") {
-            this.setState({
-                architect: true
-            })
-        } else if (this.state.role === "lead") {
-            this.setState({
-                lead: true
-            })
-        } else {
-            this.setState({
-                emp: true
-            })
-        }
-
         $(document).ready(function () {
             $('#submit').click(function (e) {
-
-
                 var subject = (document.getElementById("subject").value).trim();
                 var description = (document.getElementById('description').value).trim();
                 var endDate = (document.getElementById("EndDate").value);
@@ -261,7 +225,6 @@ export class CreateTask extends Component {
         that.setState({ showEmailInvalid: false })
         return true;
     }
-
     NotifyFieldMandatory = () => {
         if (!toast.isActive(this.toastId)) {
             this.toastId = toast.info(<center>All Fields Are Mandatory</center>, {
@@ -269,7 +232,6 @@ export class CreateTask extends Component {
             });
         }
     }
-
     NotifyServerOffline = () => {
         if (!toast.isActive(this.toastId)) {
             this.toastId = toast.error(<center>Registration Failed Server Did Not Respond</center>, {
@@ -277,7 +239,6 @@ export class CreateTask extends Component {
             });
         }
     }
-
     NotifyEmailDoesntExists = () => {
         if (!toast.isActive(this.toastId)) {
             this.toastId = toast.warning(<center>Registration Failed Email Does Not Exist</center>, {
@@ -285,7 +246,6 @@ export class CreateTask extends Component {
             });
         }
     }
-
     NotifyTaskCreationSuccess = () => {
         if (!toast.isActive(this.toastId)) {
             this.toastId = toast.success(<center>Task Created Successfully</center>, {
@@ -293,38 +253,46 @@ export class CreateTask extends Component {
             });
         }
     }
-
     method(data) {
-console.log("data",data)
+        console.log("data", data)
         this.setState({
             assignedTo: data
         })
-
-        if (data.length > 3) {
-            Axios.get('http://localhost:8080/get-emails-while-createtask/?email=' + data+'&projectId='+JSON.parse(localStorage.getItem('groupId'))).then((response) => {
+      if(data!=''){
+            Axios.get(this.state.isProject?'http://localhost:8080/get-emails-while-createtask/?email=' + data + '&projectId=' + this.state.projectBean.projectPkBean.projectId :'http://localhost:8080/get-emails-while-search/?email=' + data) .then((response) => {
                 if (response.data.statusCode === 201) {
                     this.setState({
-                        emailLists :response.data.emailList
+                        emailLists: response.data.emailList
                     })
-                    
                 } else {
                     console.log("not a valid email")
                 }
             }).catch((error) => {
                 console.log(error)
             })
+      }
+    }
+    getProjects() {
+        Axios.get('http://localhost:8080/get-projects-by-email?email=' + this.state.userBeans)
+            .then((response) => {
+                if (response.data.statusCode === 201) {
+                    this.setState({
+                        project: response.data.projectBeans,
 
-        } else {
-
-            this.setState({
-                emailLists: []
+                    })
+                    console.log("===============", response.data.projectBeans)
+                } else if (response.data.statusCode === 401) {
+                    this.NotifyNoTaskAssigned();
+                }
+            }).catch((error) => {
+                console.log("==========error", error)
+                this.NotifyServerOffline();
             })
-        }
-
-
 
     }
-
+    callBean(data) {
+        console.log("project bean", data)
+    }
 
     render() {
         return (
@@ -332,16 +300,7 @@ console.log("data",data)
                 <div className="row">
                     <div className="col-md-12">
                         <div className="row">
-                            <div className="col-md-2 cssCard" >
-                                <div class=" card-body  h-75">
-                                    <div className="input-group mb-3 option">
-                                        {this.state.architect ? <div>{localStorage.getItem("groupId") ? <Architectproject /> : <Architect />} </div> : null}
-                                        {this.state.lead ? <div>{localStorage.getItem("groupId") ? <Leadproject /> : <Lead />} </div> : null}
-                                        {this.state.emp ? <div>{localStorage.getItem("groupId") ? <Employeeproject /> : <Employee />} </div> : null}
-
-                                    </div>
-                                </div>
-                            </div>
+                            {localStorage.getItem("groupId") ? <Architectproject /> : <SideNavBar />}
                             <br /><br />
                             {localStorage.getItem('groupId') ? <div className="projectName" style={{ margin: "2%" }}><Link style={{ color: 'black' }} onClick={() => { this.props.history.push('/homePage') }} className="dark">Project</Link>&nbsp;/&nbsp;
                                                             <Link style={{ color: 'black' }} to='/taskPage'>{localStorage.getItem("projectName")}</Link></div> : null}
@@ -362,7 +321,6 @@ console.log("data",data)
                                     </div>
 
                                     <div className="card-body">
-
                                         <form onSubmit={this.create.bind(this)}>
                                             <div className="input-group mb-3">
                                                 <div className="input-group-prepend">
@@ -382,24 +340,36 @@ console.log("data",data)
                                                     }); this.textarea()
                                                 }} />
                                             </div>
+
                                             {this.state.showChar ? <div id="errordiv" className="container-fluid text-right font-weight-normal"><span id="info"></span> </div> : null}
                                             {this.state.showDescription ? <div id="errordiv" className="container-fluid">Please set Description**</div> : null}
+                                            <div className="input-group mb-3">
+                                                <ThemeProvider prefixes={{ btn: 'my-btn' }}>
+
+
+                                                    <Dropdown style={{ width: "310px" }}>
+                                                        <Dropdown.Toggle value={this.state.projectBean} placeholder="Select project" id="Priority" className="form-control" required name="Priority" title="Select Priority">
+                                                            {this.state.projectBean ? this.state.projectBean.projectName : this.state.nullValue? "Select Project":"Not For Project"}
+                                                        </Dropdown.Toggle>
+                                                        <Dropdown.Menu style={{ width: "310px" }}>
+                                                            {this.state.project.map(item => {
+                                                                return (
+                                                                    <Dropdown.Item onClick={() => { this.setState({ projectBean: item,isProject:true }) }}>{item.projectName}</Dropdown.Item>
+                                                                )
+                                                            })}
+                                                            <Dropdown.Item onClick={() => { this.setState({ projectBean: null ,nullValue:false,isProject:false}) }}>Not For Project</Dropdown.Item>
+                                                        </Dropdown.Menu>
+                                                    </Dropdown>  </ThemeProvider>{' '}
+                                            </div>
                                             <div className="input-group mb-3">
                                                 <div className="input-group-prepend">
                                                     <label className="input-group-text"><i className="fas fa-at" /></label>
                                                 </div>
-                                                <input autoComplete="off" className="form-control" onKeyPress={this.hideEmail} type="email" name="AssignTo" id="AssignTo" title="Enter Email" placeholder="Enter email whom task to be assigned" onChange={(event) => {
+                                                <input autoComplete="off" className="form-control" onKeyPress={this.hideEmail} type="email" value={this.state.assignedTo} name="AssignTo" id="AssignTo" title="Enter Email" placeholder="Enter email task to be assigned" onChange={(event) => {
                                                     this.method(event.target.value)
-                                                    // this.setState({
-                                                    //     assignedTo: event.target.value
-                                                    // })
-
-
                                                 }} />
                                             </div>
-
-                                            {this.state.emailLists.length > 0 ? this.state.emailLists.map((item) => { return <div style={{marginTop:'-5%'}}>{item}</div> }) : null}
-
+                                            {this.state.emailLists.length > 0 ? this.state.emailLists.map((item) => { return <div onClick={()=>this.setState({assignedTo:item})} style={{ marginTop: '-5%',cursor:'pointer' }}>{item}</div> }) : null}
                                             {this.state.showEmailInvalid ? <div id="errordiv" className="container-fluid">Please enter a valid email address</div> : null}
                                             {this.state.showAssignTo ? <div id="errordiv" className="container-fluid">Please set Email**</div> : null}
                                             <div className="input-group mb-3">
@@ -415,6 +385,7 @@ console.log("data",data)
                                                     <option value="critical">Critical</option>
                                                 </select>
                                             </div>
+                                            {console.log("===========projectName============", this.state.projectBean)}
                                             {this.state.showPriority ? <div id="errordiv" className="container-fluid">Please set priority**</div> : null}
                                             <div className="input-group mb-3">
                                                 <div className="input-group-prepend">
@@ -450,3 +421,4 @@ console.log("data",data)
 }
 
 export default CreateTask
+
