@@ -9,7 +9,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { PropagateLoader } from 'react-spinners';
 import Axios from 'axios';
 import { stickyLow, stickyMedium, stickyCri, stickyHigh } from './Sticky';
-import { Architect, Lead, Employee } from '../Architect/SideData';
+import {  SideNavBar } from '../Architect/SideData';
 import TaskInfo from './TaskInfo';
 class Byme extends Component {
     constructor(props) {
@@ -224,19 +224,13 @@ class Byme extends Component {
                             Number of days : {moment(this.state.popup.endDate).diff(moment(this.state.popup.assignDate), 'days')}
                         </Modal.Footer>
                     </Modal>
-                    <div className="row">
+                  
                             <div className="col-md-12">
-                                <div className="row">
-                                    <div className="col-md-2 cssCard " >
-                                        <div class=" card-body  h-75">
-                                            <div className="input-group mb-3 option">
-                                            {this.state.architect ? <Architect /> : null}
-                                            {this.state.lead ? <Lead /> : null}
-                                            {this.state.emp ? <Employee /> : null}
-                                        </div>
-                                        </div>
-                                    </div>
-                                    <div className="col-md-8">
+                               
+                            <div className="row">     
+                                       <SideNavBar/>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
+                                    <div className="col-md-8">  
                                         <div id="card" >
                                             <div class=" card-body ">
                     <div className="container-fluid">
@@ -455,7 +449,7 @@ class Byme extends Component {
                     </div>
                     </div>
                     </div>
-                    </div>
+              
                 
 
             )

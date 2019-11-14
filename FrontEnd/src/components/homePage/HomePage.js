@@ -11,7 +11,7 @@ import './HomePage.css';
 import Footer from '../navBar/footer';
 import '../login/welcom.css'
 import { stickyHigh, stickyMedium, stickyLow, stickyCri } from './Sticky';
-import { Architectproject, Leadproject, Employeeproject, Architect, Lead, Employee } from '../Architect/SideData';
+import { Architectproject, SideNavBar } from '../Architect/SideData';
 import { Project } from '../Architect/ProjectInfo';
 import '../createTask/home.css'
 import TaskInfo from './TaskInfo';
@@ -105,8 +105,6 @@ export class HomePage extends Component {
         }
 
     }
-
-   
   
     NotifyServerOffline = () => {
         if (!toast.isActive(this.toastId)) {
@@ -119,7 +117,7 @@ export class HomePage extends Component {
     NotifyNoTaskAssigned = () => {
         if (!toast.isActive(this.toastId)) {
             this.toastId = toast.error(<center>No Task Exists</center>, {
-                position: "top-center", autoClose: 7000,
+                position: "top-center", 
             });
         }
     }
@@ -315,7 +313,7 @@ export class HomePage extends Component {
 
     render() {
         return (
-            <div id="page-container" className="container-fluid" >
+            <div id="page-container"  >
 
                 <div className="w-100" style={{ marginLeft: '50%', marginRight: 'auto' }}>
                     <PropagateLoader css={this.override} size={10} color={'#123abc'} loading={this.state.loading} />
@@ -371,19 +369,11 @@ export class HomePage extends Component {
                         </Modal.Footer>
                     </Modal>
                     {/* end of taskBean */}
-                        <div className="row">
+                   
                             <div className="col-md-12">
                                 <div className="row">
-                                    <div className="col-md-2 cssCard " >
-                                        <div class=" card-body  h-75">
-                                            <div className="input-group mb-3 option">
-                                                {this.state.architect ?<div>{localStorage.getItem("groupId")?<Architectproject/> :<Architect/>} </div> : null}
-                                                {this.state.lead ?<div>{localStorage.getItem("groupId")? <Leadproject /> :<Lead/>} </div> : null}
-                                                {this.state.emp ?<div>{localStorage.getItem("groupId")? <Employeeproject /> :<Employee/>} </div> : null}                                             
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="col-md-8">
+                                               {localStorage.getItem("groupId")?<Architectproject/> :<SideNavBar/>} 
+                                    <div className="col-md-8 col-xs-12">
                                         <div id="card" >
                                             <div class=" card-body ">
                                                 <div className="container-fluid">
@@ -452,7 +442,7 @@ export class HomePage extends Component {
                                                             </div>
                                                             {/*End of  ToDo */}
                                                             {/* onProgress */}
-                                                            <div className="col-lg-4 col-md-3 col-sm-4 col-3" id="onProgress" onDragOver={(e) => this.onDragOver(e, "onProgress")}>
+                                                            <div className="col-lg-4 col-md-3 col-xs-12 col-3" id="onProgress" onDragOver={(e) => this.onDragOver(e, "onProgress")}>
                                                                 <div className="col-auto">
                                                                     <div id="card bg-default head" >
                                                                         <h5 id="card-header" className="card-header header">
@@ -531,7 +521,7 @@ export class HomePage extends Component {
                                                             {/* End onProgress */}
                                                             {/* blocked */}
 
-                                                            <div className="col-lg-4 col-md-3 col-sm-3" id="blocked" onDragOver={(e) => this.onDragOver(e, "blocked")}>
+                                                            <div className="col-lg-4 col-md-3 col-xs-12" id="blocked" onDragOver={(e) => this.onDragOver(e, "blocked")}>
                                                                 <div className="col-auto">
                                                                     <div id="card bg-default head" >
                                                                         <h5 id="card-header" className="card-header header">
@@ -619,7 +609,7 @@ export class HomePage extends Component {
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                   
                 </div>
                 <div> <Footer style={{}}/></div>
             </div>

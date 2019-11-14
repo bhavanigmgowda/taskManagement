@@ -6,7 +6,7 @@ import Footer from '../navBar/footer'
 import {  Link } from 'react-router-dom';
 
 import './myprofile.css'
-import { Architectproject, Leadproject, Employeeproject, Architect, Lead, Employee } from '../Architect/SideData';
+import { Architectproject, SideNavBar } from '../Architect/SideData';
 
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -173,16 +173,10 @@ export default class MyProfile1 extends Component {
             <div className="row">
                 <div className="col-md-12">
                     <div className="row">
-                        <div className="col-md-2 cssCard" >
-                            <div class=" card-body  h-75">
-                                <div className="input-group mb-3 option">
-                                {this.state.architect ?<div>{localStorage.getItem("groupId")?<Architectproject/> :<Architect/>} </div> : null}
-                                            {this.state.lead ?<div>{localStorage.getItem("groupId")? <Leadproject /> :<Lead/>} </div> : null}
-                                            {this.state.emp ?<div>{localStorage.getItem("groupId")? <Employeeproject /> :<Employee/>} </div> : null}                                             
+                   
+                               {localStorage.getItem("groupId")?<Architectproject/> :<SideNavBar/>} 
                                        
-                                </div>
-                            </div>
-                        </div>                                        
+                                                                     
            <br/><br/>
                       
            <div className="col-md-10 " >

@@ -7,7 +7,7 @@ import Axios from 'axios';
 import { FormControl } from 'react-bootstrap';
 import { arrayTypeAnnotation } from '@babel/types';
 import Footer from '../navBar/footer'
-import { Architect, Lead, Employee } from '../Architect/SideData';
+import { SideNavBar } from '../Architect/SideData';
 
 
 var user = null
@@ -38,8 +38,7 @@ export class createProject extends Component {
             lead: false,
             emp: false,
             role: JSON.parse(window.localStorage.getItem('role')),
-            emailLists: [],
-
+            emailLists: ''
         }
     }
     cancel(e) {
@@ -59,7 +58,6 @@ export class createProject extends Component {
     }
     hideOnReset = () => {
         this.hidegroupName();
-        this.hideEmail();
         this.hideDate();
         this.hideDescription();
         this.setState({ showEmailInvalid: false });
@@ -88,15 +86,21 @@ export class createProject extends Component {
     hideInvalidDate = () => {
         this.setState({ showDateInvalid: false })
     }
-
-    getProfile(e, email) {
+    onSubmit(e, email) {
         e.preventDefault()
-        console.log("==================kkkkkkkkkkkk", email)
+
         if (email != null) {
             this.setState({
                 addTo: email
+            }, () => {
+                this.getProfile(e, true)
             })
         }
+    }
+    getProfile(e, email) {
+        e.preventDefault()
+        console.log("==================kkkkkkkkkkkk", email)
+
         console.log('inside get profile')
         if (JSON.parse(window.localStorage.getItem('isValid'))) {
             Axios.get('http://localhost:8080/get-profile?email=' + this.state.addTo).then((response) => {
@@ -114,8 +118,10 @@ export class createProject extends Component {
                         i: this.state.i + 1
                     })
                     console.log("object", this.state.projectPkBean)
+
+
                 }
-                this.create(e);
+                this.create(e, email);
             }).catch((error) => {
                 console.log('Error', error);
             })
@@ -142,7 +148,7 @@ export class createProject extends Component {
         }// end of if
     }
 
-    create(e) {
+    create(e, email) {
         console.log("description ===", this.state.description);
         this.setState({ loading: true })
         e.preventDefault();
@@ -158,6 +164,11 @@ export class createProject extends Component {
         }).then((response) => {
             this.setState({ loading: false })
             if (response.data.statusCode === 201) {
+                console.log("====================kkkk", email)
+                if (email) {
+                    debugger
+                    this.props.history.push('/homePage')
+                }
                 console.log("object", response.data.projectBeans[0].projectPkBean.projectId)
                 this.setState({
                     show: true,
@@ -171,7 +182,9 @@ export class createProject extends Component {
                         projectId: response.data.projectBeans[0].projectPkBean.projectId
                     }
 
+
                 }))
+
                 console.log("==================", this.state.projectPkBean)
             } else if (response.data.statusCode === 401) {
                 this.NotifyEmailDoesntExists();
@@ -184,8 +197,6 @@ export class createProject extends Component {
     }
 
     componentDidMount() {
-
-
         var that = this;
         if (this.state.role === "architect") {
             this.setState({
@@ -203,8 +214,6 @@ export class createProject extends Component {
 
         $(document).ready(function () {
             $('#submit').click(function (e) {
-
-
                 var groupName = (document.getElementById("groupName").value).trim();
                 var description = (document.getElementById('description').value).trim();
                 var endDate = (document.getElementById("EndDate").value);
@@ -224,7 +233,7 @@ export class createProject extends Component {
                     that.setState({ showgroupName: true })
                 }
 
-                if (groupName === "" && description === "" && AssignTo === "" && endDate === "") {
+                if (groupName === "" && description === "" && endDate === "") {
                     console.log("here")
                     that.NotifyFieldMandatory();
                 }
@@ -232,7 +241,7 @@ export class createProject extends Component {
                     that.setState({ showDateInvalid: true })
 
                 }
-                if (groupName !== "" && description !== "" && AssignTo !== "" && endDate !== "" && (selectedDate >= now) && that.handleEmail() == true) {
+                if (groupName !== "" && description !== "" && endDate !== "" && (selectedDate >= now) && that.handleEmail() == true) {
                     return true;
                 } else {
                     return false;
@@ -240,8 +249,6 @@ export class createProject extends Component {
             });
         });
     }
-
-
     handleEmail = () => {
         var that = this;
 
@@ -254,6 +261,8 @@ export class createProject extends Component {
                 that.setState({ showEmailInvalid: true })
                 return false;
             }
+        } else {
+            return true
         }
         that.setState({ showEmailInvalid: false })
         return true;
@@ -274,7 +283,6 @@ export class createProject extends Component {
             });
         }
     }
-
     NotifyEmailDoesntExists = () => {
         if (!toast.isActive(this.toastId)) {
             this.toastId = toast.warning(<center>Registration Failed Email Does Not Exist</center>, {
@@ -282,7 +290,6 @@ export class createProject extends Component {
             });
         }
     }
-
     NotifyTaskCreationSuccess = () => {
         if (!toast.isActive(this.toastId)) {
             this.toastId = toast.success(<center>Task Created Successfully</center>, {
@@ -323,6 +330,15 @@ export class createProject extends Component {
 
     }
 
+    setEmail(email) {
+        this.setState({
+            addTo: email,
+            emailLists: []
+        })
+    }
+
+
+
     addfeild(email, i) {
         return (
             <div>
@@ -335,23 +351,7 @@ export class createProject extends Component {
                     No. of Users added : {i}
                 </div>
             </div>
-
-            /* 
-            <div className="input-group mb-3">
-            
-            <FormControl type="text" autoComplete="off" value={this.state.addTo} className="form-control"  onKeyPress={this.hideEmail} type="email" name="AssignTo" id="AssignTo" title="Enter Email" placeholder="Enter User email to add to group" />
-            
-            
-            <button type="button" onClick={(e) => this.getProfile(e)} style={{ borderRadius: '0px 5px 5px 0px', border: "1px solid #ced4da" }} class="btn btn-outline-primary"><i  class="fas fa-plus"></i></button>
-            </div> */
-
         )
-    }
-    setEmail(email) {
-        this.setState({
-            addTo: email,
-            emailLists: []
-        })
     }
 
     render() {
@@ -361,23 +361,8 @@ export class createProject extends Component {
                 <div id="content-wrap">
                     <div className="container-fluid ">
                         <div className="row">
-
-
-                            <div className="col-md-2 cssCard" >
-                                <div class=" card-body  h-75">
-                                    <div className="input-group mb-3 option">
-                                        {this.state.architect ? <Architect /> : null}
-                                        {this.state.lead ? <Lead /> : null}
-                                        {this.state.emp ? <Employee /> : null}
-                                    </div>
-                                </div>
-                            </div>
-
-
-
+                            {this.state.architect ? <SideNavBar /> : null}
                             <div className="col-md-10 " >
-
-
                                 <div id="container" className="col-auto container-fluid pb-5">
                                     <div id="create" className="card shadow-lg mt-5 " >
                                         <div id="cardHead" className="card-header" >
@@ -392,7 +377,7 @@ export class createProject extends Component {
                                             <ToastContainer />
                                         </div>
                                         <div className="card-body">
-                                            <form >
+                                            <form onSubmit={(e) => { this.onSubmit(e, JSON.parse(window.localStorage.getItem('beans'))) }}>
                                                 <div className="input-group mb-3">
                                                     <div className="input-group-prepend">
                                                         <label className="input-group-text"><i className="fas fa-hashtag" /></label>
@@ -423,6 +408,7 @@ export class createProject extends Component {
                                                         })
                                                     }} />
                                                 </div>
+
                                                 {this.state.showEnddate ? <div id="errordiv" className="container-fluid">Please select Date**</div> : null}
                                                 {this.state.showDateInvalid ? <div id="errordiv" className="container-fluid">Assign Date must be greater than Current date**</div> : null}
                                                 <div className="input-group mb-3">
@@ -444,15 +430,13 @@ export class createProject extends Component {
 
                                                     <button type="button" onClick={(e) => this.getProfile(e)} style={{ borderRadius: '0px 5px 5px 0px', border: "1px solid #ced4da" }} class="btn btn-outline-primary"><i class="fas fa-plus"></i></button>
                                                 </div>
+                                                {this.state.emailLists.length > 0 ? this.state.emailLists.map((item) => { return <div onClick={() => this.setEmail(item)} style={{ cursor: "pointer" }} id="emailLists">{item}</div> }) : null}
+
                                                 {this.state.showEmailInvalid ? <div id="errordiv" className="container-fluid">Please enter a valid email address</div> : null}
                                                 {this.state.show ? this.addfeild(this.state.user, this.state.i) : null}
-
-                                                {/* {this.state.addTo.length>3 ? (this.method(this.state.addTo) ? this.state.emailLists.map((item)=>{item}):null) :null} */}
-                                                {this.state.emailLists.length > 0 ? this.state.emailLists.map((item) => { return <div onClick={() => this.setEmail(item)} style={{cursor:"pointer"}} id="emailLists">{item}</div> }) : null}
-
                                                 <div className="input-group container-fluid">
                                                     <button type="reset" id="reset" onClick={this.hideOnReset} title="reset" className="form-control-plaintext btn btn-outline-primary btn-sm">Reset</button>
-                                                    <button type="submit" id="submit" title="submit" onClick={(e) => { this.getProfile(e, JSON.parse(window.localStorage.getItem('beans'))) }} className="form-control-plaintext btn btn-outline-success btn-sm">Submit</button>
+                                                    <button type="submit" id="submit" title="submit" className="form-control-plaintext btn btn-outline-success btn-sm">Submit</button>
                                                     <button type="cancel" id="cancel" title="cancel" className="form-control-plaintext btn btn-outline-info btn-sm"  >Cancel</button>
                                                 </div>
                                             </form>

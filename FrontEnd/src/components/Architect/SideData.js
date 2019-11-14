@@ -1,6 +1,6 @@
 import React, { Component, useState } from 'react';
 import { NavLink, Link, withRouter } from 'react-router-dom';
-import { Button, Modal, FormControl, Fade } from 'react-bootstrap';
+import { Button, Modal, FormControl, Fade, Navbar, Nav } from 'react-bootstrap';
 import Axios from 'axios';
 import { toast, ToastContainer } from 'react-toastify';
 let value = false;
@@ -78,122 +78,92 @@ export const MyVerticallyCenteredModal = (props) => {
 }
 
 
-
-export const Architect = () => {
-
-    return (
-        <div>
-            <Link to="/createProject" className="input-group-prepend tab">
-                <i class="fas fa-users iconTask"> &nbsp; Create Project</i><br /><br />
-            </Link>
-            <Link to="/taskPage" onClick={() => { localStorage.removeItem('groupId') }} className=" input-group-prepend tab " >
-                <i class="fas fa-list-ul iconTask">&nbsp; My Task</i><br /><br />
-            </Link>
-            <Link to="/byme" className=" input-group-prepend tab" >
-                <i class="fas fa-list-ul iconTask">&nbsp; Reported By Me</i><br /><br />
-            </Link>
-            <Link to="/completedTask" className=" input-group-prepend tab" >
-                <i class="fas fa-tasks iconTask">&nbsp; Completed Task</i><br /><br />
-            </Link>
-            <Link to="/getPeople" className=" input-group-prepend tab">
-                <i class="fas fa-users  iconTask">&nbsp; People</i><br /><br />
-            </Link>
-            <Link to="/searchPage" className=" input-group-prepend tab">
-                <i class="fas fa-search  iconTask">&nbsp; Search</i><br /><br />
-            </Link>
-        </div>
-    )
-}
-
-export const Lead = () => {
+const Item = () => {
+   
+  }
+export const SideNavBar = () => {
 
     return (
         <div>
-            < Link to="/createProject" className=" input-group-prepend tab">
-                <i class="fas fa-users iconTask"> &nbsp; Create Project</i><br /><br />
-            </Link>
+            <div className="col-md-2 col-sm-2" >
+                <div class=" card-body  h-75">
+                <div className="bgData">
 
-            <Link to="/taskPage" onClick={() => { localStorage.removeItem('groupId') }} className=" input-group-prepend tab " >
-                <i class="fas fa-list-ul iconTask">&nbsp;  To Me</i><br /><br />
-            </Link>
+                    <div className="input-group mb-3 option">
 
-            <Link to="/byme" className=" input-group-prepend tab" >
-                <i class="fas fa-list-ul iconTask">&nbsp; Reported By Me</i><br /><br />
-            </Link>
-
-            <Link to="/completedTask" className=" input-group-prepend tab" >
-                <i class="fas fa-tasks iconTask">&nbsp; Completed Task</i><br /><br />
-            </Link>
-
-            <Link to="/getPeople" className=" input-group-prepend tab" >
-                <i class="fas fa-users  iconTask">&nbsp; People</i><br /><br />
-            </Link>
-            <Link to="/searchPage" className=" input-group-prepend tab">
-                <i class="fas fa-search  iconTask">&nbsp; Search</i><br /><br />
-            </Link>
-
-            <hr /><hr />
-        </div>
-
+                        <Navbar expand="lg">
+                            <Navbar.Toggle aria-controls="basic-navbar-nav" />
+                            <Navbar.Collapse id="basic-navbar-nav" className="cssCard">
+                                <Nav className="mr-auto " className="flex-column">
+                                    < Link to="/createProject" className=" input-group-prepend tab">
+                                        <i class="fas fa-users iconTask"> &nbsp; Create Project</i><br /><br />
+                                    </Link>
+                
+                                    <Link to="/taskPage" onClick={() => { localStorage.removeItem('groupId') }} className=" input-group-prepend tab " >
+                                        <i class="fas fa-list-ul iconTask">&nbsp; My Task</i><br /><br />
+                                    </Link>
+                                    <Link to="/byme" className=" input-group-prepend tab" >
+                                        <i class="fas fa-list-ul iconTask">&nbsp; Reported By Me</i><br /><br />
+                                    </Link>
+                                    <Link to="/completedTask" className=" input-group-prepend tab" >
+                                        <i class="fas fa-tasks iconTask">&nbsp; Completed Task</i><br /><br />
+                                    </Link>
+                                    <Link to="/getPeople" className=" input-group-prepend tab">
+                                        <i class="fas fa-users  iconTask">&nbsp; People</i><br /><br />
+                                    </Link>
+                                    <Link to="/searchPage" className=" input-group-prepend tab">
+                                        <i class="fas fa-search  iconTask">&nbsp; Search</i><br /><br />
+                                    </Link>
+                                  
+                                    </Nav>
+                                
+                            </Navbar.Collapse>
+                           </Navbar>
+                           </div>
+                    </div>
+                </div>
+            </div>
+            </div>
     )
 }
-
-
-export const Employee = () => {
-
-    return (
-        <div>
-
-            <Link to="/taskPage" className=" input-group-prepend tab" >
-                <i class="fas fa-tasks iconTask">&nbsp; To Me</i><br /><br />
-            </Link>
-            <Link to="/byme" className=" input-group-prepend tab" >
-                <i class="fas fa-tasks iconTask">&nbsp; Reported By Me</i><br /><br />
-            </Link>
-            <Link to="/completedTask" className=" input-group-prepend tab " >
-                <i class="fas fa-tasks iconTask">&nbsp; Completed Task</i><br /><br />
-            </Link>
-
-            <Link to="/getPeople" className=" input-group-prepend tab" >
-                <i class="fas fa-users iconTask">&nbsp; People</i><br />
-            </Link>
-            <Link to="/searchPage" className=" input-group-prepend tab">
-                <i class="fas fa-search  iconTask">&nbsp; Search</i><br /><br />
-            </Link>
-            <hr /><hr />
-        </div>
-
-    )
-}
-
 
 export const Architectproject = () => {
 
     const [modalShow, setModalShow] = React.useState(false);
 
     return (
-        <div>
-            <Link to="/CreateTask" className="input-group  tab">
-                <i class="fas fa-users iconTask">&nbsp; Add Task</i><br /><br />
-            </Link>
+       
+
+<div>
+<div className="col-md-2 col-sm-2" >
+    <div class=" card-body  h-75">
+    <div className="bgData">
+        <div className="input-group mb-3 option">
+            <Navbar expand="lg">
+                <Navbar.Toggle aria-controls="basic-navbar-nav" />
+                <Navbar.Collapse id="basic-navbar-nav" className="cssCard">
+                    <Nav className="mr-auto " className="flex-column">
             <Link to="/completedTask" className=" input-group-prepend tab" >
                 <i class="fas fa-tasks iconTask">&nbsp; Completed Task</i><br /><br />
             </Link>
             <Link onClick={() => setModalShow(true)} className="input-group  tab">
                 <i class="fas fa-user-plus iconTask" > &nbsp; Add User</i><br /><br />
             </Link>
-
             <MyVerticallyCenteredModal
                 show={modalShow}
                 onHide={() => setModalShow(false)}
             />
             <Link to="/members" className="input-group  tab">
                 <i class="fas fa-users iconTask">&nbsp; Project Members</i><br /><br />
-            </Link>
-
-
-            <hr /><hr />
+            </Link>                     
+                        </Nav>
+                </Navbar.Collapse>
+               </Navbar>
+               </div>
         </div>
+    </div>
+</div>
+</div>
     )
 }
 
@@ -253,65 +223,3 @@ export const Employeeproject = () => {
 
 
 
-
-
-
-/* export const Example = (props) => {
-    const [open, setOpen] = useState(false);
-    console.log("=============aaaaaaaa==", props.sendCount)
-    var i = 0;
-    return (
-        <div>
-
-            <small
-                onClick={() => setOpen(!open)}
-                aria-controls="example-fade-text"
-                aria-expanded={open}
-                style={{ cursor: 'pointer', color: 'black', fontSize: '110%' }}
-            >
-                click here to know more Project details
-        </small>
-            <Fade in={open}>
-                <div id="example-fade-text">
-
-                    <div style={{ marginLeft: "2%", marginTop: '5%' }}>
-                        <table class="table table-hover">
-                            <thead>
-                                <tr>
-                                    <th scope="col">ProjectId</th>
-                                    <th scope="col">Project Name</th>
-                                    <th scope="col">People</th>
-                                    <th scope="col">Creation Date</th>
-                                    <th scope="col">Deadline</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {
-                                    props.sendData.map((projectData) => {
-                                        console.log('tabledate', projectData.id)
-                                        return (
-                                            <tr className="ProjectTable" onClick={() => {
-                                                {
-                                                    TaskHome.taskHome(props, projectData)
-                                                }
-                                            }}>
-                                                <td scope="row">{projectData.projectPkBean.projectId}</td>
-                                                <td >{projectData.projectName}</td>
-
-                                                <td>{props.sendCount[i++]}</td>
-
-                                                <td>{projectData.createdDate}</td>
-                                                <td>{projectData.deadline}</td>
-                                            </tr>
-
-                                        )
-                                    })
-                                }
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </Fade>
-        </div>
-    );
-} */

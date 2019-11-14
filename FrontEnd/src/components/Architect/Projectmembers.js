@@ -8,7 +8,7 @@ import './projectmembers.css'
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { PropagateLoader } from 'react-spinners';
-import { Architectproject, Leadproject, Employeeproject, Architect, Lead, Employee } from '../Architect/SideData';
+import { Architectproject, SideNavBar} from '../Architect/SideData';
 
 
 import { Modal } from 'react-bootstrap'
@@ -113,21 +113,10 @@ class Projectmembers extends React.Component {
                 <div className="row">
                     <div className="col-md-12">
                         <div className="row">
-                            <div className="col-md-2 cssCard" >
-                                <div class=" card-body  h-75">
-                                    <div className="input-group mb-3 option">
-                                    {this.state.architect ?<div>{localStorage.getItem("groupId")?<Architectproject/> :<Architect/>} </div> : null}
-                                                {this.state.lead ?<div>{localStorage.getItem("groupId")? <Leadproject /> :<Lead/>} </div> : null}
-                                                {this.state.emp ?<div>{localStorage.getItem("groupId")? <Employeeproject /> :<Employee/>} </div> : null}                                             
-                                           
-                                    </div>
-                                </div>
-                            </div>
+                                    {localStorage.getItem("groupId")?<Architectproject/> :<SideNavBar/>}
                             <div className="col-md-10" >
                           <div className="projectName"  style={{    margin: "2%"}} ><Link style={{color:'black'}} onClick={()=>{this.props.history.push('/homePage')}} className="dark">Project</Link>&nbsp;/&nbsp;
                                                             <Link style={{color:'black'}} to='/taskPage'>{localStorage.getItem("projectName")}</Link></div>
-                            
-                            
                 <Table striped  hover>
                     <thead>
                         <tr className="head" >

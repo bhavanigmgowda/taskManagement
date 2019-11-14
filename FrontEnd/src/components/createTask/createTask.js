@@ -369,7 +369,17 @@ export class CreateTask extends Component {
                                                     this.method(event.target.value)
                                                 }} />
                                             </div>
-                                            {this.state.emailLists.length > 0 ? this.state.emailLists.map((item) => { return <div onClick={()=>this.setState({assignedTo:item})} style={{ marginTop: '-5%',cursor:'pointer' }}>{item}</div> }) : null}
+                                            <Dropdown style={{ width: "310px" }}>
+                                            <Dropdown.Menu style={{ width: "310px" }}>
+                                                            {this.state.emailLists.map(item => {
+                                                                return (
+                                                                    <Dropdown.Item onClick={()=>this.setState({assignedTo:item})}>{item}</Dropdown.Item>
+                                                                )
+                                                            })}
+                                                          </Dropdown.Menu>
+                                                          </Dropdown>
+                                             {this.state.emailLists.length > 0 ? this.state.emailLists.map((item) => 
+                                                { return <div onClick={()=>this.setState({assignedTo:item})} style={{ marginTop: '-5%',cursor:'pointer' }}>{item}</div> }) : null} 
                                             {this.state.showEmailInvalid ? <div id="errordiv" className="container-fluid">Please enter a valid email address</div> : null}
                                             {this.state.showAssignTo ? <div id="errordiv" className="container-fluid">Please set Email**</div> : null}
                                             <div className="input-group mb-3">
@@ -421,4 +431,3 @@ export class CreateTask extends Component {
 }
 
 export default CreateTask
-

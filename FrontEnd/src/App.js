@@ -28,6 +28,7 @@ import { userInfo } from 'os';
 import MyVerticallyCenteredModal from './components/Architect/SideData';
 import SearchPage from './components/navBar/SearchPage';
 import MyProfile1 from './components/createUser/MyProfile';
+import Navbar from './components/navBar/NavBar';
 
 
 let search = false
@@ -43,10 +44,6 @@ export class App extends Component {
       searchtask: null,
       taskData: null,
       email: JSON.parse(window.localStorage.getItem('beans')),
-      architect: false,
-      lead: false,
-      emp: false,
-      role: JSON.parse(window.localStorage.getItem('role')),
       userBean: [],
       userData:[]
     }
@@ -72,21 +69,6 @@ export class App extends Component {
     this.setState({
       isValid: isValid
     })
-
-    if (this.state.role === "architect") {
-      this.setState({
-        architect: true
-      })
-    } else if (this.state.role === "lead") {
-      this.setState({
-        lead: true
-      })
-    } else {
-      this.setState({
-        emp: true
-      })
-    }
-    
     Axios.get('http://localhost:8080/get-profile?email=' + this.state.email).then((response) => {
         if (response.data.message === 'Success') {
             this.setState({
@@ -138,7 +120,7 @@ export class App extends Component {
         {this.state.isValid ?
           <div><Route exact path='/taskPage' render={() => { return <HomePage value={this.state.email}   /> }} ></Route>
             <Route exact path='/navBar' component={navBar}></Route>
-            {this.state.emp ? <Redirect to='/homePage' /> : <Route exact path='/createProject' component={createProject}></Route>}
+        <Route exact path='/createProject' component={createProject}></Route>
             {/*  {this.state.architect?<Route exact path='/createProject' component={createProject}></Route>:null} 
          {this.state.lead?<Route exact path='/createProject' component={createProject}></Route>:null}  */}
             <Route exact path='/getPeople' render={() => { return <GetPeople sendToProfile={this.profile} /> }}></Route>

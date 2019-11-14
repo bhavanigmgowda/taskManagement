@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Route, Link, withRouter } from 'react-router-d
 import Axios from 'axios'
 import "react-toastify/dist/ReactToastify.css";
 import './homepage.css';
-import { Architect, Employee, Lead } from './SideData';
+import { Architect, Employee, Lead, SideNavBar } from './SideData';
 import { toast, ToastContainer } from 'react-toastify';
 import Footer from '../navBar/footer';
 import Example from './Example';
@@ -15,10 +15,6 @@ export class ProjectHomePage extends Component {
 		this.state = {
 			email: JSON.parse(window.localStorage.getItem('beans')),
 			projectData: [],
-			role: JSON.parse(window.localStorage.getItem('role')),
-			architect: false,
-			lead: false,
-			emp: false,
 			projectTaskData: [],
 			count: [],
 
@@ -60,19 +56,7 @@ export class ProjectHomePage extends Component {
 				this.NotifyServerOffline();
 			})
 
-		if (this.state.role === "architect") {
-			this.setState({
-				architect: true
-			})
-		} else if (this.state.role === "lead") {
-			this.setState({
-				lead: true
-			})
-		} else {
-			this.setState({
-				emp: true
-			})
-		}
+	
 	}
 
 	page(group) {
@@ -89,17 +73,9 @@ export class ProjectHomePage extends Component {
 				{console.log("object", this.state.projectData.email)}
 				<ToastContainer />
 				<div className="row">
-					<div className="col-md-12">
-						<div className="row">
-							<div className="col-md-2 cssCard" >
-								<div class=" card-body  h-75">
-									<div className="input-group mb-3 option">
-										{this.state.architect ? Architect() : null}
-										{this.state.lead ? Lead() : null}
-										{this.state.emp ? Employee() : null}
-									</div>
-								</div>
-							</div>
+						
+										{ SideNavBar() }
+								
 							<div className="col-md-8">
 								<div id="card" >
 									<div class=" card-body ">
@@ -126,12 +102,10 @@ export class ProjectHomePage extends Component {
 										</div>
 
 
-									</div>
 								</div>
 							</div>
 						</div>
 					</div>
-				</div>
 				<Footer />
 			</div>
 

@@ -17,16 +17,10 @@ class Example extends Component {
         this.props.history.push('/taskPage')
     }
     render(){
-
         var i=0
- 
         return (
             <div>
-    
-           
-
             <Accordion defaultActiveKey="0">
- 
   <Card>
     <Accordion.Toggle as={Card.Header} eventKey="1" style={{cursor:"pointer", border:"none"}}>
     click here to know more Project details
@@ -57,10 +51,8 @@ class Example extends Component {
                             }}>
                                 <td scope="row">{projectData.projectPkBean.projectId}</td>
                                 <td >{projectData.projectName}</td>
-
                                 <td>{this.props.sendCount[i++]}</td>
-
-                                <td>{projectData.createdDate}</td>
+                                 <td>{projectData.createdDate}</td>
                                 <td>{projectData.deadline}</td>
                             </tr>
 

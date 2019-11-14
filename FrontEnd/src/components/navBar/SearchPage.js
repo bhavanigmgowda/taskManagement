@@ -8,7 +8,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { PropagateLoader } from 'react-spinners';
 import Axios from 'axios';
 import { stickyLow, stickyMedium, stickyCri, stickyHigh } from '../homePage/Sticky';
-import { Architect, Lead, Employee } from '../Architect/SideData';
+import { Architect, Lead, Employee, SideNavBar } from '../Architect/SideData';
 class searchPage extends Component {
     constructor(props) {
         super(props)
@@ -80,15 +80,12 @@ class searchPage extends Component {
                         this.NotifyNoTask();
                         this.setState({
                             searchInput:''
-
                         })
                     }
                 }).catch((error) => {
                     console.log('Error', error);
                 })
-            
         }
-
     }
     handleClose() {
         this.setState({ show: !this.state.show })
@@ -109,15 +106,7 @@ class searchPage extends Component {
                     <div id="content-wrap">
                         <div className="container-fluid ">
                             <div className="row">
-                               <div className="col-md-2 cssCard" >
-                                    <div class=" card-body  h-75">
-                                        <div className="input-group mb-3 option">
-                                            {this.state.architect ? <Architect /> : null}
-                                            {this.state.lead ? <Lead /> : null}
-                                            {this.state.emp ? <Employee /> : null}
-                                        </div>
-                                    </div>
-                                </div>
+                                            <SideNavBar /> 
                                 <div className="col-md-8 " >
                                     <div className="row justify-content-center">
                                         <div className="col-12 col-md-10 col-lg-8">

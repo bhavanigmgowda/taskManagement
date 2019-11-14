@@ -4,11 +4,8 @@
 }
 
 .cssCard{
-    border: 1px solid #F4F5F7;
-    min-height: 925px; 
-    max-height: 100%;
-    
-    background-color: #F4F5F7
+  max-height: 100%;
+  width: 198px;
 }
 
 .iconTask{
@@ -60,3 +57,32 @@
     cursor: pointer;
     
   }
+  .bgData{
+    min-height: 900px;
+    background-color: #F4F5F7;
+    width: 252px;
+    margin-left: -34px;
+    margin-top: -20px;
+    max-height: 100%;
+  }
+
+  /* @media screen 
+    and (min-device-width:  171px) 
+    and (max-device-width: 815px)
+    and (-webkit-min-device-pixel-ratio: 1) { 
+  .bgData{
+    width: 252px;
+    margin-left: -34px;
+    margin-top: -20px;
+      }
+    } */
+
+    @media (min-width: 53px) and (max-width: 991px){
+      .bgData{
+        width: 252px;
+        margin-left: -34px;
+        margin-top: -20px;
+        background-color: #fff;
+        min-height: 0px;
+          }
+    }

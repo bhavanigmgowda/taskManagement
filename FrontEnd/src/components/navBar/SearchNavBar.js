@@ -71,7 +71,8 @@ class SearchNavabar extends Component {
                     <Navbar.Collapse id="basic-navbar-nav">
                         <Nav className="nav-link">
                             <Link to="/CreateTask"><div className="w-100 mt-1" >
-                                <Button variant="outline-primary" style={{ marginLeft
+                                
+                                <Button variant="success" style={{ marginLeft
                                     : '1127px',width:'13%' }} onClick={this.props.clearSearch} type="button" className="h-auto">
                                     Create Task
                          </Button></div>

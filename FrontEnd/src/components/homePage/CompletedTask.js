@@ -7,7 +7,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { PropagateLoader } from 'react-spinners';
 import {  Link } from 'react-router-dom';
 import './CompletedTask.css'
-import { Architectproject, Leadproject, Employeeproject, Architect, Lead, Employee } from '../Architect/SideData';
+import { Architectproject, SideNavBar } from '../Architect/SideData';
 import Footer from '../navBar/footer';
 
 let uniqueArr = [];
@@ -25,7 +25,6 @@ const AccordionItem = ({ ...props }) => {
         </span>
     );
 }
-
 class completedTask extends Component {
     constructor() {
         super();
@@ -273,16 +272,9 @@ class completedTask extends Component {
                 <div className="row">
                     <div className="col-md-12">
                         <div className="row">
-                            <div className="col-md-2 cssCard" >
-                                <div class=" card-body  h-75">
-                                    <div className="input-group mb-3 option">
-                                    {this.state.architect ?<div>{localStorage.getItem("groupId")?<Architectproject/> :<Architect/>} </div> : null}
-                                                {this.state.lead ?<div>{localStorage.getItem("groupId")? <Leadproject /> :<Lead/>} </div> : null}
-                                                {this.state.emp ?<div>{localStorage.getItem("groupId")? <Employeeproject /> :<Employee/>} </div> : null}                                             
-                                           
-                                    </div>
-                                </div>
-                            </div>
+                         
+                                   {localStorage.getItem("groupId")?<Architectproject/> :<SideNavBar/>}
+                              
                             {localStorage.getItem('groupId')?<div className="projectName"  style={{    margin: "2%"}} ><Link style={{color:'black'}} onClick={()=>{this.props.history.push('/homePage')}} className="dark">Project</Link>&nbsp;/&nbsp;
                                                             <Link style={{color:'black'}} to='/taskPage'>{localStorage.getItem("projectName")}</Link></div>:null} 
                             

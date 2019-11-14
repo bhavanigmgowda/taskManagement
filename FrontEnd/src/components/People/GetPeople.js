@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import SearchPeople from './SearchPeople';
 import PeopleCard from './PeopleCard';
-import { Architect, Employee, Lead } from '../Architect/SideData';
+import {  SideNavBar } from '../Architect/SideData';
 import Footer from '../navBar/footer';
 import Axios from 'axios';
 import {  withRouter } from 'react-router-dom';
@@ -95,19 +95,9 @@ class GetPeople extends Component {
                     <div className="row">
                         <div className="col-md-12">
                             <div className="row">
-                                <div className="col-md-2 cssCard" >
-                                    <div class=" card-body  h-75">
-                                        <div className="input-group mb-3 option">
-                                            {this.state.architect ? <Architect /> : null}
-                                            {this.state.lead ? <Lead /> : null}
-                                            {this.state.emp ? <Employee /> : null}
-                                        </div>
-                                    </div>
-                                </div>
-
+                                       <SideNavBar /> 
                                 <div class="col-md-8">
                                     <div>
-
                                         <div className="row justify-content-center">
                                             <div className="col-12 col-md-10 col-lg-8">
                                                 <form className="card card-sm" style={{ border: "none" }}>
