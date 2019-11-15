@@ -33,7 +33,9 @@ import Navbar from './components/navBar/NavBar';
 
 let search = false
 let emailData = null
+
 export class App extends Component {
+
   constructor(props) {
     let email = JSON.parse(window.localStorage.getItem('beans'))
 
@@ -48,6 +50,7 @@ export class App extends Component {
       userData:[]
     }
   }
+  
   getLoginData = (data) => {
     this.setState({
       email: data,

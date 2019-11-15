@@ -54,14 +54,14 @@ class completedTask extends Component {
     NotifyServerOffline = () => {
         if (!toast.isActive(this.toastId)) {
             this.toastId = toast.error(<center>Server Not Responding</center>, {
-                position: "top-center", autoClose: 7000,
+                position: "top-center", autoClose: false,
             });
         }
     }
     NotifyNotFound = () => {
         if (!toast.isActive(this.toastId)) {
             this.toastId = toast.error(<center>No Task Exists</center>, {
-                position: "top-center", autoClose: 7000,
+                position: "top-center", autoClose: false,
             });
         }
     }

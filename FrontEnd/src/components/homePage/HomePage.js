@@ -42,12 +42,12 @@ export class HomePage extends Component {
             groupId: localStorage.getItem('groupId'),
             role: JSON.parse(window.localStorage.getItem('role')),
             project: null,
-            showData:false,
-            userBean:null,
-            edit:false,
-            updateComment:null,
-            commentBean:[],
-            comment:''
+            showData: false,
+            userBean: null,
+            edit: false,
+            updateComment: null,
+            commentBean: [],
+            comment: ''
 
         }
         {
@@ -105,11 +105,11 @@ export class HomePage extends Component {
         }
 
     }
-  
+
     NotifyServerOffline = () => {
         if (!toast.isActive(this.toastId)) {
             this.toastId = toast.error(<center>Server Not Responding</center>, {
-                position: "top-center", autoClose: 7000,
+                position: "top-center", autoClose: false,
             });
         }
     }
@@ -117,48 +117,63 @@ export class HomePage extends Component {
     NotifyNoTaskAssigned = () => {
         if (!toast.isActive(this.toastId)) {
             this.toastId = toast.error(<center>No Task Exists</center>, {
-                position: "top-center", 
+                position: "top-center", autoClose: false
             });
         }
     }
+
+    NotifyCompletedTask = () => {
+        if (!toast.isActive(this.toastId)) {
+            this.toastId = toast.success(<center>All Tasks are completed, check the completed task section for details</center>, {
+                position: "top-center", autoClose: false
+            });
+        }
+    }
+
+
 
     NotifyUpdatedTask = () => {
         if (!toast.isActive(this.toastId)) {
             this.toastId = toast.success(<center>Task Updated Successfully</center>, {
-                position: "top-center", autoClose: 1500,
+                position: "top-center", autoClose: false,
             });
         }
     }
-   
+
 
     getTask() {
-        debugger
         console.log("==================", this.state.groupId)
         this.setState({ loading: true });
         if (JSON.parse(window.localStorage.getItem('isValid'))) {
-            Axios.get(localStorage.getItem('groupId') ? 'http://localhost:8080/get-task-for-project?groupId=' + localStorage.getItem('groupId')+'&email='+this.state.email
+            Axios.get(localStorage.getItem('groupId') ? 'http://localhost:8080/get-task-for-project?groupId=' + localStorage.getItem('groupId') + '&email=' + this.state.email
                 : 'http://localhost:8080/get-assigned-task?email=' + this.state.email)
                 .then((response) => {
+                    this.setState({ loading: false });
+
+                    if (response.data.statusCode === 201) {
+                        //setstate
+                        const state = { ...this.state }
+                        state.todo = response.data.taskBean.filter(item => item.status === 'todo');
+                        state.blocked = response.data.taskBean.filter(item => item.status === 'blocked');
+                        state.onProgress = response.data.taskBean.filter(item => item.status === 'onProgress');
+                        state.project = response.data.taskBean[0].projectBean
+                        state.completed = response.data.taskBean.filter(item => item.status === 'completed')
+                        state.userBean = response.data.bean
+                        this.setState({
+                            ...state
+                        })
                         this.setState({ loading: false });
 
-                        if (response.data.statusCode === 201) {
-                            //setstat
-                            const state = { ...this.state }
-                            state.todo = response.data.taskBean.filter(item => item.status === 'todo');
-                            state.blocked = response.data.taskBean.filter(item => item.status === 'blocked');
-                            state.onProgress = response.data.taskBean.filter(item => item.status === 'onProgress');
-                            state.project = response.data.taskBean[0].projectBean
-                            state.userBean=response.data.bean
-                            this.setState({
-                                ...state                                                                                                                                                                                                                                                
-                            })
-                            this.setState({ loading: false });      
-                        }else if(response.data.statusCode === 401){
-                            this.NotifyNoTaskAssigned();
-
+                        if (this.state.todo.length === 0 && this.state.blocked.length === 0 && this.state.onProgress.length === 0 && this.state.completed.length != 0) {
+                            this.NotifyCompletedTask();
                         }
-                    }).catch((error) => {
-                    console.log("error",error)
+
+                    } else if (response.data.statusCode === 401) {
+                        this.NotifyNoTaskAssigned();
+
+                    }
+                }).catch((error) => {
+                    console.log("error", error)
                     this.setState({ loading: false });
                     this.NotifyServerOffline();
                 })
@@ -168,7 +183,7 @@ export class HomePage extends Component {
     }
     updateCompleted(a, b) {
         this.setState({
-            showData:false
+            showData: false
         })
         var moment = require('moment');
         var moment = moment().format('YYYY-MM-DD');
@@ -181,7 +196,9 @@ export class HomePage extends Component {
                 console.log(error)
                 this.NotifyServerOffline();
             })
-    } 
+    }
+
+    
     addComment() {
         Axios({
             method: 'post',
@@ -203,21 +220,21 @@ export class HomePage extends Component {
     }
 
     getCommentData = (data) => {
-        console.log("comment=============",data)
-        if(data && data!=''){
-        this.setState({
-          comment:data
-        },()=>{this.addComment()})
-    }else{
-        this.setState({
-            showData:false
-        },()=>{
-            this.NotifyUpdatedTask();
-            this.getTask()
-        })
+        console.log("comment=============", data)
+        if (data && data != '') {
+            this.setState({
+                comment: data
+            }, () => { this.addComment() })
+        } else {
+            this.setState({
+                showData: false
+            }, () => {
+                this.NotifyUpdatedTask();
+                this.getTask()
+            })
+        }
     }
-}
-    
+
     comment() {
         Axios.get('http://localhost:8080/get-All-comment?taskId=' + this.state.taskBean.taskId)
             .then((response) => {
@@ -278,14 +295,14 @@ export class HomePage extends Component {
         console.log("aaaaaaaaaaaaaa", userBean)
         this.setState({ show: !this.state.show })
     }
-    
-    showData(item, userBean){
+
+    showData(item, userBean) {
         console.log("aaaaaaaaaaaaaa ============== userBean", userBean)
         console.log("aaaaaaaaaaaaaa ============= item", item)
         this.setState({
             taskBean: item,
             user: userBean,
-        },()=>this.comment())
+        }, () => this.comment())
     }
 
     handleClose() {
@@ -369,249 +386,250 @@ export class HomePage extends Component {
                         </Modal.Footer>
                     </Modal>
                     {/* end of taskBean */}
-                   
-                            <div className="col-md-12">
-                                <div className="row">
-                                               {localStorage.getItem("groupId")?<Architectproject/> :<SideNavBar/>} 
-                                    <div className="col-md-8 col-xs-12">
-                                        <div id="card" >
-                                            <div class=" card-body ">
-                                                <div className="container-fluid">
-                                               {localStorage.getItem('groupId')?<div className="projectName"><Link style={{color:'black'}} onClick={()=>{this.props.history.push('/homePage')}} className="dark">Project</Link>&nbsp;/&nbsp;
-                                                            <Link style={{color:'black'}} to='/taskPage'>{localStorage.getItem("projectName")}</Link></div>:null} 
-                                                    <center>
-                                                        <div className="row container">
-                                                            <div className="col-lg-4 col-md-3 col-sm-3" id="todo" onDragOver={(e) => this.onDragOver(e, "todo")} >
-                                                                <div className="col-auto">
-                                                                    {/* ToDo */}
-                                                                    <div id="card bg-default head" >
-                                                                        <h5 id="card-header" className="card-header header">
-                                                                            <center className="letter" >TODO</center>
-                                                                        </h5>
-                                                                    </div>
-                                                                    <div className=" card-body cards">
-                                                                        {this.state.todo.filter(item => item.priority === 'critical').map(item => {
-                                                                            return (
-                                                                                <div onClick={() => this.showData(item, item.userBean)}  className="col-auto" onDragEnd={() => this.update(item.taskId, item.status)}
-                                                                                >
-                                                                                    <div id="i7" className="col-lg-4 col-md-4 col-sm-4 a" >
-                                                                                        <i onClick={() => this.showvis(item, item.userBean)} class="fas fa-info-circle"></i>
-                                                                                    </div>
-                                                                                    {stickyCri(item)}
-                                                                                </div>
-                                                                            )
-                                                                        }
-                                                                        )}
-                                                                        {this.state.todo.filter(item => item.priority === 'high').map(item => {
-                                                                            return (
-                                                                                <div onClick={() => this.showData(item, item.userBean)} className="col-auto" onDragEnd={() => this.update(item.taskId, item.status)}
-                                                                                >
-                                                                                    <div id="i7" className="col-lg-4 col-md-4 col-sm-4 a" >
-                                                                                        <i onClick={() => this.showvis(item, item.userBean)} class="fas fa-info-circle"></i>
-                                                                                    </div>
-                                                                                    {stickyHigh(item)}
-                                                                                </div>
-                                                                            )
-                                                                        }
-                                                                        )}
-                                                                        {this.state.todo.filter(item => item.priority === 'medium').map(item => {
-                                                                            return (
-                                                                                <div onClick={() => this.showData(item, item.userBean)} className="col-auto" onDragEnd={() => this.update(item.taskId, item.status)}
-                                                                                >
-                                                                                    <div id="i7" className="col-lg-4 col-md-4 col-sm-4 a" >
-                                                                                        <i onClick={() => this.showvis(item, item.userBean)} class="fas fa-info-circle"></i>
-                                                                                    </div>
-                                                                                    {stickyMedium(item)}
-                                                                                </div>
-                                                                            )
-                                                                        }
-                                                                        )}
-                                                                        {this.state.todo.filter(item => item.priority === 'low').map(item => {
-                                                                            return (
-                                                                                <div onClick={() => this.showData(item, item.userBean)} className="col-auto" onDragEnd={() => this.update(item.taskId, item.status)}>
-                                                                                    <div id="i7" className="col-lg-4 col-md-4 col-sm-4 a" >
-                                                                                        <i onClick={() => this.showvis(item, item.userBean)} class="fas fa-info-circle"></i>
-                                                                                    </div>
-                                                                                    {stickyLow(item)}
-                                                                                </div>
-                                                                            )
-                                                                        }
-                                                                        )}
-                                                                    </div>
-                                                                </div>
+
+                    <div className="col-md-12">
+                        <div className="row">
+                            {localStorage.getItem("groupId") ? <Architectproject /> : <SideNavBar />}
+                            <div className="col-md-8 col-xs-12">
+                                <div id="card" >
+                                    <div class=" card-body ">
+                                        <div className="container-fluid">
+                                            {localStorage.getItem('groupId') ? <div className="projectName"><Link style={{ color: 'black' }} onClick={() => { this.props.history.push('/homePage') }} className="dark">Project</Link>&nbsp;/&nbsp;
+                                                            <Link style={{ color: 'black' }} to='/taskPage'>{localStorage.getItem("projectName")}</Link></div> : null}
+                                            <center>
+                                                <div className="row container">
+                                                    <div className="col-lg-4 col-md-3 col-sm-3" id="todo" onDragOver={(e) => this.onDragOver(e, "todo")} >
+                                                        <div className="col-auto">
+                                                            {/* ToDo */}
+                                                            <div id="card bg-default head" >
+                                                                <h5 id="card-header" className="card-header header">
+                                                                    <center className="letter" >TODO</center>
+                                                                </h5>
                                                             </div>
-                                                            {/*End of  ToDo */}
-                                                            {/* onProgress */}
-                                                            <div className="col-lg-4 col-md-3 col-xs-12 col-3" id="onProgress" onDragOver={(e) => this.onDragOver(e, "onProgress")}>
-                                                                <div className="col-auto">
-                                                                    <div id="card bg-default head" >
-                                                                        <h5 id="card-header" className="card-header header">
-                                                                            <center className="letter" > IN PROGRESS </center>
-                                                                        </h5>
-                                                                    </div>
-                                                                    <div className="card-body cards">
-                                                                        {this.state.onProgress.filter(item => item.priority === 'critical').map(item => {
-                                                                            return (
-                                                                                <div onClick={() => this.showData(item, item.userBean)} className="col-auto container" onDragEnd={() => this.update(item.taskId, item.status)}
-                                                                                >
-                                                                                    <div className="cor" onClick={() => this.updateCompleted(item.taskId, "completed")}>
-                                                                                        <i class="far fa-check-circle"></i></div>
-
-                                                                                    <div id="i7" className="col-lg-4 col-md-4 col-sm-4 a" >
-                                                                                        <i onClick={() => this.showvis(item, item.userBean)} class="fas fa-info-circle"></i>
-                                                                                    </div>
-                                                                                    {stickyCri(item)}
-                                                                                    <div class="container-fluid">
-                                                                                    </div>
-                                                                                </div>
-                                                                            )
-                                                                        }
-                                                                        )}
-                                                                        {this.state.onProgress.filter(item => item.priority === 'high').map(item => {
-                                                                            return (
-                                                                                <div onClick={() => this.showData(item, item.userBean)} className="col-auto container" onDragEnd={() => this.update(item.taskId, item.status)}
-                                                                                >
-                                                                                    <div className="cor" onClick={() => this.updateCompleted(item.taskId, "completed")}>
-                                                                                        <i class="far fa-check-circle"></i></div>
-                                                                                    <div id="i7" className="col-lg-4 col-md-4 col-sm-4 a" >
-                                                                                        <i onClick={() => this.showvis(item, item.userBean)} class="fas fa-info-circle"></i>
-                                                                                    </div>
-                                                                                    {stickyHigh(item)}
-                                                                                    <div class="container-fluid">
-                                                                                    </div>
-                                                                                </div>
-                                                                            )
-                                                                        }
-                                                                        )}
-                                                                        {this.state.onProgress.filter(item => item.priority === 'medium').map(item => {
-                                                                            return (
-                                                                                <div onClick={() => this.showData(item, item.userBean)} className="col-auto container" onDragEnd={() => this.update(item.taskId, item.status)}
-                                                                                >
-                                                                                    <div className="cor" onClick={() => this.updateCompleted(item.taskId, "completed")}>
-                                                                                        <i class="far fa-check-circle"></i></div>
-
-                                                                                    <div id="i7" className="col-lg-4 col-md-4 col-sm-4 a" >
-                                                                                        <i onClick={() => this.showvis(item, item.userBean)} class="fas fa-info-circle"></i>
-                                                                                    </div>
-                                                                                    {stickyMedium(item)}
-                                                                                    <div class="container-fluid">
-                                                                                    </div>
-                                                                                </div>
-                                                                            )
-                                                                        }
-                                                                        )}
-                                                                        {this.state.onProgress.filter(item => (item.priority === 'low')).map(item => {
-                                                                            return (
-                                                                                <div onClick={() => this.showData(item, item.userBean)} className="col-auto" draggable="true" onDragEnd={() => this.update(item.taskId, item.status)}
-                                                                                >
-
-                                                                                    <div className="cor" onClick={() => this.updateCompleted(item.taskId, "completed")}>
-                                                                                        <i class="far fa-check-circle"></i></div>
-                                                                                    <div id="i7" className="col-lg-4 col-md-4 col-sm-4 a" >
-                                                                                        <i onClick={() => this.showvis(item, item.userBean)} class="fas fa-info-circle"></i>
-                                                                                    </div>
-                                                                                    {stickyLow(item)}
-                                                                                </div>
-                                                                            )
-                                                                        }
-                                                                        )}
-                                                                    </div>
-                                                                </div>
+                                                            <div className=" card-body cards">
+                                                                {this.state.todo.filter(item => item.priority === 'critical').map(item => {
+                                                                    return (
+                                                                        <div onClick={() => this.showData(item, item.userBean)} className="col-auto" onDragEnd={() => this.update(item.taskId, item.status)}
+                                                                        >
+                                                                            <div id="i7" className="col-lg-4 col-md-4 col-sm-4 a" >
+                                                                                <i onClick={() => this.showvis(item, item.userBean)} class="fas fa-info-circle"></i>
+                                                                            </div>
+                                                                            {stickyCri(item)}
+                                                                        </div>
+                                                                    )
+                                                                }
+                                                                )}
+                                                                {this.state.todo.filter(item => item.priority === 'high').map(item => {
+                                                                    return (
+                                                                        <div onClick={() => this.showData(item, item.userBean)} className="col-auto" onDragEnd={() => this.update(item.taskId, item.status)}
+                                                                        >
+                                                                            <div id="i7" className="col-lg-4 col-md-4 col-sm-4 a" >
+                                                                                <i onClick={() => this.showvis(item, item.userBean)} class="fas fa-info-circle"></i>
+                                                                            </div>
+                                                                            {stickyHigh(item)}
+                                                                        </div>
+                                                                    )
+                                                                }
+                                                                )}
+                                                                {this.state.todo.filter(item => item.priority === 'medium').map(item => {
+                                                                    return (
+                                                                        <div onClick={() => this.showData(item, item.userBean)} className="col-auto" onDragEnd={() => this.update(item.taskId, item.status)}
+                                                                        >
+                                                                            <div id="i7" className="col-lg-4 col-md-4 col-sm-4 a" >
+                                                                                <i onClick={() => this.showvis(item, item.userBean)} class="fas fa-info-circle"></i>
+                                                                            </div>
+                                                                            {stickyMedium(item)}
+                                                                        </div>
+                                                                    )
+                                                                }
+                                                                )}
+                                                                {this.state.todo.filter(item => item.priority === 'low').map(item => {
+                                                                    return (
+                                                                        <div onClick={() => this.showData(item, item.userBean)} className="col-auto" onDragEnd={() => this.update(item.taskId, item.status)}>
+                                                                            <div id="i7" className="col-lg-4 col-md-4 col-sm-4 a" >
+                                                                                <i onClick={() => this.showvis(item, item.userBean)} class="fas fa-info-circle"></i>
+                                                                            </div>
+                                                                            {stickyLow(item)}
+                                                                        </div>
+                                                                    )
+                                                                }
+                                                                )}
                                                             </div>
-                                                            {/* End onProgress */}
-                                                            {/* blocked */}
-
-                                                            <div className="col-lg-4 col-md-3 col-xs-12" id="blocked" onDragOver={(e) => this.onDragOver(e, "blocked")}>
-                                                                <div className="col-auto">
-                                                                    <div id="card bg-default head" >
-                                                                        <h5 id="card-header" className="card-header header">
-                                                                            <center className="letter"> BLOCKED </center>
-                                                                        </h5>
-                                                                    </div>
-                                                                    <div className=" card-body cards">
-                                                                        {this.state.blocked.filter(item => item.priority === 'critical').map(item => {
-                                                                            return (
-                                                                                <div  onClick={() => this.showData(item, item.userBean)} className="col-auto"
-                                                                                    onDragEnd={() => this.update(item.taskId, item.status)} >
-                                                                                    <div id="i7" className="col-lg-4 col-md-4 col-sm-4 a" >
-                                                                                        <i onClick={() => this.showvis(item, item.userBean)} class="fas fa-info-circle"></i>
-                                                                                    </div>
-                                                                                    {stickyCri(item)}
-                                                                                </div>
-                                                                            )
-                                                                        }
-                                                                        )}
-                                                                        {this.state.blocked.filter(item => item.priority === 'high').map(item => {
-                                                                            return (
-                                                                                <div onClick={() => this.showData(item, item.userBean)} className="col-auto"
-                                                                                    onDragEnd={() => this.update(item.taskId, item.status)}
-                                                                                >
-                                                                                    <div id="i7" className="col-lg-4 col-md-4 col-sm-4 a" >
-                                                                                        <i onClick={() => this.showvis(item, item.userBean)} class="fas fa-info-circle"></i>
-                                                                                    </div>
-                                                                                    {stickyHigh(item)}
-                                                                                </div>
-                                                                            )
-                                                                        }
-                                                                        )}
-                                                                        {this.state.blocked.filter(item => item.priority === 'medium').map(item => {
-                                                                            return (
-                                                                                <div onClick={() => this.showData(item, item.userBean)} className="col-auto" onDragEnd={() => this.update(item.taskId, item.status)}
-                                                                                >
-                                                                                    <div id="i7" className="col-lg-4 col-md-4 col-sm-4 a" >
-                                                                                        <i onClick={() => this.showvis(item, item.userBean)} class="fas fa-info-circle"></i>
-                                                                                    </div>
-                                                                                    {stickyMedium(item)}
-                                                                                </div>
-                                                                            )
-                                                                        }
-                                                                        )}
-                                                                        {this.state.blocked.filter(item => item.priority === 'low').map(item => {
-                                                                            return (
-                                                                                <div onClick={() => this.showData(item, item.userBean)} className="col-auto"
-                                                                                    onDragEnd={() => this.update(item.taskId, item.status)}
-                                                                                >
-
-                                                                                    <div id="i7" className="col-lg-4 col-md-4 col-sm-4 a" >
-                                                                                        <i onClick={() => this.showvis(item, item.userBean)} class="fas fa-info-circle"></i>
-                                                                                    </div>
-                                                                                    {stickyLow(item)}
-                                                                                </div>
-                                                                            )
-                                                                        }
-                                                                        )}
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-
-
                                                         </div>
-                                                        {/*End Of blocked */}
-                                                    </center>
+                                                    </div>
+                                                    {/*End of  ToDo */}
+                                                    {/* onProgress */}
+                                                    <div className="col-lg-4 col-md-3 col-xs-12 col-3" id="onProgress" onDragOver={(e) => this.onDragOver(e, "onProgress")}>
+                                                        <div className="col-auto">
+                                                            <div id="card bg-default head" >
+                                                                <h5 id="card-header" className="card-header header">
+                                                                    <center className="letter" > IN PROGRESS </center>
+                                                                </h5>
+                                                            </div>
+                                                            <div className="card-body cards">
+                                                                {this.state.onProgress.filter(item => item.priority === 'critical').map(item => {
+                                                                    return (
+                                                                        <div onClick={() => this.showData(item, item.userBean)} className="col-auto container" onDragEnd={() => this.update(item.taskId, item.status)}
+                                                                        >
+                                                                            <div className="cor" onClick={() => this.updateCompleted(item.taskId, "completed")}>
+                                                                                <i class="far fa-check-circle"></i></div>
+
+                                                                            <div id="i7" className="col-lg-4 col-md-4 col-sm-4 a" >
+                                                                                <i onClick={() => this.showvis(item, item.userBean)} class="fas fa-info-circle"></i>
+                                                                            </div>
+                                                                            {stickyCri(item)}
+                                                                            <div class="container-fluid">
+                                                                            </div>
+                                                                        </div>
+                                                                    )
+                                                                }
+                                                                )}
+                                                                {this.state.onProgress.filter(item => item.priority === 'high').map(item => {
+                                                                    return (
+                                                                        <div onClick={() => this.showData(item, item.userBean)} className="col-auto container" onDragEnd={() => this.update(item.taskId, item.status)}
+                                                                        >
+                                                                            <div className="cor" onClick={() => this.updateCompleted(item.taskId, "completed")}>
+                                                                                <i class="far fa-check-circle"></i></div>
+                                                                            <div id="i7" className="col-lg-4 col-md-4 col-sm-4 a" >
+                                                                                <i onClick={() => this.showvis(item, item.userBean)} class="fas fa-info-circle"></i>
+                                                                            </div>
+                                                                            {stickyHigh(item)}
+                                                                            <div class="container-fluid">
+                                                                            </div>
+                                                                        </div>
+                                                                    )
+                                                                }
+                                                                )}
+                                                                {this.state.onProgress.filter(item => item.priority === 'medium').map(item => {
+                                                                    return (
+                                                                        <div onClick={() => this.showData(item, item.userBean)} className="col-auto container" onDragEnd={() => this.update(item.taskId, item.status)}
+                                                                        >
+                                                                            <div className="cor" onClick={() => this.updateCompleted(item.taskId, "completed")}>
+                                                                                <i class="far fa-check-circle"></i></div>
+
+                                                                            <div id="i7" className="col-lg-4 col-md-4 col-sm-4 a" >
+                                                                                <i onClick={() => this.showvis(item, item.userBean)} class="fas fa-info-circle"></i>
+                                                                            </div>
+                                                                            {stickyMedium(item)}
+                                                                            <div class="container-fluid">
+                                                                            </div>
+                                                                        </div>
+                                                                    )
+                                                                }
+                                                                )}
+                                                                {this.state.onProgress.filter(item => (item.priority === 'low')).map(item => {
+                                                                    return (
+                                                                        <div onClick={() => this.showData(item, item.userBean)} className="col-auto" draggable="true" onDragEnd={() => this.update(item.taskId, item.status)}
+                                                                        >
+
+                                                                            <div className="cor" onClick={() => this.updateCompleted(item.taskId, "completed")}>
+                                                                                <i class="far fa-check-circle"></i></div>
+                                                                            <div id="i7" className="col-lg-4 col-md-4 col-sm-4 a" >
+                                                                                <i onClick={() => this.showvis(item, item.userBean)} class="fas fa-info-circle"></i>
+                                                                            </div>
+                                                                            {stickyLow(item)}
+                                                                        </div>
+                                                                    )
+                                                                }
+                                                                )}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    {/* End onProgress */}
+                                                    {/* blocked */}
+
+                                                    <div className="col-lg-4 col-md-3 col-xs-12" id="blocked" onDragOver={(e) => this.onDragOver(e, "blocked")}>
+                                                        <div className="col-auto">
+                                                            <div id="card bg-default head" >
+                                                                <h5 id="card-header" className="card-header header">
+                                                                    <center className="letter"> BLOCKED </center>
+                                                                </h5>
+                                                            </div>
+                                                            <div className=" card-body cards">
+                                                                {this.state.blocked.filter(item => item.priority === 'critical').map(item => {
+                                                                    return (
+                                                                        <div onClick={() => this.showData(item, item.userBean)} className="col-auto"
+                                                                            onDragEnd={() => this.update(item.taskId, item.status)} >
+                                                                            <div id="i7" className="col-lg-4 col-md-4 col-sm-4 a" >
+                                                                                <i onClick={() => this.showvis(item, item.userBean)} class="fas fa-info-circle"></i>
+                                                                            </div>
+                                                                            {stickyCri(item)}
+                                                                        </div>
+                                                                    )
+                                                                }
+                                                                )}
+                                                                {this.state.blocked.filter(item => item.priority === 'high').map(item => {
+                                                                    return (
+                                                                        <div onClick={() => this.showData(item, item.userBean)} className="col-auto"
+                                                                            onDragEnd={() => this.update(item.taskId, item.status)}
+                                                                        >
+                                                                            <div id="i7" className="col-lg-4 col-md-4 col-sm-4 a" >
+                                                                                <i onClick={() => this.showvis(item, item.userBean)} class="fas fa-info-circle"></i>
+                                                                            </div>
+                                                                            {stickyHigh(item)}
+                                                                        </div>
+                                                                    )
+                                                                }
+                                                                )}
+                                                                {this.state.blocked.filter(item => item.priority === 'medium').map(item => {
+                                                                    return (
+                                                                        <div onClick={() => this.showData(item, item.userBean)} className="col-auto" onDragEnd={() => this.update(item.taskId, item.status)}
+                                                                        >
+                                                                            <div id="i7" className="col-lg-4 col-md-4 col-sm-4 a" >
+                                                                                <i onClick={() => this.showvis(item, item.userBean)} class="fas fa-info-circle"></i>
+                                                                            </div>
+                                                                            {stickyMedium(item)}
+                                                                        </div>
+                                                                    )
+                                                                }
+                                                                )}
+                                                                {this.state.blocked.filter(item => item.priority === 'low').map(item => {
+                                                                    return (
+                                                                        <div onClick={() => this.showData(item, item.userBean)} className="col-auto"
+                                                                            onDragEnd={() => this.update(item.taskId, item.status)}
+                                                                        >
+
+                                                                            <div id="i7" className="col-lg-4 col-md-4 col-sm-4 a" >
+                                                                                <i onClick={() => this.showvis(item, item.userBean)} class="fas fa-info-circle"></i>
+                                                                            </div>
+                                                                            {stickyLow(item)}
+                                                                        </div>
+                                                                    )
+                                                                }
+                                                                )}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
 
                                                 </div>
-                                            </div>
-                                        </div>
-                                    </div>
+                                                {/*End Of blocked */}
+                                            </center>
 
-                                    <div className="col-lg-2 " >
-                                        <div className="col-md-12">
-                                            <div className="row">
-
-{this.state.showData?
-    <div>
-               
- <TaskInfo  taskBean={this.state.taskBean} user={this.state.user} showUpadtaed={()=>this.getData()} comment={this.getCommentData.bind()} commentBean={this.state.commentBean}  />
-                 </div>
- :null}
-                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                   
+
+                            <div className="col-lg-2 " >
+                                <div className="col-md-12">
+                                    <div className="row">
+
+                                        {this.state.showData ?
+                                            <div>
+
+                                                <TaskInfo taskBean={this.state.taskBean} user={this.state.user} showUpadtaed={() => this.getData()} comment={this.getCommentData.bind()} commentBean={this.state.commentBean} />
+                                            </div>
+                                            : null}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
-                <div> <Footer style={{}}/></div>
+                <div></div>
+                <Footer/>
             </div>
         )
     }

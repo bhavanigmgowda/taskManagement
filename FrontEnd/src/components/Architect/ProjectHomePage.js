@@ -20,11 +20,12 @@ export class ProjectHomePage extends Component {
 
 		}
 	}
+	
 	NotifyNoTaskAssigned = () => {
 		debugger
 		if (!toast.isActive(this.toastId)) {
 			this.toastId = toast.error(<center>No Project Exists</center>, {
-				position: "top-center", autoClose: 7000,
+				position: "top-center", autoClose: false,
 			});
 		}
 	}
@@ -32,7 +33,7 @@ export class ProjectHomePage extends Component {
 	NotifyServerOffline = () => {
 		if (!toast.isActive(this.toastId)) {
 			this.toastId = toast.error(<center>Server Not Responding</center>, {
-				position: "top-center", autoClose: 7000,
+				position: "top-center", autoClose: false,
 			});
 		}
 	}
@@ -101,17 +102,13 @@ export class ProjectHomePage extends Component {
 
 										</div>
 
-
 								</div>
 							</div>
+							
 						</div>
 					</div>
-				<Footer />
+			
 			</div>
-
-
-
-
 		)
 	}
 }

@@ -97,6 +97,7 @@ export class createProject extends Component {
             })
         }
     }
+    
     getProfile(e, email) {
         e.preventDefault()
         console.log("==================kkkkkkkkkkkk", email)
@@ -271,7 +272,7 @@ export class createProject extends Component {
     NotifyFieldMandatory = () => {
         if (!toast.isActive(this.toastId)) {
             this.toastId = toast.info(<center>All Fields Are Mandatory</center>, {
-                position: "top-center", autoClose: 5000
+                position: "top-center", autoClose: false
             });
         }
     }
@@ -279,21 +280,21 @@ export class createProject extends Component {
     NotifyServerOffline = () => {
         if (!toast.isActive(this.toastId)) {
             this.toastId = toast.error(<center>Registration Failed Server Did Not Respond</center>, {
-                position: "top-center", autoClose: 7000,
+                position: "top-center", autoClose: false,
             });
         }
     }
     NotifyEmailDoesntExists = () => {
         if (!toast.isActive(this.toastId)) {
             this.toastId = toast.warning(<center>Registration Failed Email Does Not Exist</center>, {
-                position: "top-center", autoClose: 7000,
+                position: "top-center", autoClose: false,
             });
         }
     }
     NotifyTaskCreationSuccess = () => {
         if (!toast.isActive(this.toastId)) {
             this.toastId = toast.success(<center>Task Created Successfully</center>, {
-                position: "top-center", autoClose: 3000,
+                position: "top-center", autoClose: false,
             });
         }
     }

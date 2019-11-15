@@ -32,6 +32,7 @@ export default class TaskInfo extends Component {
     componentDidMount(){
         this.getData()
     }
+
     getData() {
         console.log("this.props.passTask", this.props.passTask)
         console.log("this.props.passUser", this.props.passUser)
@@ -72,9 +73,9 @@ export default class TaskInfo extends Component {
             })
         }
     }
+
        edit(email) {
         console.log("=======edit")
-
         if (this.state.email === email) {
             console.log("=======edit")
             this.setState({
@@ -97,8 +98,8 @@ export default class TaskInfo extends Component {
                 console.log(error)
                 this.setState({ loading: false });
             })
-
     }
+
     addComment(){
         this.props.comment(this.state.comment);
         this.setState({
@@ -246,23 +247,25 @@ cancle(){
                             return (
                                 <div>
                                     <label className="mb-0" style={{ color: 'black', fontSize: '15' }}>{item.userBean.employeeName}</label>
-                                    <div className="input-group mb-2">
-
-                                        <textarea style={{ color: 'black' }} onChange={(e) => this.setState({ updateComment: e.target.value })} value={this.state.updateComment} onClick={() => this.edit(item.userBean.email)} type="text" className="form-control" placeholder={item.comment} />
-                                    </div>
-                                    <Link className="edit" onClick={() => this.updateComment(item)}>save</Link>
+                                    
+                                        <textarea className="input-group mb-2" style={{ color: 'black' }}   onChange={(e) => this.setState({ updateComment: e.target.value })}   value={this.state.updateComment}   onClick={() => this.edit(item.userBean.email)} type="text" className="form-control" placeholder={item.comment} />
+                                     
+                                  
+                                    <Link className="edit" onClick={() => this.updateComment(item)}>edit</Link>
                                     &nbsp;&nbsp; <Link className="edit" onClick={() => this.deleteComment(item.commentId)}>delete</Link>
+                                       <small style={{fontSize:'60%',marginLeft:'34%'}}> {item.commentDate}</small><br/>
                                 </div>
                             )
                         }
                         )}
+                         
                     </div>
                     {this.state.edit?
                     <div>
                     <div className="input-group mb-2">
                         <textarea style={{ color: 'black' }} type="text" className="form-control" placeholder="Add a Comment"
                             onChange={(e) => this.setState({ comment: e.target.value })} value={this.state.comment} />  </div>
-                    <Button onClick={() => this.addComment()} >save</Button></div>:<div> <br/> <Button onClick={() => this.updateTask()} style={{marginRight:"62px"}} >save</Button>
+                    <Button onClick={() => this.addComment()} >save</Button></div> : <div> <br/> <Button onClick={() => this.updateTask()} style={{marginRight:"62px"}} >save</Button>
                     <Button onClick={() => this.cancle()} >Cancel</Button>
                     </div>}
                 </div>

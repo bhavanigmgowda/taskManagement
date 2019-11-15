@@ -5,6 +5,8 @@ import {  SideNavBar } from '../Architect/SideData';
 import Footer from '../navBar/footer';
 import Axios from 'axios';
 import {  withRouter } from 'react-router-dom';
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 
 class GetPeople extends Component {
@@ -22,10 +24,18 @@ class GetPeople extends Component {
             searchInput: '',
             searchData: false,
             mail: JSON.parse(window.localStorage.getItem('beans')),
-
         }
-
     }
+
+
+    // NotifyServerOffline = () => {
+    //     if (!toast.isActive(this.toastId)) {
+    //         this.toastId = toast.error(<center>Server Not Responding</center>, {
+    //             position: "top-center", autoClose: false,
+    //         });
+    //     }
+    // }
+
     componentDidMount() {
         if (this.state.role === "architect") {
             this.setState({
@@ -40,21 +50,29 @@ class GetPeople extends Component {
                 emp: true
             })
         }
+
+        debugger
         Axios.get('http://localhost:8080/search-members-for-project?email=' + JSON.parse(window.localStorage.getItem('beans'))
         ).then((response) => {
-
             if (response.data.message === "Success") {
                 console.log("response people", response);
                 this.setState({
                     peoples: response.data.userBeans
                 })
-
             }
         }).catch((error) => {
+            this.NotifyServerOffline();
         })
-
-
     }
+
+    NotifyServerOffline = () => {
+        if (!toast.isActive(this.toastId)) {
+            this.toastId = toast.error(<center>Server Not Responding</center>, {
+                position: "top-center", autoClose: false,
+            });
+        }
+    }
+
   
 
     searchButton = (e) => {

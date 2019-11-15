@@ -37,14 +37,14 @@ class Byme extends Component {
     NotifyServerOffline = () => {
         if (!toast.isActive(this.toastId)) {
             this.toastId = toast.error(<center>Server Not Responding</center>, {
-                position: "top-center", autoClose: 7000,
+                position: "top-center", autoClose: false,
             });
         }
     }
     NotifyUpdatedTask = () => {
         if (!toast.isActive(this.toastId)) {
             this.toastId = toast.success(<center>Task Updated Successfully</center>, {
-                position: "top-center", autoClose: 1500,
+                position: "top-center", autoClose: false,
             });
         }
     }
@@ -64,6 +64,8 @@ class Byme extends Component {
                 })
               }
             }).catch((error) => {
+
+                this.NotifyServerOffline();
             })
             if (this.state.role === "architect") {
                 this.setState({
