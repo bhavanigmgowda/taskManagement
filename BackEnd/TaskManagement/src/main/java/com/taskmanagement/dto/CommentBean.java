@@ -11,7 +11,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-
+import org.hibernate.annotations.CreationTimestamp;
 import com.fasterxml.jackson.annotation.JsonRootName;
 
 @SuppressWarnings("serial")
@@ -35,6 +35,21 @@ public class CommentBean implements Serializable {
 	@JoinColumn(name = "emp_id")
 	@ManyToOne(cascade = CascadeType.MERGE)
 	private UserBean userBean;
+
+
+	@Column(name = "comment_Date")
+	@CreationTimestamp
+	private LocalDate commentDate;
+
+	
+	public LocalDate getCommentDate() {
+		return commentDate;
+	}
+
+	public void setCommentDate(LocalDate commentDate) {
+		this.commentDate = commentDate;
+	}
+
 
 	public Integer getCommentId() {
 		return commentId;
