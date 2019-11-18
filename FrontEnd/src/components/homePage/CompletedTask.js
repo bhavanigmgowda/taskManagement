@@ -102,10 +102,6 @@ class completedTask extends Component {
         this.setState({ loading: true });
         console.log("---------------", moment().subtract(3, 'month').format('YYYY-MM-DD'))
         console.log("---------------", moment().subtract(6, 'm').format('YYYY-MM-DD'))
-
-        Axios.get()
-
-
         Axios.get(localStorage.getItem('groupId') ? 'http://localhost:8080/completed-project-task?projectId=' + localStorage.getItem('groupId') + '&from=' + dateFrom :
             'http://localhost:8080/completed-task-by-me?email=' + this.state.mail + '&from=' + dateFrom)
             .then((response) => {
@@ -113,8 +109,6 @@ class completedTask extends Component {
                 this.setState({
                     loading: false
                 })
-               
-
                 if (response.data.message === "Success") {
                     this.setState({
                         data: response.data.end,
@@ -272,9 +266,7 @@ class completedTask extends Component {
                 <div className="row">
                     <div className="col-md-12">
                         <div className="row">
-                         
                                    {localStorage.getItem("groupId")?<Architectproject/> :<SideNavBar/>}
-                              
                             {localStorage.getItem('groupId')?<div className="projectName"  style={{    margin: "2%"}} ><Link style={{color:'black'}} onClick={()=>{this.props.history.push('/homePage')}} className="dark">Project</Link>&nbsp;/&nbsp;
                                                             <Link style={{color:'black'}} to='/taskPage'>{localStorage.getItem("projectName")}</Link></div>:null} 
                             

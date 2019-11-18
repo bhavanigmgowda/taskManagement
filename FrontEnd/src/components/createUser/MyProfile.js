@@ -3,7 +3,7 @@ import React, { Component } from 'react'
 import { Modal, Button, Card } from 'react-bootstrap'
 import Axios from 'axios';
 import Footer from '../navBar/footer'
-import {  Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 import './myprofile.css'
 import { Architectproject, SideNavBar } from '../Architect/SideData';
@@ -20,19 +20,14 @@ export default class MyProfile1 extends Component {
         this.state = {
             email: JSON.parse(window.localStorage.getItem('beans')),
             userBean: '',
-
             show: false,
             showSorry: false,
-
             employeeId: '',
             employeeName: '',
             employeeNameUpper: '',
             designation: '',
             loading: false,
-            architect: false,
-            lead: false,
-            emp: false,
-            role: JSON.parse(window.localStorage.getItem('role')),
+            search:true
         }
         this.getProfile = this.getProfile.bind(this);
         console.log('bean inside constructor: ', this.state.email);
@@ -40,51 +35,48 @@ export default class MyProfile1 extends Component {
     } // End of constructor
 
     getProfile() {
-        console.log("this prop length",this.props.userBean.length)
+        console.log("this prop length", this.props.userBean.length)
         if (JSON.parse(window.localStorage.getItem('isValid'))) {
-            if(this.props.userBean){
-                console.log("this prop=======",this.props.userBean.length)
+            if (this.props.userBean) {
+                console.log("this prop=======", this.props.userBean.length)
                 this.setState({
-                    userBean:this.props.userBean                    
+                    userBean: this.props.userBean
                 })
-        }
-        if(this.props.userBean.length===0){            Axios.get('http://localhost:8080/get-profile?email=' + this.state.email).then((response) => {
+            }
+            if (this.props.userBean.length === 0) {
+                Axios.get('http://localhost:8080/get-profile?email=' + this.state.email).then((response) => {
 
-                if (response.data.message === 'Success') {
-                    this.setState({
-                        userBean: response.data.userBean[0],
-                        employeeId: response.data.userBean[0].employeeId,
-                        employeeName: response.data.userBean[0].employeeName,
-                        employeeNameUpper: response.data.userBean[0].employeeName.toUpperCase(),
-                        designation: response.data.userBean[0].designation,
-                    })
-                    console.log("userBean", this.state.userBean);
-                }
-            }).catch((error) => {
-                console.log('Error', error);
-                this.NotifyServerOffline();
-            })
-        }
-    }// end of if
+                    if (response.data.message === 'Success') {
+                        this.setState({
+                            userBean: response.data.userBean[0],
+                            employeeId: response.data.userBean[0].employeeId,
+                            employeeName: response.data.userBean[0].employeeName,
+                            employeeNameUpper: response.data.userBean[0].employeeName.toUpperCase(),
+                            designation: response.data.userBean[0].designation,
+                        })
+                        console.log("userBean", this.state.userBean);
+                    }
+                }).catch((error) => {
+                    console.log('Error', error);
+                    this.NotifyServerOffline();
+                })
+            }
+        }// end of if
     } //End of getProfile
 
 
     componentDidMount() {
         this.getProfile();
-        if (this.state.role === "architect") {
+console.log("=====this.props.userBean.email",this.props.userBean.email,"======this.state.email",this.state.email)
+        if(this.props.userBean.email !== this.state.email&&this.props.userBean.length!==0) {
+            console.log("==inside iif===this.props.userBean.email",this.props.userBean.email,"======this.state.email",this.state.email,"-----",this.props.userBean.length)
+        
             this.setState({
-                architect: true
+                search :false
             })
-        } else if (this.state.role === "lead") {
-            this.setState({
-                lead: true
-            })
-        } else {
-            this.setState({
-                emp: true
-            })
+        
         }
-        console.log("this.props.userBean ",this.props.userBean)
+        console.log("this.props.userBean ", this.props.userBean)
     }
 
 
@@ -101,26 +93,26 @@ export default class MyProfile1 extends Component {
     }
     NotifyServerOffline = () => {
         if (!toast.isActive(this.toastId)) {
-        this.toastId = toast.error(<center> Server Did Not Respond</center>, {
-            position: "top-center", autoClose: 7000,
-        });
+            this.toastId = toast.error(<center> Server Did Not Respond</center>, {
+                position: "top-center", autoClose: 7000,
+            });
+        }
     }
-}
 
     NotifyUpdateFailed = () => {
         if (!toast.isActive(this.toastId)) {
-        this.toastId = toast.error(<center>Update Failed Server Did Not Respond</center>, {
-            position: "top-center", autoClose: 7000,
-        });
+            this.toastId = toast.error(<center>Update Failed Server Did Not Respond</center>, {
+                position: "top-center", autoClose: 7000,
+            });
+        }
     }
-}
 
     updateUserData() {
         this.setState({ loading: true })
         const beans = this.state;
         const userData = beans;
         console.log('AccountData', userData);
-       
+
         if (JSON.parse(window.localStorage.getItem('isValid'))) {
             Axios.put('http://localhost:8080/update-user?id=' + this.state.userBean.employeeId, userData).then((response) => {
 
@@ -162,105 +154,105 @@ export default class MyProfile1 extends Component {
             marginLeft: '30%',
             marginTop: '5%'
         }
+       
         let containerStyle = {
             padding: '2px 16px'
         }
-        console.log("==================", this.state.userBean)
 
         return (
             <div id="profile-container">
-             <div className="container-fluid">
-            <div className="row">
-                <div className="col-md-12">
+                <div className="container-fluid">
                     <div className="row">
-                   
-                               {localStorage.getItem("groupId")?<Architectproject/> :<SideNavBar/>} 
-                                       
-                                                                     
-           <br/><br/>
-                      
-           <div className="col-md-10 " >
-                <div id="content-wrap" class="container-fluid ">
-                {localStorage.getItem('groupId')?<div className="projectName" style={{    margin: "2%"}}><Link style={{color:'black'}} onClick={()=>{this.props.history.push('/homePage')}} className="dark">Project</Link>&nbsp;/&nbsp;
-                                                            <Link style={{color:'black'}} to='/taskPage'>{localStorage.getItem("projectName")}</Link></div>:null} 
-                                                         
-                    <div style={{ textAlign: 'center' }}>
+                        <div className="col-md-12">
+                            <div className="row">
 
-                        <div style={cardStyle}>
-                            <div><b style={{ fontSize: '40px', color: 'black' }}>Profile Details</b>
-                            </div>
-                            <ToastContainer />
-                            <hr></hr>
-                            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRi-I5E9Vn6dFsuJnrJfJVcpNp6KNQ74ZSjKoGn5t9-pGLddxDG" style={{ width: '40%' }} />
-                            <div style={containerStyle}>
-                                <h5 ><b className="h44">{this.state.userBean.employeeId}</b></h5>
-                                <h5 ><b className="h44" >{this.state.employeeNameUpper}</b></h5>
-                                <h5><b className="h33">{this.state.userBean.email}</b></h5>
-                                <h5><b className="h33"> {this.state.userBean.designation}</b></h5>
-                            </div>
-                            <hr></hr>
-                            <button onClick={this.editUser.bind(this, this.state.beans)} className="btn btn-outline-success">Edit</button>
-                            <hr></hr>
-                        </div>
-                    </div>
-
-                    <Modal centered show={this.state.show} onHide={this.handleClose.bind(this)}>
-                        <Modal.Header closeButton>
-                            <Modal.Title style={{ width: '100%', textAlign: 'center' }}>Update User Details </Modal.Title>
-                            <br />
+                                {localStorage.getItem("groupId") ? <Architectproject /> : <SideNavBar />}
 
 
-                        </Modal.Header>
-                        <div className="w-100" style={{ marginLeft: '50%', marginRight: 'auto' }}>
-                            <PropagateLoader
-                                size={10}
-                                color={'#123abc'}
-                                loading={this.state.loading}
-                            />
-                        </div>
+                                <br /><br />
 
-                        <Modal.Body>
-                            <div className="row ">
-                                <div className="col-10" style={{ width: '100%', margin: 'auto' }}>
-                                    <label>Name:</label>
-                                    <div className="input-group mb-3">
-                                        <div className="input-group-prepend ">
-                                            <label className="input-group-text"><i className="fas fa-user" /></label>
+                                <div className="col-md-10 " >
+                                    <div id="content-wrap" class="container-fluid ">
+                                        {localStorage.getItem('groupId') ? <div className="projectName" style={{ margin: "2%" }}><Link style={{ color: 'black' }} onClick={() => { this.props.history.push('/homePage') }} className="dark">Project</Link>&nbsp;/&nbsp;
+                                                            <Link style={{ color: 'black' }} to='/taskPage'>{localStorage.getItem("projectName")}</Link></div> : null}
+
+                                        <div style={{ textAlign: 'center' }}>
+
+                                            <div style={cardStyle}>
+                                                <div><b style={{ fontSize: '40px', color: 'black' }}>Profile Details</b>
+                                                </div>
+                                                <ToastContainer />
+                                                <hr></hr>
+                                                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRi-I5E9Vn6dFsuJnrJfJVcpNp6KNQ74ZSjKoGn5t9-pGLddxDG" style={{ width: '40%' }} />
+                                                <div style={containerStyle}>
+                                                    <h5 ><b className="h44">{this.state.userBean.employeeId}</b></h5>
+                                                    <h5 ><b className="h44" >{this.state.employeeNameUpper}</b></h5>
+                                                    <h5><b className="h33">{this.state.userBean.email}</b></h5>
+                                                    <h5><b className="h33"> {this.state.userBean.designation}</b></h5>
+                                                </div>
+                                                <hr></hr>
+                                                {this.state.search ? <button onClick={this.editUser.bind(this, this.state.beans)} className="btn btn-outline-success">Edit</button> : null}
+                                                <hr></hr>
+                                            </div>
                                         </div>
-                                        <input type="text" title="Change Name" onChange={(event) => { this.setState({ employeeName: event.target.value }) }}
-                                            value={this.state.employeeName} className="form-control" placeholder="Employee Name" />
-                                    </div>
-                                    <label>Email:</label>
-                                    <div className="input-group mb-3">
-                                        <div className="input-group-prepend ">
-                                            <label className="input-group-text"><i className="fas fa-at" /></label>
-                                        </div>
-                                        <input type="text" title="Change Email" onChange={(event) => { this.setState({ email: event.target.value }) }}
-                                            value={this.state.email} className="form-control" placeholder="Email" />
-                                    </div>
-                                    <label>Designation:</label>
-                                    <div className="input-group mb-3">
-                                        <div className="input-group-prepend ">
-                                            <label className="input-group-text"><i className="fas fa-user-tie" /></label>
-                                        </div>
-                                        <input type="text" title="Change Designation" onChange={(event) => { this.setState({ designation: event.target.value }) }}
-                                            value={this.state.designation} className="form-control" placeholder="Designation" />
+
+                                        <Modal centered show={this.state.show} onHide={this.handleClose.bind(this)}>
+                                            <Modal.Header closeButton>
+                                                <Modal.Title style={{ width: '100%', textAlign: 'center' }}>Update User Details </Modal.Title>
+                                                <br />
+
+
+                                            </Modal.Header>
+                                            <div className="w-100" style={{ marginLeft: '50%', marginRight: 'auto' }}>
+                                                <PropagateLoader
+                                                    size={10}
+                                                    color={'#123abc'}
+                                                    loading={this.state.loading}
+                                                />
+                                            </div>
+
+                                            <Modal.Body>
+                                                <div className="row ">
+                                                    <div className="col-10" style={{ width: '100%', margin: 'auto' }}>
+                                                        <label>Name:</label>
+                                                        <div className="input-group mb-3">
+                                                            <div className="input-group-prepend ">
+                                                                <label className="input-group-text"><i className="fas fa-user" /></label>
+                                                            </div>
+                                                            <input type="text" title="Change Name" onChange={(event) => { this.setState({ employeeName: event.target.value }) }}
+                                                                value={this.state.employeeName} className="form-control" placeholder="Employee Name" />
+                                                        </div>
+                                                        <label>Email:</label>
+                                                        <div className="input-group mb-3">
+                                                            <div className="input-group-prepend ">
+                                                                <label className="input-group-text"><i className="fas fa-at" /></label>
+                                                            </div>
+                                                            <input type="text" title="Change Email" onChange={(event) => { this.setState({ email: event.target.value }) }}
+                                                                value={this.state.email} className="form-control" placeholder="Email" />
+                                                        </div>
+                                                        <label>Designation:</label>
+                                                        <div className="input-group mb-3">
+                                                            <div className="input-group-prepend ">
+                                                                <label className="input-group-text"><i className="fas fa-user-tie" /></label>
+                                                            </div>
+                                                            <input type="text" title="Change Designation" onChange={(event) => { this.setState({ designation: event.target.value }) }}
+                                                                value={this.state.designation} className="form-control" placeholder="Designation" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </Modal.Body>
+                                            <Modal.Footer>
+                                                <button className="btn btn-outline-success justify-content-center" onClick={this.updateUserData.bind(this)}>
+                                                    Save Changes
+</button>
+                                            </Modal.Footer>
+                                        </Modal>
+
                                     </div>
                                 </div>
                             </div>
-                        </Modal.Body>
-                        <Modal.Footer>
-                            <button className="btn btn-outline-success justify-content-center" onClick={this.updateUserData.bind(this)}>
-                                Save Changes
-</button>
-                        </Modal.Footer>
-                    </Modal>
-
-                </div>
-                </div>
-                </div>
-                </div>
-                </div>
+                        </div>
+                    </div>
                 </div>
                 <Footer />
             </div>

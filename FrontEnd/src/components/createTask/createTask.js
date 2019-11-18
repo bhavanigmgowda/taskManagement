@@ -40,6 +40,7 @@ export class CreateTask extends Component {
             showEmailInvalid: false,
             loading: false,
             userBean: '',
+            projectBean: null,
             isProject: false,
             emailLists: [],
             projectBean: false,
@@ -92,8 +93,9 @@ export class CreateTask extends Component {
         }// end of if
     } //End of getProfile
 
-
+   
     create(e) {
+        debugger
         this.setState({ loading: true })
         e.preventDefault();
         this.setState({
@@ -223,7 +225,6 @@ export class CreateTask extends Component {
         that.setState({ showEmailInvalid: false })
         return true;
     }
-
     NotifyFieldMandatory = () => {
         if (!toast.isActive(this.toastId)) {
             this.toastId = toast.info(<center>All Fields Are Mandatory</center>, {
@@ -252,14 +253,13 @@ export class CreateTask extends Component {
             });
         }
     }
-
     method(data) {
         console.log("data", data)
         this.setState({
             assignedTo: data
         })
-        if (data != '') {
-            Axios.get(this.state.isProject ? 'http://localhost:8080/get-emails-while-createtask/?email=' + data + '&projectId=' + this.state.projectBean.projectPkBean.projectId : 'http://localhost:8080/get-emails-while-search/?email=' + data).then((response) => {
+      if(data!=''){
+            Axios.get(this.state.isProject?'http://localhost:8080/get-emails-while-createtask/?email=' + data + '&projectId=' + this.state.projectBean.projectPkBean.projectId :'http://localhost:8080/get-emails-while-search/?email=' + data) .then((response) => {
                 if (response.data.statusCode === 201) {
                     this.setState({
                         emailLists: response.data.emailList
@@ -270,14 +270,12 @@ export class CreateTask extends Component {
             }).catch((error) => {
                 console.log(error)
             })
-        }
-        else{
-            this.setState({
-                emailLists:[]
-            })
-        }
+      }else{
+        this.setState({
+            emailLists:[]
+        })
+      }
     }
-
     getProjects() {
         Axios.get('http://localhost:8080/get-projects-by-email?email=' + this.state.userBeans)
             .then((response) => {
@@ -354,19 +352,20 @@ export class CreateTask extends Component {
 
 
                                                     <Dropdown style={{ width: "310px" }}>
-                                                        <Dropdown.Toggle  placeholder="Select project" id="Priority" className="form-control" required name="Priority" >
-                                                            {this.state.projectBean ? this.state.projectBean.projectName : this.state.nullValue ? "Select Project" : "Not For Project"}
+                                                        <Dropdown.Toggle value={this.state.projectBean} placeholder="Select project" id="Priority" className="form-control" required name="Priority" title="Select Priority">
+                                                            {this.state.projectBean ? this.state.projectBean.projectName : this.state.nullValue? "Select Project":"Not For Project"}
                                                         </Dropdown.Toggle>
                                                         <Dropdown.Menu style={{ width: "310px" }}>
                                                             {this.state.project.map(item => {
                                                                 return (
-                                                                    <Dropdown.Item onClick={() => { this.setState({ projectBean: item, isProject: true }) }}>{item.projectName}</Dropdown.Item>
+                                                                    <Dropdown.Item onClick={() => { this.setState({ projectBean: item,isProject:true }) }}>{item.projectName}</Dropdown.Item>
                                                                 )
                                                             })}
-                                                            <Dropdown.Item onClick={() => { this.setState({ projectBean: null, nullValue: false, isProject: false }) }}>NONE</Dropdown.Item>
+                                                            <Dropdown.Item onClick={() => { this.setState({ projectBean: null ,nullValue:false,isProject:false}) }}>Not For Project</Dropdown.Item>
                                                         </Dropdown.Menu>
                                                     </Dropdown>  </ThemeProvider>{' '}
                                             </div>
+                                              <Dropdown style={{ width: "310px" }}>
                                             <div className="input-group mb-3">
                                                 <div className="input-group-prepend">
                                                     <label className="input-group-text"><i className="fas fa-at" /></label>
@@ -375,16 +374,16 @@ export class CreateTask extends Component {
                                                     this.method(event.target.value)
                                                 }} />
                                             </div>
-                                            <Dropdown style={{ width: "310px" }}>
-                                                <Dropdown.Menu style={{ width: "310px" }}>
-                                                    {this.state.emailLists.map(item => {
-                                                        return (
-                                                            <Dropdown.Item onClick={() => this.setState({ assignedTo: item })}>{item}</Dropdown.Item>
-                                                        )
-                                                    })}
-                                                </Dropdown.Menu>
-                                            </Dropdown>
-                                            {this.state.emailLists.length > 0 ? this.state.emailLists.map((item) => { return <div onClick={() => this.setState({ assignedTo: item })} style={{  cursor: 'pointer' }}>{item}</div> }) : null}
+                                            <Dropdown.Menu style={{ width: "310px" }}>
+                                                            {this.state.emailLists.map(item => {
+                                                                return (
+                                                                    <Dropdown.Item onClick={()=>this.setState({assignedTo:item})}>{item}</Dropdown.Item>
+                                                                )
+                                                            })}
+                                                          </Dropdown.Menu>
+                                                          </Dropdown>
+                                             {this.state.emailLists.length > 0 ? this.state.emailLists.map((item) => 
+                                                { return <div onClick={()=>this.setState({assignedTo:item})} style={{ cursor:'pointer' }}>{item}</div> }) : null} 
                                             {this.state.showEmailInvalid ? <div id="errordiv" className="container-fluid">Please enter a valid email address</div> : null}
                                             {this.state.showAssignTo ? <div id="errordiv" className="container-fluid">Please set Email**</div> : null}
                                             <div className="input-group mb-3">
@@ -400,7 +399,6 @@ export class CreateTask extends Component {
                                                     <option value="critical">Critical</option>
                                                 </select>
                                             </div>
-                                            {console.log("===========projectName============", this.state.projectBean)}
                                             {this.state.showPriority ? <div id="errordiv" className="container-fluid">Please set priority**</div> : null}
                                             <div className="input-group mb-3">
                                                 <div className="input-group-prepend">

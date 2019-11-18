@@ -55,7 +55,6 @@ class Example extends Component {
                                  <td>{projectData.createdDate}</td>
                                 <td>{projectData.deadline}</td>
                             </tr>
-
                         )
                     })
                 }

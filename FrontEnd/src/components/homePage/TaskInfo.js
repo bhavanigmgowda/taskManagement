@@ -6,7 +6,7 @@ import { NavLink, withRouter, Link } from 'react-router-dom';
 import moment from 'moment';
 import { Button } from 'react-bootstrap';
 import Axios from 'axios';
-
+let edit=true
 export default class TaskInfo extends Component {
 
     constructor(props) {
@@ -30,9 +30,9 @@ export default class TaskInfo extends Component {
         }
     }
     componentDidMount(){
-        this.getData()
-    }
+        this.getData();
 
+    }
     getData() {
         console.log("this.props.passTask", this.props.passTask)
         console.log("this.props.passUser", this.props.passUser)
@@ -143,129 +143,138 @@ cancle(){
         edit:true
     })
 }
+close(){
+    this.props.close("close");
+  
+}
     render() {
         var commentBean=[]
      
         if(this.props.commentBean){
            commentBean=this.props.commentBean
         }
-        return (
-            <div class=" card-body  h-75">
-                <div className="input-group mb-3 option">
+if(this.props.userBean){
+    edit=false
 
-                <label className="mb-0" style={{ color: '#808080' }}>Subject</label>
-                    <div className="input-group mb-2">
-                        <textarea style={{ color: 'black'}} onClick={()=>this.update()}  value={this.state.edit?this.props.taskBean.subject:this.state.subject} 
-                        type="text" className="form-control" placeholder="Designation" readOnly={this.state.edit} onChange={(event)=>
-                            this.setState({
-                                subject:event.target.value
-                            })
-                        }/> 
-                         </div>
-                    <label className="mb-0" style={{ color: '#808080' }}>Description</label>
-                    <div className="input-group mb-2">
-                        <textarea style={{ color: 'black'}} onClick={()=>this.update()}  value={this.state.edit?this.props.taskBean.description:this.state.description} 
-                        type="text" className="form-control" placeholder="Designation" readOnly={this.state.edit} onChange={(event)=>
-                            this.setState({
-                                description:event.target.value
-                            })
-                        }/> 
-                         </div>
-                    <label className="mb-0" style={{ color: '#808080' }}>Assigned By</label>
-                    <div className="input-group mb-2">
-                        <div className="input-group-prepend ">
-                            <label className="input-group-text "><i className="fas fa-at" /></label>
-                        </div>
-                        <input type="text" value={this.props.user.email} style={{ color: 'black' }} className="form-control" placeholder="Designation" readOnly /></div>
-                    <label className="mb-0" style={{ color: '#808080' }}>Assigned To</label>
-                    <div className="input-group mb-2">
-                        <div className="input-group-prepend ">
-                            <label className="input-group-text "><i className="fas fa-at" /></label>
-                        </div>
-                        <input type="text"  value={this.state.edit?this.props.taskBean.assignedTo:this.state.assignedTo} 
-                        style={{ color: 'black' }} className="form-control" placeholder="Designation" readOnly={this.state.edit} onClick={()=>this.update()} onChange={(event)=>
-                            this.setState({
-                                assignedTo:event.target.value
-                            })
-                        }/></div>
+}    
+return (
+    <div class=" card-body  h-75">
+        <div className="input-group mb-3 option">
 
-                    <label className="mb-0" style={{ color: '#808080' }}>Assigned On</label>
-                    <div className="input-group mb-2">
-                        <div className="input-group-prepend">
-                            <label className="input-group-text"><i className="far fa-calendar-alt" /></label>
-                        </div>
-                        <input type="text" style={{ color: 'black' }} 
-                            value={moment(this.props.taskBean.assignDate).format("DD-MM-YYYY")} className="form-control" placeholder="Password" readOnly/></div>
-                    <label className="mb-0" style={{ color: '#808080' }}>Deadline</label>
-                    <div className="input-group mb-2">
-                        <div className="input-group-prepend">
-                            <label className="input-group-text"><i className="far fa-calendar-alt" /></label>
-                        </div>
+        <label className="mb-0" style={{ color: '#808080' }}>Subject</label>
+            <div className="input-group mb-2">
+                <textarea style={{ color: 'black'}} onClick={()=>this.update()}  value={this.state.edit?this.props.taskBean.subject:this.state.subject} 
+                type="text" className="form-control" placeholder="Designation" readOnly={this.state.edit} onChange={(event)=>
+                    this.setState({
+                        subject:event.target.value
+                    })
+                }/> 
+                 </div>
+            <label className="mb-0" style={{ color: '#808080' }}>Description</label>
+            <div className="input-group mb-2">
+                <textarea style={{ color: 'black'}} onClick={()=>this.update()}  value={this.state.edit?this.props.taskBean.description:this.state.description} 
+                type="text" className="form-control" placeholder="Designation" readOnly={this.state.edit} onChange={(event)=>
+                    this.setState({
+                        description:event.target.value
+                    })
+                }/> 
+                 </div>
+            <label className="mb-0" style={{ color: '#808080' }}>Assigned By</label>
+            <div className="input-group mb-2">
+                <div className="input-group-prepend ">
+                    <label className="input-group-text "><i className="fas fa-at" /></label>
+                </div>
+                <input type="text" value={this.props.user.email} style={{ color: 'black' }} className="form-control" placeholder="Designation" readOnly /></div>
+            <label className="mb-0" style={{ color: '#808080' }}>Assigned To</label>
+            <div className="input-group mb-2">
+                <div className="input-group-prepend ">
+                    <label className="input-group-text "><i className="fas fa-at" /></label>
+                </div>
+                <input type="text"  value={this.state.edit?this.props.taskBean.assignedTo:this.state.assignedTo} 
+                style={{ color: 'black' }} className="form-control" placeholder="Designation" readOnly={this.state.edit} onClick={()=>this.update()} onChange={(event)=>
+                    this.setState({
+                        assignedTo:event.target.value
+                    })
+                }/></div>
 
-                        <input type="date" style={{ color: 'black' }} value={this.state.edit?this.props.taskBean.endDate:this.state.endDate}
-                           className="form-control" placeholder="Email" readOnly={this.state.edit} onClick={()=>this.update()} onChange={(event)=>
-                            this.setState({
-                                endDate:event.target.value
-                            })
-                        }/> </div>
-                    <label className="mb-0" style={{ color: '#808080' }}>Priority</label>
-                    <div className="input-group mb-2">
-                        <div className="input-group-prepend">
-                            <label className="input-group-text"><i class="fas fa-tasks"></i></label>
+            <label className="mb-0" style={{ color: '#808080' }}>Assigned On</label>
+            <div className="input-group mb-2">
+                <div className="input-group-prepend">
+                    <label className="input-group-text"><i className="far fa-calendar-alt" /></label>
+                </div>
+                <input type="text" style={{ color: 'black' }} 
+                    value={moment(this.props.taskBean.assignDate).format("DD-MM-YYYY")} className="form-control" placeholder="Password" readOnly/></div>
+            <label className="mb-0" style={{ color: '#808080' }}>Deadline</label>
+            <div className="input-group mb-2">
+                <div className="input-group-prepend">
+                    <label className="input-group-text"><i className="far fa-calendar-alt" /></label>
+                </div>
 
-                        </div>
-                          <select  className="form-control" readOnly={this.state.edit} onClick={()=>this.update()} value={this.state.edit?this.props.taskBean.priority:this.state.priority} name="Priority"  onChange={(event) => {
-                                                    this.setState({
-                                                        priority: event.target.value
-                                                    })
-                                                }}>
-                                                         <option selected disabled hidden>Choose Priority</option>
-                                                    <option disabled={this.state.edit} value="low">Low</option>
-                                                    <option disabled={this.state.edit} value="medium">Medium</option>
-                                                    <option disabled={this.state.edit} value="high">High</option>
-                                                    <option disabled={this.state.edit} value="critical">Critical</option>
-                                                </select>
-                                            </div>
+                <input type="date" style={{ color: 'black' }} value={this.state.edit?this.props.taskBean.endDate:this.state.endDate}
+                   className="form-control" placeholder="Email" readOnly={this.state.edit} onClick={()=>this.update()} onChange={(event)=>
+                    this.setState({
+                        endDate:event.target.value
+                    })
+                }/> </div>
+            <label className="mb-0" style={{ color: '#808080' }}>Priority</label>
+            <div className="input-group mb-2">
+                <div className="input-group-prepend">
+                    <label className="input-group-text"><i class="fas fa-tasks"></i></label>
 
-                    <label className="mb-0" style={{ color: '#808080' }}>Comment</label>
-                    <div className="commentBlock" /* style={{overflowY:"scroll", height:"300px",width:"100%"}} */>
-                        {commentBean.filter(item => this.state.email !== item.userBean.email).map(item => {
-                            return (
-                                <div>
-                                    <label className="mb-0" style={{ color: 'black', fontSize: '15' }}>{item.userBean.employeeName}</label>
-                                    <div className="input-group mb-2">
-
-                                        <textarea style={{ color: 'black' }} readOnly value={item.comment} onClick={() => this.edit(item.userBean.email)} type="text" className="form-control" placeholder="Designation" />
-
+                </div>
+                  <select  className="form-control" readOnly={this.state.edit} onClick={()=>this.update()} value={this.state.edit?this.props.taskBean.priority:this.state.priority} name="Priority"  onChange={(event) => {
+                                            this.setState({
+                                                priority: event.target.value
+                                            })
+                                        }}>
+                                                 <option selected disabled hidden>Choose Priority</option>
+                                            <option disabled={this.state.edit} value="low">Low</option>
+                                            <option disabled={this.state.edit} value="medium">Medium</option>
+                                            <option disabled={this.state.edit} value="high">High</option>
+                                            <option disabled={this.state.edit} value="critical">Critical</option>
+                                        </select>
                                     </div>
-                                </div>
 
-                            )
-                        }
-                        )}
-                        {commentBean.filter(item => this.state.email === item.userBean.email).map(item => {
-                            return (
-                                <div>
-                                    <label className="mb-0" style={{ color: 'black', fontSize: '15' }}>{item.userBean.employeeName}</label>
-                                    
-                                        <textarea className="input-group mb-2" style={{ color: 'black' }}   onChange={(e) => this.setState({ updateComment: e.target.value })}   value={this.state.updateComment}   onClick={() => this.edit(item.userBean.email)} type="text" className="form-control" placeholder={item.comment} />
-                                     
-                                  
-                                    <Link className="edit" onClick={() => this.updateComment(item)}>edit</Link>
-                                    &nbsp;&nbsp; <Link className="edit" onClick={() => this.deleteComment(item.commentId)}>delete</Link>
-                                       <small style={{fontSize:'60%',marginLeft:'34%'}}> {item.commentDate}</small><br/>
-                                </div>
-                            )
-                        }
-                        )}
-                         
-                    </div>
-                    {this.state.edit?
-                    <div>
+            <label className="mb-0" style={{ color: '#808080' }}>Comment</label>
+            <div className="commentBlock" /* style={{overflowY:"scroll", height:"300px",width:"100%"}} */>
+                {commentBean.filter(item => this.state.email !== item.userBean.email).map(item => {
+                    return (
+                        <div>
+                            <label className="mb-0" style={{ color: 'black', fontSize: '15' }}>{item.userBean.employeeName}</label>
+                            <div className="input-group mb-2">
+
+                                <textarea style={{ color: 'black' }} readOnly value={item.comment} onClick={() => this.edit(item.userBean.email)} type="text" className="form-control" placeholder="Designation" />
+
+                            </div>
+                        </div>
+
+                    )
+                }
+                )}
+                {commentBean.filter(item => this.state.email === item.userBean.email).map(item => {
+                    return (
+                        <div>
+                            <label className="mb-0" style={{ color: 'black', fontSize: '15' }}>{item.userBean.employeeName}</label>
+                            
+                                <textarea className="input-group mb-2" style={{ color: 'black' }}   onChange={(e) => this.setState({ updateComment: e.target.value })}   value={this.state.updateComment}   onClick={() => this.edit(item.userBean.email)} type="text" className="form-control" placeholder={item.comment} />
+                             
+                          
+                            <Link className="edit" onClick={() => this.updateComment(item)}>edit</Link>
+                            &nbsp;&nbsp; <Link className="edit" onClick={() => this.deleteComment(item.commentId)}>delete</Link>
+                               <small style={{fontSize:'60%',marginLeft:'34%'}}> {item.commentDate}</small><br/>
+                        </div>
+                    )
+                }
+                )}
+                 
+            </div>
+            {this.state.edit?
+            <div>
+           
                     <div className="input-group mb-2">
                         <textarea style={{ color: 'black' }} type="text" className="form-control" placeholder="Add a Comment"
                             onChange={(e) => this.setState({ comment: e.target.value })} value={this.state.comment} />  </div>
-                    <Button onClick={() => this.addComment()} >save</Button></div> : <div> <br/> <Button onClick={() => this.updateTask()} style={{marginRight:"62px"}} >save</Button>
+                    <Button onClick={() => this.addComment()} >save</Button> <Button  onClick={() => this.close()} >Cancel</Button></div>:<div> <br/> <Button onClick={() => this.updateTask()} style={{marginRight:"62px"}} >save</Button>
                     <Button onClick={() => this.cancle()} >Cancel</Button>
                     </div>}
                 </div>

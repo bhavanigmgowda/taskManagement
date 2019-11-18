@@ -137,28 +137,28 @@ export class User extends Component {
     NotifyFieldMandatory = () => {
         if (!toast.isActive(this.toastId)) {
             this.toastId = toast.info(<center>All Fields Are Mandatory</center>, {
-                position: "top-center", autoClose: false
+                position: "top-center", autoClose: 5000
             });
         }
     }
     NotifyMismatchPassword = () => {
         if (!toast.isActive(this.toastId)) {
             this.toastId = toast.error(<center>Passwords Didn't Match Try Again</center>, {
-                position: "top-center", autoClose: false,
+                position: "top-center", autoClose: 5000,
             });
         }
     }
     NotifyServerOffline = () => {
         if (!toast.isActive(this.toastId)) {
             this.toastId = toast.error(<center>Registration Failed Server Did Not Respond</center>, {
-                position: "top-center", autoClose: false,
+                position: "top-center", autoClose: 7000,
             });
         }
     }
     NotifyEmailExists = () => {
         if (!toast.isActive(this.toastId)) {
             this.toastId = toast.warning(<center>Registration Failed Email Already Exist</center>, {
-                position: "top-center", autoClose: false,
+                position: "top-center", autoClose: 7000,
             });
         }
     }

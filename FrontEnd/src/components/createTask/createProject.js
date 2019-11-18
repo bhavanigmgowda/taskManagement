@@ -22,7 +22,7 @@ export class createProject extends Component {
         this.state = {
             groupName: '',
             description: '',
-            addTo: '',
+            addTo: null,
             deadline: '',
             showgroupName: false,
             showDescription: false,
@@ -97,7 +97,6 @@ export class createProject extends Component {
             })
         }
     }
-    
     getProfile(e, email) {
         e.preventDefault()
         console.log("==================kkkkkkkkkkkk", email)
@@ -182,8 +181,6 @@ export class createProject extends Component {
                         ...prevState.projectPkBean,           // copy all other key-value pairs of food object
                         projectId: response.data.projectBeans[0].projectPkBean.projectId
                     }
-
-
                 }))
 
                 console.log("==================", this.state.projectPkBean)
@@ -212,7 +209,6 @@ export class createProject extends Component {
                 emp: true
             })
         }
-
         $(document).ready(function () {
             $('#submit').click(function (e) {
                 var groupName = (document.getElementById("groupName").value).trim();
@@ -272,7 +268,7 @@ export class createProject extends Component {
     NotifyFieldMandatory = () => {
         if (!toast.isActive(this.toastId)) {
             this.toastId = toast.info(<center>All Fields Are Mandatory</center>, {
-                position: "top-center", autoClose: false
+                position: "top-center", autoClose: 5000
             });
         }
     }
@@ -280,21 +276,21 @@ export class createProject extends Component {
     NotifyServerOffline = () => {
         if (!toast.isActive(this.toastId)) {
             this.toastId = toast.error(<center>Registration Failed Server Did Not Respond</center>, {
-                position: "top-center", autoClose: false,
+                position: "top-center", autoClose: 7000,
             });
         }
     }
     NotifyEmailDoesntExists = () => {
         if (!toast.isActive(this.toastId)) {
             this.toastId = toast.warning(<center>Registration Failed Email Does Not Exist</center>, {
-                position: "top-center", autoClose: false,
+                position: "top-center", autoClose: 7000,
             });
         }
     }
     NotifyTaskCreationSuccess = () => {
         if (!toast.isActive(this.toastId)) {
             this.toastId = toast.success(<center>Task Created Successfully</center>, {
-                position: "top-center", autoClose: false,
+                position: "top-center", autoClose: 3000,
             });
         }
     }
@@ -328,18 +324,13 @@ export class createProject extends Component {
                 emailLists: []
             })
         }
-
     }
-
     setEmail(email) {
         this.setState({
             addTo: email,
             emailLists: []
         })
     }
-
-
-
     addfeild(email, i) {
         return (
             <div>
@@ -362,7 +353,7 @@ export class createProject extends Component {
                 <div id="content-wrap">
                     <div className="container-fluid ">
                         <div className="row">
-                            {this.state.architect ? <SideNavBar /> : null}
+                             <SideNavBar /> 
                             <div className="col-md-10 " >
                                 <div id="container" className="col-auto container-fluid pb-5">
                                     <div id="create" className="card shadow-lg mt-5 " >
@@ -423,13 +414,10 @@ export class createProject extends Component {
                                                         // })
 
                                                     }} />
-
                                                     {/*               <FormControl type="text" name="search"  
                                 onChange={(event) => { this.setState({ search: event.target.value }) }}
                                    value={this.state.search} onKeyDown={(event) => { this.searchByEnter(event) }}  placeholder="Search" className="w-55" /> */}
-
-
-                                                    <button type="button" onClick={(e) => this.getProfile(e)} style={{ borderRadius: '0px 5px 5px 0px', border: "1px solid #ced4da" }} class="btn btn-outline-primary"><i class="fas fa-plus"></i></button>
+                                                    <button type="button" onClick={(e) => this.getProfile(e)} style={{ borderRadius: '0px 5px 5px 0px', border: "1px solid #ced4da" }} disabled={!this.state.addTo} class="btn btn-outline-primary"><i class="fas fa-plus"></i></button>
                                                 </div>
                                                 {this.state.emailLists.length > 0 ? this.state.emailLists.map((item) => { return <div onClick={() => this.setEmail(item)} style={{ cursor: "pointer" }} id="emailLists">{item}</div> }) : null}
 

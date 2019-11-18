@@ -9,7 +9,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { PropagateLoader } from 'react-spinners';
 import Axios from 'axios';
 import { stickyLow, stickyMedium, stickyCri, stickyHigh } from './Sticky';
-import {  SideNavBar } from '../Architect/SideData';
+import { SideNavBar } from '../Architect/SideData';
 import TaskInfo from './TaskInfo';
 class Byme extends Component {
     constructor(props) {
@@ -25,13 +25,13 @@ class Byme extends Component {
             user: '',
             page: 'By Me',
             loading: false,
-            taskData:[],
+            taskData: [],
             architect: false,
             lead: false,
             emp: false,
             role: JSON.parse(window.localStorage.getItem('role')),
-            showData:false,
-            userBean:[]
+            showData: false,
+            userBean: []
         }
     }
     NotifyServerOffline = () => {
@@ -48,40 +48,38 @@ class Byme extends Component {
             });
         }
     }
-    componentDidMount(){
+    componentDidMount() {
         this.getTask()
         this.setState({
-            userBean:this.props.userBean
+            userBean: this.props.userBean
         })
     }
-   
-    getTask() {
-            Axios.get('http://localhost:8080/get-assign-to-task?email=' + this.state.email
-            ).then((response) => {
-              if (response.data.message === "Success") {
-                this.setState({
-                  taskData: response.data.taskBean
-                })
-              }
-            }).catch((error) => {
 
-                this.NotifyServerOffline();
-            })
-            if (this.state.role === "architect") {
+    getTask() {
+        Axios.get('http://localhost:8080/get-assign-to-task?email=' + this.state.email
+        ).then((response) => {
+            if (response.data.message === "Success") {
                 this.setState({
-                    architect: true
-                })
-            } else if (this.state.role === "lead") {
-                this.setState({
-                    lead: true
-                })
-            } else {
-                this.setState({
-                    emp: true
+                    taskData: response.data.taskBean
                 })
             }
+        }).catch((error) => {
+        })
+        if (this.state.role === "architect") {
+            this.setState({
+                architect: true
+            })
+        } else if (this.state.role === "lead") {
+            this.setState({
+                lead: true
+            })
+        } else {
+            this.setState({
+                emp: true
+            })
+        }
     }
- handleClose() {
+    handleClose() {
         this.setState({ show: !this.state.show })
     }
     showvis(item, userBean) {
@@ -116,14 +114,14 @@ class Byme extends Component {
             })
     }
 
-    showData(item, userBean){
+    showData(item, userBean) {
         console.log("aaaaaaaaaaaaaa ============== userBean", userBean)
         console.log("aaaaaaaaaaaaaa ============= item", item)
         this.setState({
             taskBean: item,
             user: userBean,
             page: "To Me",
-        },()=>this.comment())
+        }, () => this.comment())
     }
 
     addComment() {
@@ -147,315 +145,323 @@ class Byme extends Component {
     }
 
     getCommentData = (data) => {
-        console.log("comment=============",data)
-        if(data && data!=''){
-        this.setState({
-          comment:data
-        },()=>{this.addComment()})
-    }else{
-        this.setState({
-            showData:false
-        },()=>{
-            this.NotifyUpdatedTask();
-            this.getTask()
-        })
+        console.log("comment=============", data)
+        if (data && data != '') {
+            this.setState({
+                comment: data
+            }, () => { this.addComment() })
+        } else {
+            this.setState({
+                showData: false
+            }, () => {
+                this.NotifyUpdatedTask();
+                this.getTask()
+            })
+        }
     }
-}
-    
+
+    close = (data) => {
+        if (data == "close") {
+            this.setState({
+                showData: false
+            })
+        }
+    }
+
     render() {
-     
-            return (
-                <div>
-                 
-                        <div className="w-100" style={{ marginLeft: '50%', marginRight: 'auto' }}>
-                        <PropagateLoader
-                            css={this.override}
-                            size={10}
-                            color={'#123abc'}
-                            loading={this.state.loading}
-                        />
-                    </div>
-                    <ToastContainer />
 
-                    <Modal centered size="md" show={this.state.show} onHide={this.handleClose.bind(this)}  >
-                        <Modal.Header closeButton>
-                            <Modal.Title>
-                                <div className="" style={{ color: '#808080' }}>Subject -                             
-                                      <textarea style={{ color: 'black', resize: "none",   width:"209%" }}  class="form-control"  value={this.state.popup.subject} id="exampleFormControlTextarea1" rows="1" readOnly/>
-  </div></Modal.Title>
-                        </Modal.Header>
-                        <Modal.Body>
-                            <label className="mb-0" style={{ color: '#808080' }}>Description</label>
-                            <div className="input-group mb-2">
-                                <textarea style={{ color: 'black' }} value={this.state.popup.description} type="text" className="form-control textarea" placeholder="Designation" readOnly />  </div>
-                            <label className="mb-0" style={{ color: '#808080' }}>Assigned To</label>
-                            <div className="input-group mb-2">
-                                <div className="input-group-prepend ">
-                                    <label className="input-group-text "><i className="fas fa-at" /></label>
-                                </div>
-                                <input type="text" value={this.state.popup.assignedTo} style={{ color: 'black' }} className="form-control" placeholder="Designation" readOnly /></div>
-                            <label className="mb-0" style={{ color: '#808080' }}>Assigned On</label>
-                            <div className="input-group mb-2">
-                                <div className="input-group-prepend">
-                                    <label className="input-group-text"><i className="far fa-calendar-alt" /></label>
-                                </div>
+        return (
+            <div>
 
-                                <input type="text" style={{ color: 'black' }}
-                                    value={moment(this.state.popup.assignDate).format("DD-MM-YYYY")} className="form-control" placeholder="Password" readOnly /></div>
-                            <label className="mb-0" style={{ color: '#808080' }}>Deadline</label>
-                            <div className="input-group mb-2">
-                                <div className="input-group-prepend">
-                                    <label className="input-group-text"><i className="far fa-calendar-alt" /></label>
-                                </div>
+                <div className="w-100" style={{ marginLeft: '50%', marginRight: 'auto' }}>
+                    <PropagateLoader
+                        css={this.override}
+                        size={10}
+                        color={'#123abc'}
+                        loading={this.state.loading}
+                    />
+                </div>
+                <ToastContainer />
 
-                                <input type="text" style={{ color: 'black' }}
-                                    value={moment(this.state.popup.endDate).format("DD-MM-YYYY")} className="form-control" placeholder="Email" readOnly /> </div>
-                            <label className="mb-0" style={{ color: '#808080' }}>Priority</label>
-                            <div className="input-group mb-2">
-                                <div className="input-group-prepend">
-                                    <label className="input-group-text"><i class="fas fa-tasks"></i></label>
+                <Modal centered size="md" show={this.state.show} onHide={this.handleClose.bind(this)}  >
+                    <Modal.Header closeButton>
+                        <Modal.Title>
+                            <div className="" style={{ color: '#808080' }}>Subject -
+                                      <textarea style={{ color: 'black', resize: "none", width: "209%" }} class="form-control" value={this.state.popup.subject} id="exampleFormControlTextarea1" rows="1" readOnly />
+                            </div></Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <label className="mb-0" style={{ color: '#808080' }}>Description</label>
+                        <div className="input-group mb-2">
+                            <textarea style={{ color: 'black' }} value={this.state.popup.description} type="text" className="form-control textarea" placeholder="Designation" readOnly />  </div>
+                        <label className="mb-0" style={{ color: '#808080' }}>Assigned To</label>
+                        <div className="input-group mb-2">
+                            <div className="input-group-prepend ">
+                                <label className="input-group-text "><i className="fas fa-at" /></label>
+                            </div>
+                            <input type="text" value={this.state.popup.assignedTo} style={{ color: 'black' }} className="form-control" placeholder="Designation" readOnly /></div>
+                        <label className="mb-0" style={{ color: '#808080' }}>Assigned On</label>
+                        <div className="input-group mb-2">
+                            <div className="input-group-prepend">
+                                <label className="input-group-text"><i className="far fa-calendar-alt" /></label>
+                            </div>
 
-                                </div>
-                                {console.log("prio", this.state.popup.priority)}
-                                <input type="text" style={{ color: 'black' }}
-                                    value={this.state.popup.priority} className="form-control" readOnly /> </div>
+                            <input type="text" style={{ color: 'black' }}
+                                value={moment(this.state.popup.assignDate).format("DD-MM-YYYY")} className="form-control" placeholder="Password" readOnly /></div>
+                        <label className="mb-0" style={{ color: '#808080' }}>Deadline</label>
+                        <div className="input-group mb-2">
+                            <div className="input-group-prepend">
+                                <label className="input-group-text"><i className="far fa-calendar-alt" /></label>
+                            </div>
+
+                            <input type="text" style={{ color: 'black' }}
+                                value={moment(this.state.popup.endDate).format("DD-MM-YYYY")} className="form-control" placeholder="Email" readOnly /> </div>
+                        <label className="mb-0" style={{ color: '#808080' }}>Priority</label>
+                        <div className="input-group mb-2">
+                            <div className="input-group-prepend">
+                                <label className="input-group-text"><i class="fas fa-tasks"></i></label>
+
+                            </div>
+                            {console.log("prio", this.state.popup.priority)}
+                            <input type="text" style={{ color: 'black' }}
+                                value={this.state.popup.priority} className="form-control" readOnly /> </div>
 
 
-                        </Modal.Body>
-                        <Modal.Footer style={{ color: 'red' }} className=" justify-content-center" >
-                            Number of days : {moment(this.state.popup.endDate).diff(moment(this.state.popup.assignDate), 'days')}
-                        </Modal.Footer>
-                    </Modal>
-                  
-                            <div className="col-md-12">
-                               
-                            <div className="row">     
-                                       <SideNavBar/>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
-                                    <div className="col-md-8">  
-                                        <div id="card" >
-                                            <div class=" card-body ">
-                    <div className="container-fluid">
-                        <center>
-                            <div className="row container">
-                                <div className="col-lg-4 col-md-3 col-sm-3" id="todo"  >
-                                    <div className="col-auto">
+                    </Modal.Body>
+                    <Modal.Footer style={{ color: 'red' }} className=" justify-content-center" >
+                        Number of days : {moment(this.state.popup.endDate).diff(moment(this.state.popup.assignDate), 'days')}
+                    </Modal.Footer>
+                </Modal>
 
-                                        <div id="card bg-default head" >
-                                            <h5 id="card-header" className="card-header header">
-                                                <center className="letter" >TODO</center>
-                                            </h5>
-                                        </div>
-                                        <div className=" card-body cards">
-                                            {this.state.taskData.filter(item => (item.priority === 'critical') && (item.status === 'todo')).map(item => {
-                                                return (
-                                                    <div className="col-auto" onClick={() => this.showData(item, item.userBean)} >
-                                                      
-                                                        <div id="i7" className="col-lg-4 col-md-4 col-sm-4 a" >
-                                                            <i onClick={() => this.showvis(item, item.userBean)} class="fas fa-info-circle"></i>
+                <div className="col-md-12">
+
+                    <div className="row">
+                        <SideNavBar />
+
+                        <div className="col-md-8">
+                            <div id="card" >
+                                <div class=" card-body ">
+                                    <div className="container-fluid">
+                                        <center>
+                                            <div className="row container">
+                                                <div className="col-lg-4 col-md-3 col-sm-3" id="todo"  >
+                                                    <div className="col-auto">
+
+                                                        <div id="card bg-default head" >
+                                                            <h5 id="card-header" className="card-header header">
+                                                                <center className="letter" >TODO</center>
+                                                            </h5>
                                                         </div>
-                                                       {stickyCri(item)}
+                                                        <div className=" card-body cards">
+                                                            {this.state.taskData.filter(item => (item.priority === 'critical') && (item.status === 'todo')).map(item => {
+                                                                return (
+                                                                    <div className="col-auto" onClick={() => this.showData(item, item.userBean)} >
+
+                                                                        <div id="i7" className="col-lg-4 col-md-4 col-sm-4 a" >
+                                                                            <i onClick={() => this.showvis(item, item.userBean)} class="fas fa-info-circle"></i>
+                                                                        </div>
+                                                                        {stickyCri(item)}
+                                                                    </div>
+                                                                )
+                                                            }
+                                                            )}
+                                                            {this.state.taskData.filter(item => (item.priority === 'high') && (item.status === 'todo')).map(item => {
+                                                                return (
+                                                                    <div className="col-auto" onClick={() => this.showData(item, item.userBean)}>
+                                                                        <div id="i7" className="col-lg-4 col-md-4 col-sm-4 a" >
+                                                                            <i onClick={() => this.showvis(item, item.userBean)} class="fas fa-info-circle"></i>
+                                                                        </div>
+                                                                        {stickyHigh(item)}
+                                                                    </div>
+                                                                )
+                                                            }
+                                                            )}
+                                                            {this.state.taskData.filter(item => (item.priority === 'medium') && (item.status === 'todo')).map(item => {
+                                                                return (
+                                                                    <div className="col-auto" onClick={() => this.showData(item, item.userBean)}>
+                                                                        <div id="i7" className="col-lg-4 col-md-4 col-sm-4 a" >
+                                                                            <i onClick={() => this.showvis(item, item.userBean)} class="fas fa-info-circle"></i>
+                                                                        </div>
+                                                                        {stickyMedium(item)}
+
+                                                                    </div>
+                                                                )
+                                                            }
+                                                            )}
+                                                            {this.state.taskData.filter(item => (item.priority === 'low') && (item.status === 'todo')).map(item => {
+                                                                return (
+                                                                    <div className="col-auto" onClick={() => this.showData(item, item.userBean)}>
+                                                                        <div id="i7" className="col-lg-4 col-md-4 col-sm-4 a" >
+                                                                            <i onClick={() => this.showvis(item, item.userBean)} class="fas fa-info-circle"></i>
+                                                                        </div>
+                                                                        {stickyLow(item)}
+                                                                    </div>
+                                                                )
+                                                            }
+                                                            )}
+                                                        </div>
                                                     </div>
-                                                )
-                                            }
-                                            )}
-                                            {this.state.taskData.filter(item => (item.priority === 'high') && (item.status === 'todo')).map(item => {
-                                                return (
-                                                    <div className="col-auto" onClick={() => this.showData(item, item.userBean)}>
-                                                         <div id="i7" className="col-lg-4 col-md-4 col-sm-4 a" >
-                                                            <i onClick={() => this.showvis(item, item.userBean)} class="fas fa-info-circle"></i>
-                                                        </div>
-                                                        {stickyHigh(item)}
                                                 </div>
-                                                )
-                                            }
-                                            )}
-                                            {this.state.taskData.filter(item => (item.priority === 'medium') && (item.status === 'todo')).map(item => {
-                                                return (
-                                                    <div className="col-auto" onClick={() => this.showData(item, item.userBean)}>
-                                                        <div id="i7" className="col-lg-4 col-md-4 col-sm-4 a" >
-                                                            <i onClick={() => this.showvis(item, item.userBean)} class="fas fa-info-circle"></i>
+                                                <div className="col-lg-4 col-md-3 col-sm-3" id="onProgress" >
+                                                    <div className="col-auto">
+                                                        <div id="card bg-default head" >
+                                                            <h5 id="card-header" className="card-header header">
+                                                                <center className="letter" > IN PROGRESS </center>
+                                                            </h5>
                                                         </div>
-                                                        {stickyMedium(item)}
+                                                        <div className="  card-body cards">
+                                                            {this.state.taskData.filter(item => (item.priority === 'critical') && (item.status === 'onProgress')).map(item => {
+                                                                return (
+                                                                    <div className="col-auto container" onClick={() => this.showData(item, item.userBean)}>
 
-                                                    </div>
-                                                )
-                                            }
-                                            )}
-                                            {this.state.taskData.filter(item => (item.priority === 'low') && (item.status === 'todo')).map(item => {
-                                                return (
-                                                    <div className="col-auto" onClick={() => this.showData(item, item.userBean)}>
-                                                        <div id="i7" className="col-lg-4 col-md-4 col-sm-4 a" >
-                                                            <i onClick={() => this.showvis(item, item.userBean)} class="fas fa-info-circle"></i>
-                                                        </div> 
-                                                        {stickyLow(item)}
-                                                    </div>
-                                                )
-                                            }   
-                                            )}
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="col-lg-4 col-md-3 col-sm-3" id="onProgress" >
-                                    <div className="col-auto">
-                                        <div id="card bg-default head" >
-                                            <h5 id="card-header" className="card-header header">
-                                                <center className="letter" > IN PROGRESS </center>
-                                            </h5>
-                                        </div>
-                                        <div className="  card-body cards">
-                                            {this.state.taskData.filter(item => (item.priority === 'critical') && (item.status === 'onProgress')).map(item => {
-                                                return (
-                                                    <div className="col-auto container" onClick={() => this.showData(item, item.userBean)}>
+                                                                        <div id="i7" className="col-lg-4 col-md-4 col-sm-4 a" >
+                                                                            <i onClick={() => this.showvis(item, item.userBean)} class="fas fa-info-circle"></i>
+                                                                        </div>
+                                                                        {stickyCri(item)}
 
-                                                        <div id="i7" className="col-lg-4 col-md-4 col-sm-4 a" >
-                                                            <i onClick={() => this.showvis(item, item.userBean)} class="fas fa-info-circle"></i>
-                                                        </div>
-                                                        {stickyCri(item)}
+                                                                        <div class="container-fluid">
+                                                                        </div>
 
-                                                        <div class="container-fluid">
-                                                        </div>
+                                                                    </div>
+                                                                )
+                                                            }
+                                                            )}
+                                                            {this.state.taskData.filter(item => (item.priority === 'high') && (item.status === 'onProgress')).map(item => {
+                                                                return (
+                                                                    <div className="col-auto container" onClick={() => this.showData(item, item.userBean)}>
+                                                                        <div id="i7" className="col-lg-4 col-md-4 col-sm-4 a" >
+                                                                            <i onClick={() => this.showvis(item, item.userBean)} class="fas fa-info-circle"></i>
+                                                                        </div>
+                                                                        {stickyHigh(item)}
 
-                                                    </div>
-                                                )
-                                            }
-                                            )}
-                                            {this.state.taskData.filter(item => (item.priority === 'high') && (item.status === 'onProgress')).map(item => {
-                                                return (
-                                                    <div className="col-auto container" onClick={() => this.showData(item, item.userBean)}>
-                                                        <div id="i7" className="col-lg-4 col-md-4 col-sm-4 a" >
-                                                            <i onClick={() => this.showvis(item, item.userBean)} class="fas fa-info-circle"></i>
-                                                        </div>
-                                                        {stickyHigh(item)}
-
-                                                        <div class="container-fluid">
-                                                        </div>
-                                                    </div>
-                                                )
-                                            }
-                                            )}
-                                            {this.state.taskData.filter(item => (item.priority === 'medium') && (item.status === 'onProgress')).map(item => {
-                                                return (
-                                                    <div onClick={() => this.showData(item, item.userBean)}className="col-auto container">
+                                                                        <div class="container-fluid">
+                                                                        </div>
+                                                                    </div>
+                                                                )
+                                                            }
+                                                            )}
+                                                            {this.state.taskData.filter(item => (item.priority === 'medium') && (item.status === 'onProgress')).map(item => {
+                                                                return (
+                                                                    <div onClick={() => this.showData(item, item.userBean)} className="col-auto container">
 
 
-                                                        <div id="i7" className="col-lg-4 col-md-4 col-sm-4 a" >
-                                                            <i onClick={() => this.showvis(item, item.userBean)} class="fas fa-info-circle"></i>
-                                                        </div>
-                                                        {stickyMedium(item)}
+                                                                        <div id="i7" className="col-lg-4 col-md-4 col-sm-4 a" >
+                                                                            <i onClick={() => this.showvis(item, item.userBean)} class="fas fa-info-circle"></i>
+                                                                        </div>
+                                                                        {stickyMedium(item)}
 
-                                                        <div class="container-fluid">
+                                                                        <div class="container-fluid">
+                                                                        </div>
+                                                                    </div>
+                                                                )
+                                                            }
+                                                            )}
+                                                            {this.state.taskData.filter(item => (item.priority === 'low') && (item.status === 'onProgress')).map(item => {
+                                                                return (
+                                                                    <div onClick={() => this.showData(item, item.userBean)} className="col-auto">
+
+                                                                        <div id="i7" className="col-lg-4 col-md-4 col-sm-4 a" >
+                                                                            <i onClick={() => this.showvis(item, item.userBean)} class="fas fa-info-circle"></i>
+                                                                        </div>
+                                                                        {stickyLow(item)}
+
+                                                                    </div>
+                                                                )
+                                                            }
+                                                            )}
                                                         </div>
                                                     </div>
-                                                )
-                                            }
-                                            )}
-                                            {this.state.taskData.filter(item => (item.priority === 'low') && (item.status === 'onProgress')).map(item => {
-                                                return (
-                                                    <div onClick={() => this.showData(item, item.userBean)} className="col-auto">
-
-                                                        <div id="i7" className="col-lg-4 col-md-4 col-sm-4 a" >
-                                                            <i onClick={() => this.showvis(item, item.userBean)} class="fas fa-info-circle"></i>
+                                                </div>
+                                                <div className="col-lg-4 col-md-3 col-sm-3" id="blocked">
+                                                    <div className="col-auto" >
+                                                        <div id="card bg-default head" >
+                                                            <h5 id="card-header" className="card-header header">
+                                                                <center className="letter"> BLOCKED </center>
+                                                            </h5>
                                                         </div>
-                                                        {stickyLow(item)}
+                                                        <div className=" card-body cards">
+                                                            {this.state.taskData.filter(item => (item.priority === 'critical') && (item.status === 'blocked')).map(item => {
+                                                                return (
+                                                                    <div className="col-auto" onClick={() => this.showData(item, item.userBean)} >
+                                                                        <div id="i7" className="col-lg-4 col-md-4 col-sm-4 a" >
+                                                                            <i onClick={() => this.showvis(item, item.userBean)} class="fas fa-info-circle"></i>
+                                                                        </div>
+                                                                        {stickyCri(item)}
 
-                                                    </div>
-                                                )
-                                            }
-                                            )}
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="col-lg-4 col-md-3 col-sm-3" id="blocked">
-                                    <div className="col-auto" >
-                                        <div id="card bg-default head" >
-                                            <h5 id="card-header" className="card-header header">
-                                                <center className="letter"> BLOCKED </center>
-                                            </h5>
-                                        </div>
-                                        <div className=" card-body cards">
-                                            {this.state.taskData.filter(item => (item.priority === 'critical') && (item.status === 'blocked')).map(item => {
-                                                return (
-                                                    <div className="col-auto" onClick={() => this.showData(item, item.userBean)} >
-                                                        <div id="i7" className="col-lg-4 col-md-4 col-sm-4 a" >
-                                                            <i onClick={() => this.showvis(item, item.userBean)} class="fas fa-info-circle"></i>
-                                                        </div>
-                                                        {stickyCri(item)}
+                                                                    </div>
+                                                                )
+                                                            }
+                                                            )}
+                                                            {this.state.taskData.filter(item => (item.priority === 'high') && (item.status === 'blocked')).map(item => {
+                                                                return (
+                                                                    <div className="col-auto" onClick={() => this.showData(item, item.userBean)}>
+                                                                        <div id="i7" className="col-lg-4 col-md-4 col-sm-4 a" >
+                                                                            <i onClick={() => this.showvis(item, item.userBean)} class="fas fa-info-circle"></i>
+                                                                        </div>
+                                                                        {stickyHigh(item)}
+                                                                    </div>
+                                                                )
+                                                            }
+                                                            )}
+                                                            {this.state.taskData.filter(item => (item.priority === 'medium') && (item.status === 'blocked')).map(item => {
+                                                                return (
+                                                                    <div className="col-auto" onClick={() => this.showData(item, item.userBean)}>
+                                                                        <div id="i7" className="col-lg-4 col-md-4 col-sm-4 a" >
+                                                                            <i onClick={() => this.showvis(item, item.userBean)} class="fas fa-info-circle"></i>
+                                                                        </div>
 
-                                                    </div>
-                                                )
-                                            }
-                                            )}
-                                            {this.state.taskData.filter(item => (item.priority === 'high') && (item.status === 'blocked')).map(item => {
-                                                return (
-                                                    <div className="col-auto" onClick={() => this.showData(item, item.userBean)}>
-                                                        <div id="i7" className="col-lg-4 col-md-4 col-sm-4 a" >
-                                                            <i onClick={() => this.showvis(item, item.userBean)} class="fas fa-info-circle"></i>
-                                                        </div>
-                                                      {stickyHigh(item)}
-                                                    </div>
-                                                )
-                                            }
-                                            )}
-                                            {this.state.taskData.filter(item => (item.priority === 'medium') && (item.status === 'blocked')).map(item => {
-                                                return (
-                                                    <div className="col-auto" onClick={() => this.showData(item, item.userBean)}>
-                                                        <div id="i7" className="col-lg-4 col-md-4 col-sm-4 a" >
-                                                            <i onClick={() => this.showvis(item, item.userBean)} class="fas fa-info-circle"></i>
-                                                        </div>
-                                                        
-                                                        {stickyMedium(item)}
-                                                    </div>
-                                                )
-                                            }
-                                            )}
-                                            {this.state.taskData.filter(item => (item.priority === 'low') && (item.status === 'blocked')).map(item => {
-                                                return (
-                                                    <div className="col-auto" onClick={() => this.showData(item, item.userBean)}>
+                                                                        {stickyMedium(item)}
+                                                                    </div>
+                                                                )
+                                                            }
+                                                            )}
+                                                            {this.state.taskData.filter(item => (item.priority === 'low') && (item.status === 'blocked')).map(item => {
+                                                                return (
+                                                                    <div className="col-auto" onClick={() => this.showData(item, item.userBean)}>
 
-                                                        <div id="i7" className="col-lg-4 col-md-4 col-sm-4 a" >
-                                                            <i onClick={() => this.showvis(item, item.userBean)} class="fas fa-info-circle"></i>
-                                                        </div>
-                                                        {stickyLow(item)}
+                                                                        <div id="i7" className="col-lg-4 col-md-4 col-sm-4 a" >
+                                                                            <i onClick={() => this.showvis(item, item.userBean)} class="fas fa-info-circle"></i>
+                                                                        </div>
+                                                                        {stickyLow(item)}
 
+                                                                    </div>
+                                                                )
+                                                            }
+                                                            )}
+                                                        </div>
                                                     </div>
-                                                )
-                                            }
-                                            )}
-                                        </div>
+                                                </div>
+                                            </div>
+
+                                        </center>
+
                                     </div>
                                 </div>
                             </div>
-                           
-                        </center>
-                
-                    </div>
-                    </div>
-                    </div>
-                    </div>
-                    <div className="col-lg-2 " >
-                                        <div className="col-md-12">
-                                            <div className="row">
+                        </div>
+                        <div className="col-lg-2 " >
+                            <div className="col-md-12">
+                                <div className="row">
 
-{this.state.showData?
-    <div>
-        {console.log("this.state.taskBean",this.state.taskBean)}
-        {console.log("this.state.user",this.state.user)}
+                                    {this.state.showData ?
+                                        <div>
+                                            {console.log("this.state.taskBean", this.state.taskBean)}
+                                            {console.log("this.state.user", this.state.user)}
 
- <TaskInfo  taskBean={this.state.taskBean} user={this.state.user} showUpadtaed={()=>this.getData()} comment={this.getCommentData.bind()} commentBean={this.state.commentBean}  />
-                 </div>
- :null}
-                                            </div>
+                                            <TaskInfo taskBean={this.state.taskBean} user={this.state.user} showUpadtaed={() => this.getData()} close={this.close.bind()} comment={this.getCommentData.bind()} commentBean={this.state.commentBean} />
                                         </div>
-                                    </div>
+                                        : null}
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    </div>
-                    </div>
-              
-                
+                </div>
+            </div>
 
-            )
-       
+
+
+        )
+
     }
 }
 export default withRouter(Byme)

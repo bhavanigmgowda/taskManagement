@@ -177,3 +177,4 @@ class GetPeople extends Component {
     }
 }
 export default withRouter(GetPeople)
+    
