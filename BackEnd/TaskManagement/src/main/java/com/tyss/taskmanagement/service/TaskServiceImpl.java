@@ -1,4 +1,4 @@
-package com.taskmanagement.service;
+package com.tyss.taskmanagement.service;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -7,13 +7,13 @@ import java.util.TreeSet;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestParam;
 
-import com.taskmanagement.dto.CreateTaskBean;
-import com.taskmanagement.dto.Response;
-import com.taskmanagement.repository.ProjectRepository;
-import com.taskmanagement.repository.TaskRepository;
-import com.taskmanagement.repository.UserRepository;
+import com.tyss.taskmanagement.dto.Response;
+import com.tyss.taskmanagement.dto.TaskBean;
+import com.tyss.taskmanagement.repository.ProjectRepository;
+import com.tyss.taskmanagement.repository.TaskRepository;
+import com.tyss.taskmanagement.repository.UserRepository;
+import com.tyss.taskmanagement.util.ResponseContainerutil;
 
 /**
  *
@@ -38,8 +38,6 @@ public class TaskServiceImpl implements TaskService {
 	
 	@Autowired
 	ProjectRepository projectRepository;
-	
-	
 
 	/**
 	 * This method accepts email and taskBean as inputs and checks email is valid or
@@ -53,20 +51,19 @@ public class TaskServiceImpl implements TaskService {
 	 * @return Response : bean that contains the response information
 	 */
 	@Override
-	public Response createTask(String email, CreateTaskBean task) {
-		Response response = new Response();
-		
-			if (userRepository.existsById(task.getUserBean().getEmployeeId()) && userRepository.existsByEmail(email)) {
+	public Response createTask(String email, TaskBean task) {
+		Response response = null;
 
+		if (userRepository.existsByEmail(email)) {
+			if (taskRepository.getTaskCount(email) <= 15) {
 				taskRepository.save(task);
-				response.setStatusCode(201);
-				response.setMessage("Success");
-				response.setDescription("Task added successfully");
-			} else {
-				response.setStatusCode(401);
-				response.setMessage("Failure");
-				response.setDescription("user id does not exist ");
+				response=ResponseContainerutil.fillerSuccess("Task added successfully");
+			}else {
+				response=Response.builder().statusCode(402).message("Failure").description("user have already 15 tasks").build();
 			}
+		} else {
+			response=ResponseContainerutil.fillerFailure("email id does not exists");
+		}
 		return response;
 	}
 
@@ -85,25 +82,18 @@ public class TaskServiceImpl implements TaskService {
 	 */
 	@Override
 	public Response updateStatus(int taskId, String status) {
-		Response response = new Response();
+		Response response = null;
 		try {
-			CreateTaskBean taskbean = taskRepository.findById(taskId).get();
+			TaskBean taskbean = taskRepository.findById(taskId).get();
 			if (taskbean != null) {
 				taskbean.setStatus(status);
 				taskRepository.save(taskbean);
-				response.setStatusCode(201);
-				response.setMessage("Success");
-				response.setDescription("Status Change successfully");
+				response=ResponseContainerutil.fillerSuccess("Status Change successfully");
 			} else {
-				response.setStatusCode(401);
-				response.setMessage("Failure");
-				response.setDescription("Status not Changed");
+				response=ResponseContainerutil.fillerFailure("Status not Changed");
 			}
 		} catch (Exception e) {
-
-			response.setDescription("Exception occured :-" + e.getMessage());
-			response.setMessage("Exception");
-			response.setStatusCode(501);
+			response=ResponseContainerutil.fillerException("Exception occured :-" + e.getMessage());
 		}
 		return response;
 	}
@@ -120,19 +110,14 @@ public class TaskServiceImpl implements TaskService {
 	 */
 	@Override
 	public Response getAssignToTask(String email) {
-		Response response = new Response();
-
-			if (userRepository.existsByEmail(email)) {
-				response.setStatusCode(201);
-				response.setMessage("Success");
-				response.setDescription("All Task data assigned Found ");
+		Response response =null;
+		 List<TaskBean> taskBeans= taskRepository.getAssignTo(email);
+			if (!taskBeans.isEmpty()) {
+				response=ResponseContainerutil.fillerSuccess("All Task data assigned Found ");
 				response.setTaskBean(taskRepository.getAssignTo(email));
 			} else {
-				response.setStatusCode(401);
-				response.setMessage("Failure");
-				response.setDescription("Task data not found");
+				response=ResponseContainerutil.fillerFailure("Task data not found");
 			}
-		
 		return response;
 	}// End of
 
@@ -147,23 +132,17 @@ public class TaskServiceImpl implements TaskService {
 	 */
 	@Override
 	public Response getAssignedTask(String email) {
-		Response response = new Response();
+		Response response = null;
 		try {
-			List<CreateTaskBean> beans=taskRepository.getAssignedTask(email);
+			List<TaskBean> beans=taskRepository.getAssignedTask(email);
 			if (!beans.isEmpty()) {
-				response.setStatusCode(201);
-				response.setMessage("Success");
-				response.setDescription("All Task Assigned Found Successfully");
+				response=ResponseContainerutil.fillerSuccess("All Task Assigned Found Successfully");
 				response.setTaskBean(beans);
 			} else {
-				response.setStatusCode(401);
-				response.setMessage("Failure");
-				response.setDescription("Task data not found");
+				response=ResponseContainerutil.fillerFailure("Task data not found");
 			}
 		} catch (Exception e) {
-			response.setDescription("Exception occured :-" + e.getMessage());
-			response.setMessage("Exception");
-			response.setStatusCode(501);
+			response=ResponseContainerutil.fillerException("Exception occured :-" + e.getMessage());
 		}
 		return response;
 	}// End of getAssignedTask()
@@ -179,29 +158,23 @@ public class TaskServiceImpl implements TaskService {
 	 */
 	@Override
 	public Response getCompletedTaskByMe(String email, String from) {
-		Response response = new Response();
+		Response response = null;
 		try {
 			List<String> endList = taskRepository.findEndDateByMe(email, from);
 
 			if (!endList.isEmpty()) {
-				response.setStatusCode(201);
-				response.setMessage("Success");
-				response.setDescription("All Task data Assigned Found Successfully");
-				TreeSet<CreateTaskBean> set = new TreeSet<>();
+				response=ResponseContainerutil.fillerSuccess("All Task Assigned Found Successfully");
+				TreeSet<TaskBean> set = new TreeSet<>();
 				for (String i : endList) {
 					set.addAll(taskRepository.findCompletedTaskBySetByMe(email, i));
 				}
 				response.setTaskBean(taskRepository.findCompletedByMe(email));
 				response.setEnd(set);
 			} else {
-				response.setStatusCode(401);
-				response.setMessage("Failure");
-				response.setDescription("Task data not found");
+				response=ResponseContainerutil.fillerFailure("Task data not found");
 			}
 		} catch (Exception e) {
-			response.setDescription("Exception occured :-" + e.getMessage());
-			response.setMessage("Exception");
-			response.setStatusCode(501);
+			response=ResponseContainerutil.fillerException("Exception occured :-" + e.getMessage());
 		}
 		return response;
 	}// End of getCompletedTaskByMe()
@@ -218,13 +191,11 @@ public class TaskServiceImpl implements TaskService {
 	 */
 	@Override
 	public Response getCompletedTaskToMe(String email, String from) {
-		Response response = new Response();
+		Response response = null;
 		try {
 			if (userRepository.existsByEmail(email)) {
-				response.setStatusCode(201);
-				response.setMessage("Success");
-				response.setDescription("All Task data Assigned Found Successfully");
-				TreeSet<CreateTaskBean> set = new TreeSet<>();
+				response=ResponseContainerutil.fillerSuccess("All Task Assigned Found Successfully");
+				TreeSet<TaskBean> set = new TreeSet<>();
 				List<String> endList = taskRepository.findEndDateToMe(email, from);
 
 				for (String i : endList) {
@@ -233,14 +204,11 @@ public class TaskServiceImpl implements TaskService {
 				response.setTaskBean(taskRepository.findCompletedToMe(email));
 				response.setEnd(set);
 			} else {
-				response.setStatusCode(401);
-				response.setMessage("Failure");
-				response.setDescription("Task data not found");
+				response=ResponseContainerutil.fillerFailure("Task data not found");
 			}
 		} catch (Exception e) {
-			response.setDescription("Exception occured :-" + e.getMessage());
-			response.setMessage("Exception");
-			response.setStatusCode(501);
+			response=ResponseContainerutil.fillerException("Exception occured :-" + e.getMessage());
+
 		}
 		return response;
 	}// End of getCompletedTaskToMe()
@@ -253,22 +221,16 @@ public class TaskServiceImpl implements TaskService {
 	 */
 	@Override
 	public Response searchTaskToMe(String data, String email) {
-		Response response = new Response();
+		Response response = null;
 		try {
 			if (taskRepository.countSubject(data) > 0 || taskRepository.countDescription(data) > 0) {
-				response.setStatusCode(201);
-				response.setMessage("success");
-				response.setDescription("Task to me found successfully");
+				response=ResponseContainerutil.fillerSuccess("Task to me found successfully");
 				response.setTaskBean(taskRepository.findToMe(data, email));
 			} else {
-				response.setStatusCode(401);
-				response.setMessage("Failure");
-				response.setDescription("Task data not found");
+				response=ResponseContainerutil.fillerFailure("Task data not found");
 			}
 		} catch (Exception e) {
-			response.setDescription("Exception occured :-" + e.getMessage());
-			response.setMessage("Exception");
-			response.setStatusCode(501);
+			response=ResponseContainerutil.fillerException("Exception occured :-" + e.getMessage());
 		}
 		return response;
 	}// End of searchTaskToMe()
@@ -281,22 +243,16 @@ public class TaskServiceImpl implements TaskService {
 	 */
 	@Override
 	public Response searchTaskByMe(String data, String email) {
-		Response response = new Response();
+		Response response = null;
 		try {
 			if (taskRepository.countSubject(data) > 0 || taskRepository.countDescription(data) > 0) {
-				response.setStatusCode(201);
-				response.setMessage("success");
-				response.setDescription("Task to me found successfully");
+				response=ResponseContainerutil.fillerSuccess("Task to me found successfully");
 				response.setTaskBean(taskRepository.findByMe(data));
 			} else {
-				response.setStatusCode(401);
-				response.setMessage("Failure");
-				response.setDescription("Task data not found");
+				response=ResponseContainerutil.fillerFailure("Task data not found");
 			}
 		} catch (Exception e) {
-			response.setDescription("Exception occured :-" + e.getMessage());
-			response.setMessage("Exception");
-			response.setStatusCode(501);
+			response=ResponseContainerutil.fillerException("Exception occured :-" + e.getMessage());
 		}
 		return response;
 	}// End of searchTaskByMe()
@@ -310,22 +266,16 @@ public class TaskServiceImpl implements TaskService {
 	 */
 	@Override
 	public Response getCompletedTaskByDate(String from, String to, String email) {
-		Response response = new Response();
+		Response response = null;
 		try {
 			if (userRepository.existsByEmail(email)) {
+				response=ResponseContainerutil.fillerSuccess("Task to me found successfully");
 				response.setEnd(taskRepository.fromTo(email, from, to));
-				response.setStatusCode(201);
-				response.setMessage("Success");
-				response.setDescription("All Task data Assigned Found Successfully");
 			} else {
-				response.setStatusCode(401);
-				response.setMessage("Failure");
-				response.setDescription("Task data not found");
+				response=ResponseContainerutil.fillerFailure("Task data not found");
 			}
 		} catch (Exception e) {
-			response.setDescription("Exception occured :-" + e.getMessage());
-			response.setMessage("Exception");
-			response.setStatusCode(501);
+			response=ResponseContainerutil.fillerException("Exception occured :-" + e.getMessage());
 		}
 		return response;
 	}// End of getCompletedTaskByDate()
@@ -340,48 +290,36 @@ public class TaskServiceImpl implements TaskService {
 	 */
 	@Override
 	public Response updateCompletedDate(int taskId, String status, String completedDate) {
-		Response response = new Response();
+		Response response = null;
 		try {
-			CreateTaskBean taskbean = taskRepository.findById(taskId).get();
+			TaskBean taskbean = taskRepository.findById(taskId).get();
 			if (taskbean != null) {
 				taskbean.setStatus(status);
 				taskbean.setCompleted(completedDate);
 				taskRepository.save(taskbean);
-				response.setStatusCode(201);
-				response.setMessage("Success");
-				response.setDescription("Status Change successfully");
+				response=ResponseContainerutil.fillerSuccess("Status Change successfully");
 			} else {
-				response.setStatusCode(401);
-				response.setMessage("Failure");
-				response.setDescription("Status not Changed");
+				response=ResponseContainerutil.fillerFailure("Status not Changed");
 			}
 		} catch (Exception e) {
-			response.setDescription("Exception occured :-" + e.getMessage());
-			response.setMessage("Exception");
-			response.setStatusCode(501);
+			response=ResponseContainerutil.fillerException("Exception occured :-" + e.getMessage());
 		}
 		return response;
 	}// End of updateCompletedDate()
 
 	@Override
 	public Response removeTask(int taskId) {
-		Response response = new Response();
+		Response response = null;
 		try {
-			CreateTaskBean taskbean = taskRepository.findById(taskId).get();
+			TaskBean taskbean = taskRepository.findById(taskId).get();
 			if (taskbean.getTaskId().equals(taskId) && taskId != 0) {
 				taskRepository.deleteById(taskId);
-				response.setStatusCode(201);
-				response.setMessage("Success");
-				response.setDescription("Task Removed successfully");
+				response=ResponseContainerutil.fillerSuccess("Task Removed successfully");
 			} else {
-				response.setStatusCode(401);
-				response.setMessage("Failure");
-				response.setDescription("taskId not Found");
+				response=ResponseContainerutil.fillerFailure("taskId not Found");
 			}
 		} catch (Exception e) {
-			response.setStatusCode(501);
-			response.setMessage("Exception");
-			response.setDescription("Exception occured :-" + e.getMessage());
+			response=ResponseContainerutil.fillerException("Exception occured :-" + e.getMessage());
 		}
 		return response;
 	}// End of removeTask()
@@ -392,72 +330,57 @@ public class TaskServiceImpl implements TaskService {
 	 * @param email:  takes email to which the task has to be assigned
 	 * @return response object
 	 */
-
-
 	@Override
 	public Response getTaskForProject(int projectId,String email) {
-		Response response = new Response();
+		Response response = null;
 
 		if (!taskRepository.findProject(projectId).isEmpty()) {
-			response.setStatusCode(201);
+			response=ResponseContainerutil.fillerSuccess("All Task Assigned Found Successfully");
 			response.setBean(userRepository.getUserBean(email).get());
-			response.setMessage("Success");
-			response.setDescription("All Task Assigned Found Successfully");
 			response.setTaskBean(taskRepository.findProject(projectId));
 		} else {
-			response.setStatusCode(401);
-			response.setMessage("Failure");
-			response.setDescription("taskId not Found");
+			response=ResponseContainerutil.fillerFailure("taskId not Found");
 		}
 		return response;
 	}
 
 	@Override
 	public Response getCompletedTaskForProject(int pid, String from) {
-			Response response=new Response();
-			List<CreateTaskBean> beans =taskRepository.findCompletedForProject(pid);
+			Response response=null;
+			List<TaskBean> beans =taskRepository.findCompletedForProject(pid);
 			System.out.println("beans=============="+beans);
 			if (!beans.isEmpty()) {
+				response=ResponseContainerutil.fillerSuccess("All Task Assigned Found Successfully");
 				response.setTaskBean(beans);
 				response.setEnd(taskRepository.findCompletedDateForProject(pid, from));
-				response.setStatusCode(201);
-				response.setMessage("Success");
 			} else {
-				response.setStatusCode(401);
-				response.setMessage("Failure");
-				response.setDescription("Task data not found");
+				response=ResponseContainerutil.fillerFailure("Task data not Found");
 			}
 			return response;		
 	}
 	
 	@Override
 	public Response getCompletedProjectTaskByDate(String from, String to, int projectId) {
-		Response response = new Response();
+		Response response = null;
 		try {
-			Set<CreateTaskBean> beans=taskRepository.fromTo(projectId, from, to);
+			Set<TaskBean> beans=taskRepository.fromTo(projectId, from, to);
 			if (!beans.isEmpty()) {
+				response=ResponseContainerutil.fillerSuccess("All Task Assigned Found Successfully");
 				response.setEnd(beans);
-				response.setStatusCode(201);
-				response.setMessage("Success");
-				response.setDescription("All Task data Assigned Found Successfully");
 			} else {
-				response.setStatusCode(401);
-				response.setMessage("Failure");
-				response.setDescription("Task data not found");
+				response=ResponseContainerutil.fillerFailure("Task data not Found");
 			}
 		} catch (Exception e) {
-			response.setDescription("Exception occured :-" + e.getMessage());
-			response.setMessage("Exception");
-			response.setStatusCode(501);
+			response=ResponseContainerutil.fillerException("Exception occured :-" + e.getMessage());
 		}
 		return response;
 	}// End of getCompletedTaskByDate()
 	
 	@Override
 	public Response  updateTaskInfo( int taskId, String description, String assignedTo, String deadLine, String priority, String subject) {
-		Response response = new Response();
+		Response response = null;
 		try {
-			CreateTaskBean taskbean = taskRepository.findById(taskId).get();
+			TaskBean taskbean = taskRepository.findById(taskId).get();
 			if (taskbean != null) {
 				System.out.println("assignedTo"+assignedTo);
 				LocalDate localDate = LocalDate.parse(deadLine);
@@ -467,19 +390,12 @@ public class TaskServiceImpl implements TaskService {
 				taskbean.setEndDate(localDate);
 				taskbean.setPriority(priority);
 				taskRepository.save(taskbean);
-				response.setStatusCode(201);
-				response.setMessage("Success");
-				response.setDescription("Status Change successfully");
+				response=ResponseContainerutil.fillerSuccess("Status Change successfully");
 			} else {
-				response.setStatusCode(401);
-				response.setMessage("Failure");
-				response.setDescription("Status not Changed");
+				response=ResponseContainerutil.fillerFailure("Status not Changed");
 			}
 		} catch (Exception e) {
-
-			response.setDescription("Exception occured :-" + e.getMessage());
-			response.setMessage("Exception");
-			response.setStatusCode(501);
+			response=ResponseContainerutil.fillerException("Exception occured :-" + e.getMessage());
 		}
 		return response;
 	}

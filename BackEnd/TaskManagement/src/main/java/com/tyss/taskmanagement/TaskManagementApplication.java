@@ -1,4 +1,4 @@
-package com.taskmanagement;
+package com.tyss.taskmanagement;
 /**
  * @Task Spring boot application starter class
  * @SpringBootApplication annotation is used to mark a configuration class that declares one or more

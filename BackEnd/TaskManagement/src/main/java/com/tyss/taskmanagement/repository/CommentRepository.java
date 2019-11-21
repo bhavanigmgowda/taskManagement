@@ -1,11 +1,11 @@
-package com.taskmanagement.repository;
+package com.tyss.taskmanagement.repository;
 
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
-import com.taskmanagement.dto.CommentBean;
+import com.tyss.taskmanagement.dto.CommentBean;
 
 public interface CommentRepository extends JpaRepository<CommentBean, Integer> {
 

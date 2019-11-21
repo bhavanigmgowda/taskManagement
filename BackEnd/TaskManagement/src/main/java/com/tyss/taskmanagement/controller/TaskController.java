@@ -1,4 +1,4 @@
-package com.taskmanagement.controller;
+package com.tyss.taskmanagement.controller;
 
 /**
  *@role class for creating, managing, updating task in task management application
@@ -15,9 +15,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.taskmanagement.dto.CreateTaskBean;
-import com.taskmanagement.dto.Response;
-import com.taskmanagement.service.TaskService;
+import com.tyss.taskmanagement.dto.Response;
+import com.tyss.taskmanagement.dto.TaskBean;
+import com.tyss.taskmanagement.service.TaskService;
 
 @CrossOrigin(origins = "*")
 @RestController
@@ -36,7 +36,7 @@ public class TaskController {
 	 * @return response object service.createTask(email,task)
 	 */
 	@PostMapping(value = "/create-task", produces = MediaType.APPLICATION_JSON_VALUE)
-	public Response createTask(@RequestParam("email") String email, @RequestBody CreateTaskBean task) {
+	public Response createTask(@RequestParam("email") String email, @RequestBody TaskBean task) {
 		return service.createTask(email, task);
 	}// End of createTask()
 
@@ -172,6 +172,8 @@ public class TaskController {
 			 @RequestParam("deadLine") String deadLine, @RequestParam("priority") String priority, @RequestParam("subject") String subject) {
 		return service.updateTaskInfo(taskId, description, assignedTo, deadLine, priority,subject);
 	}// End of updateStatus()
+	
+	
 	
 
 }//End of class

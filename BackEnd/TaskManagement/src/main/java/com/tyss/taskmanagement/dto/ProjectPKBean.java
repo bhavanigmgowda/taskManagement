@@ -1,4 +1,4 @@
-package com.taskmanagement.dto;
+package com.tyss.taskmanagement.dto;
 
 import java.io.Serializable;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -27,38 +27,5 @@ public class ProjectPKBean implements Serializable {
 	@JoinColumn(name = "emp_id")
 	@ManyToOne
 	private UserBean userBean;
-
-
-	
-	public static AtomicInteger getCount() {
-		return count;
-	}
-
-
-	public int getProjectId() {
-		return projectId;
-	}
-
-
-	public void setProjectId(int ProjectId) {
-		this.projectId = ProjectId;
-	}
-
-
-	public UserBean getUserBean() {
-		return userBean;
-	}
-
-
-	public void setUserBean(UserBean userBean) {
-		this.userBean = userBean;
-	}
-
-
-	@Override
-	public String toString() {
-		return "ProjectPKBean [projectId=" + projectId + ", userBean=" + userBean + "]";
-	}
-	
 
 }

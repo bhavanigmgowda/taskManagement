@@ -1,7 +1,7 @@
-package com.taskmanagement.service;
+package com.tyss.taskmanagement.service;
 
-import com.taskmanagement.dto.ProjectBean;
-import com.taskmanagement.dto.Response;
+import com.tyss.taskmanagement.dto.ProjectBean;
+import com.tyss.taskmanagement.dto.Response;
 
 public interface ProjectService {
 	public Response createProject(ProjectBean bean, int count);
@@ -25,5 +25,7 @@ public interface ProjectService {
 	public Response removeUserFromProject(int groupId, String removeEmail);
 	
 	public Response getUserInProject(String email);
+	
+	public Response getProjectsWhileCreatingTask(String email ,String projectname );
 
 }

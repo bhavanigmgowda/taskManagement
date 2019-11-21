@@ -1,9 +1,9 @@
-package com.taskmanagement.service;
+package com.tyss.taskmanagement.service;
 
 import javax.servlet.http.HttpSession;
 
-import com.taskmanagement.dto.Response;
-import com.taskmanagement.dto.UserBean;
+import com.tyss.taskmanagement.dto.Response;
+import com.tyss.taskmanagement.dto.UserBean;
 
 /**
  * @role UserService interface for performing login,save,update user details

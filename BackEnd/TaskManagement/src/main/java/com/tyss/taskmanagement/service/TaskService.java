@@ -1,10 +1,10 @@
-package com.taskmanagement.service;
+package com.tyss.taskmanagement.service;
 
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.taskmanagement.dto.CreateTaskBean;
-import com.taskmanagement.dto.Response;
+import com.tyss.taskmanagement.dto.Response;
+import com.tyss.taskmanagement.dto.TaskBean;
 
 public interface TaskService {
 
@@ -13,7 +13,7 @@ public interface TaskService {
 	 * @param email : email for which the task has to be created
 	 * @param task  : bean containing information about the task
 	 */
-	public Response createTask(@RequestParam("email") String email, @RequestBody CreateTaskBean task);
+	public Response createTask(@RequestParam("email") String email, @RequestBody TaskBean task);
 
 	/**
 	 * @role : abstract method that updates the status of the task

@@ -1,4 +1,4 @@
-package com.taskmanagement.controller;
+package com.tyss.taskmanagement.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -11,9 +11,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.taskmanagement.dto.CommentBean;
-import com.taskmanagement.dto.Response;
-import com.taskmanagement.service.CommentService;
+import com.tyss.taskmanagement.dto.CommentBean;
+import com.tyss.taskmanagement.dto.Response;
+import com.tyss.taskmanagement.service.CommentService;
 
 @CrossOrigin(origins = "*")
 @RestController

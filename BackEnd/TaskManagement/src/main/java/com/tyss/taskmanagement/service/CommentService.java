@@ -1,7 +1,7 @@
-package com.taskmanagement.service;
+package com.tyss.taskmanagement.service;
 
-import com.taskmanagement.dto.CommentBean;
-import com.taskmanagement.dto.Response;
+import com.tyss.taskmanagement.dto.CommentBean;
+import com.tyss.taskmanagement.dto.Response;
 
 public interface CommentService {
 

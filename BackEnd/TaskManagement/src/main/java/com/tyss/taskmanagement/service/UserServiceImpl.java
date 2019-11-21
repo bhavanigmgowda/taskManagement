@@ -1,5 +1,6 @@
-package com.taskmanagement.service;
+package com.tyss.taskmanagement.service;
 
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 
@@ -7,9 +8,13 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.taskmanagement.dto.Response;
-import com.taskmanagement.dto.UserBean;
-import com.taskmanagement.repository.UserRepository;
+
+import com.tyss.taskmanagement.dto.Response;
+import com.tyss.taskmanagement.dto.TaskBean;
+import com.tyss.taskmanagement.dto.UserBean;
+import com.tyss.taskmanagement.repository.TaskRepository;
+import com.tyss.taskmanagement.repository.UserRepository;
+import com.tyss.taskmanagement.util.ResponseContainerutil;
 
 /**
  * 
@@ -22,6 +27,56 @@ public class UserServiceImpl implements UserService {
 
 	@Autowired
 	private UserRepository userRepository;
+
+	@Autowired
+	private TaskRepository taskRepository;
+
+	void login(String email) {
+		LocalDate date = LocalDate.now();
+		List<TaskBean> taskBeans = taskRepository.getAssignedTask(email);
+		for (TaskBean bean : taskBeans) {
+
+			int i = bean.getEndDate().compareTo(date);
+			String priority = bean.getPriority();
+
+			if (((i == 1 || i==0) && !priority.equals("critical")) || (i == 2 && !priority.equals("high"))
+					|| ((i == 4 || i == 3) && !priority.equals("medium"))) {
+
+				System.out.println(" before updated  " + i);
+				System.out.println(" before updated  " + bean.getPriority());
+				switch (i) {
+				case 0: {
+					taskRepository.updatePriority(bean.getTaskId(), "critical");
+					break;
+				}
+				case 1: {
+					taskRepository.updatePriority(bean.getTaskId(), "critical");
+					break;
+				}
+				case 2: {
+					if (!priority.equals("critical")) {
+						taskRepository.updatePriority(bean.getTaskId(), "high");
+					}
+					break;
+				}
+				case 3: {
+					if (!priority.equals("high") || !priority.equals("critical")) {
+						taskRepository.updatePriority(bean.getTaskId(), "medium");
+					}
+					break;
+				}
+				case 4: {
+					if (!priority.equals("high") || !priority.equals("critical")) {
+						taskRepository.updatePriority(bean.getTaskId(), "medium");
+					}
+
+					break;
+				}
+				}
+
+			}
+		}
+	}
 
 	/**
 	 * Takes email and password from request and check whether entered email and
@@ -36,30 +91,24 @@ public class UserServiceImpl implements UserService {
 	 */
 	@Override
 	public Response login(String email, String password) {
-		Response response = new Response();
-		try {
+		Response response = null;
+	
 			if (userRepository.existsByEmail(email)) {
 				UserBean bean = userRepository.findByEmail(email).get();
 				if (bean != null && bean.getPassword().equals(password)) {
-					response.setStatusCode(201);
-					response.setMessage("Success");
-					response.setDescription("Login successfully");
+					login(email);
+					response=ResponseContainerutil.fillerSuccess("Login successfully");
+
 					response.setUserBean(Arrays.asList(bean));
 				} else {
-					response.setStatusCode(401);
-					response.setMessage("Failed");
-					response.setDescription("Login Failed");
+					response=ResponseContainerutil.fillerFailure("Login Failed");
 				}
 			} else {
-				response.setStatusCode(501);
-				response.setMessage("Email not present");
-				response.setDescription("email does not exist");
+				
+				response=Response.builder().statusCode(501).message("Failure").description("email does not exist").build();
+			
 			}
-		} catch (Exception e) {
-			response.setDescription("Exception occured :-" + e.getMessage());
-			response.setMessage("Exception");
-			response.setStatusCode(501);
-		}
+		System.out.println("respose"+response);
 		return response;
 	}// End of login()
 
@@ -76,22 +125,17 @@ public class UserServiceImpl implements UserService {
 	 */
 	@Override
 	public Response createUser(UserBean user) {
-		Response response = new Response();
+		Response response = null;
 		try {
 			if (!userRepository.existsByEmail(user.getEmail())) {
 				userRepository.save(user);
-				response.setStatusCode(201);
-				response.setMessage("Success");
-				response.setDescription("User added successfully");
+				response=ResponseContainerutil.fillerSuccess("User added successfully");
+
 			} else {
-				response.setStatusCode(401);
-				response.setMessage("Failure");
-				response.setDescription("user id already exist ");
+				response=ResponseContainerutil.fillerFailure("user id already exist");
 			}
 		} catch (Exception e) {
-			response.setDescription("Exception occured :-" + e.getMessage());
-			response.setMessage("Exception");
-			response.setStatusCode(501);
+			response=ResponseContainerutil.fillerException("Exception occured :-" + e.getMessage());
 		}
 		return response;
 	}// End of createUser()
@@ -109,7 +153,7 @@ public class UserServiceImpl implements UserService {
 	 */
 	@Override
 	public Response updateUser(int employeeId, UserBean user) {
-		Response response = new Response();
+		Response response = null;
 		try {
 			if (userRepository.existsById(user.getEmployeeId())) {
 
@@ -126,18 +170,12 @@ public class UserServiceImpl implements UserService {
 				bean.setPassword(bean.getPassword());
 				bean.setEmployeeId(bean.getEmployeeId());
 				userRepository.save(bean);
-				response.setStatusCode(201);
-				response.setMessage("Success");
-				response.setDescription("User updated successfully");
+				response=ResponseContainerutil.fillerSuccess("User updated successfully");
 			} else {
-				response.setStatusCode(401);
-				response.setMessage("Failure");
-				response.setDescription("data not found for registered email ");
+				response=ResponseContainerutil.fillerFailure("data not found for registered email ");
 			}
 		} catch (Exception e) {
-			response.setDescription("Exception occured :-" + e.getMessage());
-			response.setMessage("Exception");
-			response.setStatusCode(501);
+			response=ResponseContainerutil.fillerException("Exception occured :-" + e.getMessage());
 		}
 		return response;
 	}// End of updateUser()
@@ -158,7 +196,7 @@ public class UserServiceImpl implements UserService {
 	 */
 	@Override
 	public Response updatePassword(String email, String password) {
-		Response response = new Response();
+		Response response = null;
 		try {
 			if (userRepository.existsByEmail(email)) {
 				UserBean bean = userRepository.findByEmail(email).get();
@@ -166,28 +204,18 @@ public class UserServiceImpl implements UserService {
 					if (password != null && password.trim() != "") {
 						bean.setPassword(password);
 						userRepository.save(bean);
-						response.setStatusCode(201);
-						response.setMessage("Success");
-						response.setDescription("Password was Changed");
+						response=ResponseContainerutil.fillerSuccess("Password was Changed");
 					} else {
-						response.setStatusCode(402);
-						response.setMessage("Failure");
-						response.setDescription("password did not change");
+						response=ResponseContainerutil.fillerFailure("password did not change ");
 					}
 				} else {
-					response.setStatusCode(401);
-					response.setMessage("Failure");
-					response.setDescription("Entered Password already exists!!!");
+					response=ResponseContainerutil.fillerFailure("Entered Password already exists!!!");
 				}
 			} else {
-				response.setStatusCode(402);
-				response.setMessage("Failure");
-				response.setDescription("password did not change");
+				response=ResponseContainerutil.fillerFailure("password did not change");
 			}
 		} catch (Exception e) {
-			response.setDescription("Exception occured :-" + e.getMessage());
-			response.setMessage("Exception");
-			response.setStatusCode(501);
+			response=ResponseContainerutil.fillerException("Exception occured :-" + e.getMessage());
 		}
 		return response;
 	}// End of updatePassword()
@@ -198,16 +226,13 @@ public class UserServiceImpl implements UserService {
 	 */
 	@Override
 	public Response logout(HttpSession session) {
-		Response response = new Response();
+		Response response = null;
 		try {
 			session.invalidate();
-			response.setStatusCode(201);
-			response.setMessage("Success");
-			response.setDescription("Logout successfully");
+			response=ResponseContainerutil.fillerSuccess("Logout successfully");
 		} catch (Exception e) {
-			response.setDescription("Exception occured :-" + e.getMessage());
-			response.setMessage("Exception");
-			response.setStatusCode(501);
+			response=ResponseContainerutil.fillerException("Exception occured :-" + e.getMessage());
+
 		}
 		return response;
 	}// End of logout()
@@ -215,23 +240,18 @@ public class UserServiceImpl implements UserService {
 	// Retrieve Profile Details
 	@Override
 	public Response getProfile(String email) {
-		Response response = new Response();
+		Response response = null;
 		try {
 			if (userRepository.existsByEmail(email)) {
 				UserBean bean = userRepository.findByEmail(email).get();
-				response.setDescription("profile found successfully");
-				response.setMessage("Success");
-				response.setStatusCode(201);
+				response=ResponseContainerutil.fillerSuccess("profile found successfully");
 				response.setUserBean(Arrays.asList(bean));
 			} else {
-				response.setDescription("profile not found ");
-				response.setMessage("failure");
-				response.setStatusCode(401);
+				response=ResponseContainerutil.fillerFailure("profile not found");
 			}
 		} catch (Exception e) {
-			response.setDescription("Exception occured :-" + e.getMessage());
-			response.setMessage("Exception");
-			response.setStatusCode(501);
+			response=ResponseContainerutil.fillerException("Exception occured :-" + e.getMessage());
+
 		}
 		return response;
 	}// End of getProfile()
@@ -246,21 +266,16 @@ public class UserServiceImpl implements UserService {
 	 */
 	@Override
 	public Response checkEmail(String email) {
-		Response response = new Response();
+		Response response = null;
 		try {
 			if (userRepository.existsByEmail(email)) {
-				response.setStatusCode(201);
-				response.setMessage("Success");
-				response.setDescription("Email present in database");
+				response=ResponseContainerutil.fillerSuccess("Email present");
 			} else {
-				response.setStatusCode(401);
-				response.setMessage("Failure");
-				response.setDescription("Email is not found");
+				response=ResponseContainerutil.fillerFailure("Email is not found");
 			}
 		} catch (Exception e) {
-			response.setDescription("Exception occured :-" + e.getMessage());
-			response.setMessage("Exception");
-			response.setStatusCode(501);
+			response=ResponseContainerutil.fillerException("Exception occured :-" + e.getMessage());
+
 		}
 		return response;
 	}// End of checkEmail()
@@ -268,15 +283,12 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public Response getAllMemebers() {
 
-		Response response = new Response();
+		Response response = null;
 		try {
+			response=ResponseContainerutil.fillerSuccess("Users found");
 			response.setUserBean(userRepository.findAll());
-			response.setMessage("Success");
-			response.setDescription("Users found");
 		} catch (Exception e) {
-			response.setDescription("Exception occured :-" + e.getMessage());
-			response.setMessage("Exception");
-			response.setStatusCode(501);
+			response=ResponseContainerutil.fillerException("Exception occured :-" + e.getMessage());
 		}
 		return response;
 	}
@@ -284,21 +296,17 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public Response getMemeber(String name) {
 
-		Response response = new Response();
+		Response response = null;
 		try {
 			if (name != null) {
+				response=ResponseContainerutil.fillerSuccess("Users found");
 				response.setUserBean(userRepository.getUser(name));
-				response.setMessage("Success");
-				response.setDescription("Users found");
 			} else {
-				response.setMessage("Success");
-				response.setDescription("Users Not Found found");
-
+				response=ResponseContainerutil.fillerFailure("Users Not found");
 			}
 		} catch (Exception e) {
-			response.setDescription("Exception occured :-" + e.getMessage());
-			response.setMessage("Exception");
-			response.setStatusCode(501);
+			response=ResponseContainerutil.fillerException("Exception occured :-" + e.getMessage());
+
 		}
 		return response;
 
@@ -306,31 +314,29 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public Response getEmailsWhilesearch(String email) {
-		Response response = new Response();
+		Response response = null;
 		List<String> emailList = userRepository.getEmailsWhileSearch(email);
 		if (!emailList.isEmpty()) {
+			response=ResponseContainerutil.fillerSuccess("email found");
 			response.setEmailList(emailList);
-			response.setStatusCode(201);
 		} else {
-			response.setStatusCode(401);
+			response=ResponseContainerutil.fillerFailure("email not found");
 		}
 
 		return response;
 	}
-	
-	  @Override
-		public Response getEmailsWhileCreatingTask(String email,int projectId) {
-			Response response = new Response();
-			List<String> emailList = userRepository.getEmailsWhileCreatingTask(email, projectId);
-			if (!emailList.isEmpty()) {
-				response.setEmailList(emailList);
-				response.setStatusCode(201);
-			} else {
-				response.setStatusCode(401);
-			}
 
-			return response;
+	@Override
+	public Response getEmailsWhileCreatingTask(String email, int projectId) {
+		Response response = null;
+		List<String> emailList = userRepository.getEmailsWhileCreatingTask(email, projectId);
+		if (!emailList.isEmpty()) {
+			response=ResponseContainerutil.fillerSuccess("email found");
+			response.setEmailList(emailList);
+		} else {
+			response=ResponseContainerutil.fillerFailure("email not found");
 		}
+		return response;
+	}
 
-	
 }// End of class
