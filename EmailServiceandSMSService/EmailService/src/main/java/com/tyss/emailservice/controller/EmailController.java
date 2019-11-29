@@ -13,7 +13,7 @@ import com.tyss.emailservice.service.SendGridService;
 
 @Controller
 
-
+@ResponseBody
 public class EmailController {
 	
 	@Autowired
@@ -21,6 +21,7 @@ public class EmailController {
 	
 	@Autowired
 	private SendGridService sendGrid;
+	
 	
 	@GetMapping("/sendEmail")
 	public String sendeEmail(@RequestBody String to, 
@@ -33,9 +34,8 @@ public class EmailController {
         }
 	}
 	
-	@ResponseBody
 	@PostMapping("/sendgridEmail")
-	public void sendGridEmail(@RequestBody EmailDto emailDto) {
-		sendGrid.sendMail(emailDto.getFrom(),emailDto.getTo(),emailDto.getBody(),emailDto.getSubject());
+	public String sendGridEmail(@RequestBody EmailDto emailDto) {
+		return sendGrid.sendMail(emailDto.getFrom(),emailDto.getTo(),emailDto.getBody(),emailDto.getSubject());
 	}
 }

@@ -12,10 +12,6 @@ public class EmailServiceApplication {
 	 public static void main(String[] args) throws IOException {
 		 
 			SpringApplication.run(EmailServiceApplication.class, args);
-
-	 
 		 
 		  }
-			
-	 
 }
