@@ -186,7 +186,7 @@ public interface TaskRepository extends JpaRepository<TaskBean, Integer> {
 	TreeSet<TaskBean> fromTo(int projectId, String from, String to);
 	
 	
-	@Query(value = "select count(*) from assign_task where status !='completed' and assigned_to=:email " ,nativeQuery = true)
+	@Query(value = "select count(*) from task_info where status !='completed' and assigned_to=:email " ,nativeQuery = true)
 	int getTaskCount(String email);
 	/*
 	 * @Query(value = "select c from  ComnentBean c where c.") List<CommentBean>

@@ -59,8 +59,8 @@ public class ProjectServiceImpl implements ProjectService {
 	public Response addMemeber(String architectEmail, int groupId, String userEmail) {
 		Response response = null;
 
-		if (repository.getProjectsByEmaill(userEmail, groupId).isEmpty()
-				&& !userRepository.findByEmail(userEmail).isEmpty()) {
+		if (!repository.getProjectsByEmaill(userEmail, groupId).isPresent()
+				&& userRepository.findByEmail(userEmail).isPresent()) {
 			ProjectBean bean = repository.getProjectsByEmaill(architectEmail, groupId).get();
 			UserBean userBean = userRepository.getUserBean(userEmail).get();
 			bean.getProjectPkBean().setUserBean(userBean);
@@ -173,7 +173,7 @@ public class ProjectServiceImpl implements ProjectService {
 	@Override
 	public Response getProject(int projectId, String email) {
 		Response response = null;
-		if (projectId != 0 && !userRepository.getUserBean(email).isEmpty()) {
+		if (projectId != 0 && userRepository.getUserBean(email).isPresent()) {
 			response=ResponseContainerutil.fillerSuccess("project created successfully");
 			response.setProjectBeans(Arrays.asList(repository.getProjectsByEmaill(email, projectId).get()));
 		} else {
@@ -206,7 +206,7 @@ public class ProjectServiceImpl implements ProjectService {
 	@Override
 	public Response removeUserFromProject(int groupId, String removeEmail) {
 		Response response = null;
-		if (!repository.getProjectsByEmaill(removeEmail, groupId).isEmpty()) {
+		if (repository.getProjectsByEmaill(removeEmail, groupId).isPresent()) {
 			repository.removeUserFromProject(groupId, removeEmail);
 			response=ResponseContainerutil.fillerSuccess("members removed  successfully");
 		} else {
