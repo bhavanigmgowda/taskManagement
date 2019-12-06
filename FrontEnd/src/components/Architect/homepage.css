@@ -1,0 +1,86 @@
+
+.option{
+    font-size: 131%;
+}
+
+.cssCard{
+  max-height: 100%;
+  width: 198px;
+}
+
+.iconTask{
+    padding-top: 18px;
+    padding-bottom: 18px;
+    color: black;
+
+}
+.option{
+    font-size: 131%;
+}
+.tab:hover{
+    background-color:white;
+    text-decoration: none
+}
+
+.project{
+    background-color: rgb(240, 201, 191) !important	 ;
+    border-bottom: 25px solid white !important;
+    border-radius: 15px 10px 0px 0px;
+    height: 120px !important;
+    width: 91%;
+    box-shadow: 10px;
+    margin-left: -6px;
+    margin-bottom: 25%;
+    cursor: pointer;
+    margin-top: 12%;
+  }
+  .project:hover{
+    box-shadow: 5px 10px 18px #888888;
+
+  }
+
+  .projectTextArea {
+    border: none;
+    resize: vertical;
+    width: 100%;
+    padding: 5px;
+    font-size: 18px;
+    color: black;
+  resize: none;
+    border: none white;
+    cursor: pointer;
+    height: 55px !important;
+    background-color: rgb(240, 201, 191) !important	 ;
+
+  }
+  .ProjectTable{
+    cursor: pointer;
+    
+  }
+  .bgData{
+    width: 222px;
+    margin-left: -34px;
+    margin-top: -20px;
+    max-height: 100%;
+  }
+
+  /* @media screen 
+    and (min-device-width:  171px) 
+    and (max-device-width: 815px)
+    and (-webkit-min-device-pixel-ratio: 1) { 
+  .bgData{
+    width: 252px;
+    margin-left: -34px;
+    margin-top: -20px;
+      }
+    } */
+
+    @media (min-width: 53px) and (max-width: 991px){
+      .bgData{
+        width: 252px;
+        margin-left: -34px;
+        margin-top: -20px;
+        background-color: #fff;
+        min-height: 0px;
+          }
+    }
