@@ -36,6 +36,6 @@ public class EmailController {
 	
 	@PostMapping("/sendgridEmail")
 	public String sendGridEmail(@RequestBody EmailDto emailDto) {
-		return sendGrid.sendMail(emailDto.getFrom(),emailDto.getTo(),emailDto.getBody(),emailDto.getSubject());
+		return sendGrid.sendMail(emailDto.getFrom(), emailDto.getTo(), emailDto.getBody(), emailDto.getSubject(), emailDto.getToos(), emailDto.getCcs(), emailDto.getBccs());
 	}
 }
