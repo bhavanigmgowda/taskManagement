@@ -11,20 +11,12 @@ public class SendGridService {
 
 	public String sendMail(String fromMail, String toMail, String body, String subjectOfMail, List<Email> toos,
 			List<Email> ccs, List<Email> bccs) {
-		System.out.println("from mail " + fromMail);
-		System.out.println("from mail " + toMail);
-		System.out.println("from mail " + body);
-		System.out.println("from mail " + subjectOfMail);
 		String subject = body;
 		Email from = new Email(fromMail);
 		Email to = new Email(toMail);
 		Content content = new Content("text/plain", subjectOfMail);
 		Mail mail = new Mail(from, subject, to, content);
-		System.out.println(toos.size());
-		System.out.println(ccs.size());
-		System.out.println(bccs.size());
 		for (int i = 0; i < ccs.size(); i++) {
-			System.out.println(ccs.get(i));
 			mail.personalization.get(0).addCc(ccs.get(i));
 
 		}
@@ -32,7 +24,7 @@ public class SendGridService {
 			mail.personalization.get(0).addBcc(bccs.get(i));
 		}
 
-		SendGrid sg = new SendGrid("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");
+		
 		Request request = new Request();
 		try {
 			request.setMethod(Method.POST);

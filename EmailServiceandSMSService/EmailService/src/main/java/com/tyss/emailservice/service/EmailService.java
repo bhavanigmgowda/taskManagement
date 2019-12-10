@@ -2,6 +2,9 @@ package com.tyss.emailservice.service;
 
 
 import javax.mail.internet.MimeMessage;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -26,5 +29,9 @@ public class EmailService {
 	        helper.setText(body);
 	        helper.setSubject(subject);
 	        javaMailSender.send(message);
-	}
+	        
+	       EntityManagerFactory factory = Persistence.createEntityManagerFactory("UsersDB");
+	        EntityManager entityManager = factory.createEntityManager();
+	        
+	        entityManager.getTransaction().begin();}
 }
